@@ -264,11 +264,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     ?>
                 </p>
             </section>
-            <!-- this was sidebar for some reason o_O
-            </section>
-            -->
         </div>
-
     </div>
 </div>
 <!-- Scripts
