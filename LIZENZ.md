@@ -1,4 +1,4 @@
-Apache-Lizenz
+                                 Apache-Lizenz
                            Version 2.0, Januar 2004
                         http://www.apache.org/licenses/
 
@@ -42,7 +42,7 @@ Apache-Lizenz
       redaktionelle Überarbeitungen, Anmerkungen, Ausarbeitungen oder andere Modifikationen
       in ihrer Gesamtheit ein originäres urheberrechtliches Werk darstellen. Für die Zwecke
       dieser Lizenz dürfen abgeleitete Werke keine Werke umfassen, die
-      abtrennbar bleiben oder lediglich einen Link (oder eine namentliche Verbindung) zu den Schnittstellen des
+      abtrennbar bleiben oder lediglich einen Link (oder eine namentliche Verbindung) zu den Schnittstellen
       des Schutzgegenstandes und davon abgeleitete Werke.
 
       "Beitrag" bedeutet jedes urheberrechtlich geschützte Werk, einschließlich
@@ -55,22 +55,22 @@ Apache-Lizenz
       an den Lizenzgeber oder seine Vertreter, einschließlich, aber nicht beschränkt auf
       Kommunikation über elektronische Mailinglisten, Quellcode-Kontrollsysteme
       und Problemverfolgungssystemen, die vom Lizenzgeber oder in dessen Namen verwaltet werden
-      Lizenzgeber zum Zwecke der Diskussion und Verbesserung des Schutzgegenstandes, jedoch
+      Lizenzgeber zum Zwecke der Diskussion und Verbesserung des Schutzgegenstandes,
       jedoch mit Ausnahme der Kommunikation, die vom Urheberrechtsinhaber deutlich
       oder anderweitig vom Urheberrechtsinhaber schriftlich als "Kein Beitrag" gekennzeichnet ist.
 
-      "Mitwirkender" bezeichnet den Lizenzgeber und jede natürliche oder juristische Person
+      "Mitwirkender" bezeichnet den Lizenzgeber und jede natürliche oder
       juristische Person, in deren Namen ein Beitrag beim Lizenzgeber eingegangen ist und
       und anschließend in den Schutzgegenstand aufgenommen wurde.
 
-   2. Erteilung der Urheberrechtslizenz. Vorbehaltlich der Bestimmungen und Bedingungen dieser
+   2. Erteilung der Urheberrechtslizenz. Vorbehaltlich der Bestimmungen und Bedingungen
       dieser Lizenz gewährt Ihnen jeder Mitwirkende hiermit eine unbefristete,
       weltweites, nicht-exklusives, kostenloses, lizenzfreies, unwiderrufliches
       Urheberrechtslizenz zur Vervielfältigung, Erstellung von Bearbeitungen von
       öffentlich auszustellen, öffentlich aufzuführen, Unterlizenzen zu vergeben und den
       Werkes und solcher abgeleiteter Werke in Quell- oder Objektform.
 	  
-   3. Erteilung einer Patentlizenz. Gemäß den Bestimmungen und Bedingungen dieser
+   3. Erteilung einer Patentlizenz. Gemäß den Bestimmungen und Bedingungen
       dieser Lizenz gewährt Ihnen jeder Mitwirkende hiermit eine unbefristete,
       weltweite, nicht-exklusive, unentgeltliche, gebührenfreie, unwiderrufliche
       (außer wie in diesem Abschnitt angegeben) eine unbefristete, weltweite, nicht-exklusive, gebührenfreie, unwiderrufliche Patentlizenz zur Herstellung, Herstellung,
@@ -164,7 +164,7 @@ Apache-Lizenz
 
    9. Übernahme von Garantien oder zusätzlicher Haftung. Bei der Weiterverbreitung
       des Werks oder davon abgeleiteter Werke können Sie die Übernahme von
-      und eine Gebühr für die Übernahme von Support-, Gewährleistungs-, Entschädigungs- oder
+      und eine Gebühr für die Übernahme von Support-, Gewährleistungs-, Entschädigungs-
       oder andere Haftungsverpflichtungen und/oder Rechte in Übereinstimmung mit dieser
       Lizenz. Bei der Annahme solcher Verpflichtungen dürfen Sie jedoch nur handeln
       in Ihrem eigenen Namen und auf Ihre alleinige Verantwortung handeln, nicht im Namen
