@@ -1,0 +1,33 @@
+:root {
+    --generic-mid-grey: #2a1818;
+    --generic-light-grey: #1e1b1b;
+    --generic-dark-grey: #181818;
+    --generic-hover: #2ebaae;
+    --generic-white: #d7c5bb;
+    --generic-body-back: #eed4c8;
+    --generic-body-back-rgb: rgb(238, 212, 200);
+    --generic-grey-opacity-065: rgba(160, 160, 160, 0.65);
+    --generic-grey-opacity-03: rgba(155, 123, 123, 0.3);
+    --generic-grey-opacity-0075: rgba(160, 160, 160, 0.075);
+    --generic-grey-opacity-005: rgba(46, 186, 174, 0.05);
+    --error-opacity: 0.8;
+    --rain: #293854;
+}
+
+
+.frosted-container {
+    position: fixed;
+    margin-top: -20px;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.25;
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    /*background-color: rgb(104, 154, 168);*/
+    z-index: -1;
+}
