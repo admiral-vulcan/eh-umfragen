@@ -1,0 +1,205 @@
+:root {
+    --generic-mid-grey: #2a1818;
+    --generic-mid-grey-rgb: rgb(42, 24, 24);
+    --generic-light-grey: #1e1b1b;
+    --generic-dark-grey: #181818;
+    --generic-hover: #2ebaae;
+    --generic-white: #d7c5bb;
+    --generic-body-back: #eed4c8;
+    --generic-body-back-rgb: rgb(238, 212, 200);
+    --generic-grey-opacity-065: rgba(160, 160, 160, 0.65);
+    --generic-grey-opacity-03: rgba(155, 123, 123, 0.3);
+    --generic-grey-opacity-0075: rgba(160, 160, 160, 0.075);
+    --generic-grey-opacity-005: rgba(46, 186, 174, 0.05);
+    --error-opacity: 0.8;
+    --rain: #293854;
+}
+
+.color_scheme_select {
+    color: rgba(0,0,0,0);
+}
+
+.iadd {
+    content: url("../../images/iadd.png");
+}
+
+.frosted-container {
+    position: fixed;
+    margin-top: -20px;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.25;
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    /*background-color: rgb(104, 154, 168);*/
+    z-index: -1;
+}
+
+/*noinspection CssInvalidMediaFeature*/
+@media (prefers-dark-interface){
+    :root {
+        --generic-mid-grey: #aaaaaa;
+        --generic-light-grey: #9f9f9f;
+        --generic-dark-grey: #c9c6c6;
+        --generic-hover: rgb(72, 58, 128);
+        --generic-white: #2a2525;
+        --generic-body-back: #2f141b;
+        --generic-body-back-rgb: rgb(47, 20, 27);
+        --generic-grey-opacity-065: rgba(206, 206, 206, 0.65);
+        --generic-grey-opacity-03: rgba(255, 255, 255, 0.3);
+        --generic-grey-opacity-0075: rgba(75, 75, 75, 0.07);
+        --generic-grey-opacity-005: rgba(53, 213, 201, 0.05);
+        --error-opacity: 0.8;
+        --rain: #779bdc;
+    }
+    .iadd {
+        content: url("../../images/iadd_dark.png");
+    }
+    .frosted-container {
+        position: fixed;
+        margin-top: -20px;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.05;
+        filter: blur(5px);
+        -webkit-filter: blur(5px);
+        z-index: -1;
+    }
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --generic-mid-grey: #aaaaaa;
+        --generic-light-grey: #9f9f9f;
+        --generic-dark-grey: #c9c6c6;
+        --generic-hover: rgb(72, 58, 128);
+        --generic-white: #2a2525;
+        --generic-body-back: #2f141b;
+        --generic-body-back-rgb: rgb(47, 20, 27);
+        --generic-grey-opacity-065: rgba(206, 206, 206, 0.65);
+        --generic-grey-opacity-03: rgba(255, 255, 255, 0.3);
+        --generic-grey-opacity-0075: rgba(75, 75, 75, 0.07);
+        --generic-grey-opacity-005: rgba(53, 213, 201, 0.05);
+        --error-opacity: 0.8;
+        --rain: #779bdc;
+    }
+    .iadd {
+        content: url("../../images/iadd_dark.png");
+    }
+    .frosted-container {
+        position: fixed;
+        margin-top: -20px;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        background-position: center;
+        opacity: 0.05;
+        filter: blur(5px);
+        -webkit-filter: blur(5px);
+        z-index: -1;
+    }
+}
+@media (-ms-high-contrast: active) or (prefers-contrast: high) or (prefers-contrast: high) {
+
+    :root {
+        --generic-mid-grey: #000000;
+        --generic-light-grey: #000000;
+        --generic-dark-grey: #000000;
+        --generic-hover: #8f4848;
+        --generic-white: #ffffff;
+        --generic-body-back: #ffffff;
+        --generic-body-back-rgb: rgb(255, 255, 255);
+        --generic-grey-opacity-065: #000000;
+        --generic-grey-opacity-03: #000000;
+        --generic-grey-opacity-0075: #ffffff;
+        --generic-grey-opacity-005: #000000;
+        --error-opacity: 1;
+    }
+
+    .color_scheme_select {
+        color: rgba(0,0,0,1);
+    }
+    #menu, #header {
+        border-style: solid;
+        border-width: 0.2em;
+        border-color: black;
+    }
+}
+
+:root {
+    --body-color: var(--generic-mid-grey);
+    --body-back: var(--generic-body-back);
+
+    --hover-color: var(--generic-hover);
+    --strong-color: var(--generic-dark-grey);
+    --h1-6-color: var(--generic-dark-grey);
+    --author-color: var(--generic-grey-opacity-065);
+
+    --a-border: var(--generic-grey-opacity-065);
+
+    --form-color: var(--generic-light-grey);
+
+    --label-color: var(--generic-dark-grey);
+
+    --button-shadow: var(--generic-grey-opacity-03);
+    --button-color: var(--generic-dark-grey);
+    --button-hover: var(--generic-hover);
+    --button-active: var(--generic-grey-opacity-005);
+    --button-disabled: var(--generic-grey-opacity-03);
+    --button-after: var(--generic-light-grey);
+
+    --textarea-back: var(--generic-grey-opacity-0075);
+    --textarea-border: var(--generic-grey-opacity-03);
+    --textarea-focus: var(--generic-hover);
+    --textarea-shadow: var(--generic-hover);
+
+    --wrapper-before: var(--generic-grey-opacity-03);
+
+    --option-color: var(--generic-dark-grey);
+    --option-back: var(--generic-white);
+
+    --input-color: var(--generic-mid-grey);
+    --input-back: var(--generic-grey-opacity-0075);
+    --input-border: var(--generic-grey-opacity-03);
+    --input-focus: var(--generic-hover);
+    --input-checked: var(--generic-white);
+    --input-checked-back: var(--generic-dark-grey);
+
+    --placeholder-color: var(--generic-light-grey);
+
+    --post-header: var(--generic-dark-grey);
+    --post-footer: var(--generic-grey-opacity-03);
+    --post-back: var(--generic-white);
+    --post-border: var(--generic-grey-opacity-03);
+    --mini-post-back: var(--generic-white);
+    --mini-post-border: var(--generic-grey-opacity-03);
+
+    --table-color: var(--generic-dark-grey);
+    --table-back: var(--generic-grey-opacity-0075);
+
+    --header-color: var(--generic-light-grey);
+    --header-back: var(--generic-white);
+    --header-border: var(--generic-grey-opacity-03);
+
+    --footer-color: var(--generic-light-grey);
+
+    --menu-back: var(--generic-white);
+    --menu-border: var(--generic-grey-opacity-03);
+    --menu-hover: var(--generic-hover);
+
+    --generic-back-border: var(--generic-grey-opacity-03);
+
+    --code-back: var(--generic-grey-opacity-0075);
+}

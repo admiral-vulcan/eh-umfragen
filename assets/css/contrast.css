@@ -1,0 +1,25 @@
+
+:root {
+    --generic-mid-grey: #000000;
+    --generic-light-grey: #000000;
+    --generic-dark-grey: #000000;
+    --generic-hover: #d96d6d;
+    --generic-white: #ffffff;
+    --generic-body-back: #ffffff;
+    --generic-grey-opacity-065: #000000;
+    --generic-grey-opacity-03: #000000;
+    --generic-grey-opacity-0075: #ffffff;
+    --generic-grey-opacity-005: #000000;
+    --error-opacity: 1;
+}
+
+.color_scheme_select {
+    color: rgba(0,0,0,1);
+}
+
+#menu, #header {
+    border-style: outset;
+    border-width: 0.2em;
+    border-color: black;
+    min-height: 4em;
+}

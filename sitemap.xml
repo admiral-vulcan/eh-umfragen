@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+
+<url>
+  <loc>https://www.eh-umfragen.de/</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?survey=Raumnutzung</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?survey=Pr%C3%A4senzseminare</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?survey=Laptopnutzung</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=impressum</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=agb</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=cookies</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=datenschutz</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=secureinfo</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=passwordinfo</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=mailinfo</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?survey=Raumnutzung&amp;backview=1</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?survey=Pr%C3%A4senzseminare&amp;backview=1</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://www.eh-umfragen.de/?content=googleinfo</loc>
+  <lastmod>2023-01-12T20:34:52+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+
+
+</urlset>
