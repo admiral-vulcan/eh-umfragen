@@ -229,11 +229,11 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         <div style="white-space: normal;">
             <section id="footer">
                 <ul class="icons">
-                <!--
-                    <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                    <!--
+                        <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+                        -->
                     <li><a href="https://github.com/admiral-vulcan/eh-umfragen/" class="icon brands fa-github" target="_blank" rel="nofollow"><span class="label">Github</span></a></li>
                     <li><a href="mailto:kontakt@eh-umfragen.de" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-                    -->
                 </ul>
                 <p class="copyright">EH-Umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de">Kontakt</a> &ensp; &ensp; <a href="?content=impressum" target="_blank">Impressum</a> &ensp; &ensp; <a href="?content=agb" target="_blank">AGB</a> &ensp; &ensp; <a href="?content=cookies" target="_blank">Cookies</a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank">Datenschutz</a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank">Übertragung</a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank">Passwortspeicherung</a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank">Mailnutzung</a><br><br><br>
                     Quellen:
@@ -248,8 +248,8 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     <br><br><a href="https://www.schattenbaum.net/php/kreisdiagramm_mit_gd-lib.php" target="_blank" rel="nofollow">Kreisdiagramm</a>,
                     <br><br><a href="http://www.ulrichmierendorff.com/software/antialiased_arcs.html" target="_blank" rel="nofollow">Antialiased Filled Arcs</a>,
                     <br><br><a href="https://datenschutz-generator.de/" target="_blank" rel="nofollow">Datenschutz-Generator.de von Dr. Thomas Schwenke</a>,
-                    <br><br><br>Lizenziert unter der Apache Lizenz, Version 2.0
-                    <br><br>Licensed under the Apache License, version 2.0
+                    <br><br><br><a href="/LIZENZ.md" target="_blank">Lizenziert unter der Apache Lizenz, Version 2.0</a>
+                    <br><br><a href="/LICENSE.md" target="_blank">Licensed under the Apache License, version 2.0</a>
                     <?php
                     if ( isset($_GET["content"]) && (
                         $_GET["content"] === "impressum" or
