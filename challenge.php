@@ -81,7 +81,7 @@
         <div aria-label="Google-verwenden-Button" style="cursor: grab;" id="slider-thumb" class="not-selectable" tabindex="0"></div><p style="margin-top: 11px; margin-left: 4px; cursor: pointer; font-size: 11px; block-size: 22px;" class="not-selectable" id="slider-text"><b>Nein&emsp;&emsp;&emsp;&emsp;Ja</b></p>
     </div>
     <div id="g_id_onload"
-         data-client_id="<?php echo $GLOBALS["gcred"] ?>"
+         data-client_id="<?php echo $GLOBALS["gcred"]; ?>"
          data-callback="handleCredentialResponse">
     </div>
     <div style="position: absolute"><div id="google_btn"></div></div><br><br><br>
@@ -510,7 +510,7 @@
                     var script = document.createElement('script');
                     script.onload = function () {
                         google.accounts.id.initialize({
-                            client_id: '***REMOVED***',
+                            client_id: '<?php echo $GLOBALS["gcred"]; ?>',
                             callback: handleCredentialResponse
                         });
                         google_btn.style.display = "inline-block";
