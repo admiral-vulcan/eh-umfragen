@@ -3,7 +3,7 @@
         <h2>EH-Umfragen</h2>
         <?php
         require_once("head.php");
-        require_once ("code.php");
+        require_once("gitignore/code.php");
         require_once ("database_com.php");
         include ("greeting.php");
 

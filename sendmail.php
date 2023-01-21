@@ -1,6 +1,6 @@
 <?php
 require_once ("vendor/autoload.php");
-require_once('code.php');
+require_once('gitignore/code.php');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;

@@ -23,7 +23,7 @@ $version = $ver_str;                    //legacy reasons, but it's nice to have
 require_once ("utf8Encode.php");
 require_once ("hdd_handler.php");
 require_once ("geturl.php");
-require_once ("code.php");
+require_once("gitignore/code.php");
 require_once ("sanitize.php");
 require_once ("get_ip.php");
 require_once ("sendmail.php");

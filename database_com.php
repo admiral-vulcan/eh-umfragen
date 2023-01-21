@@ -1,5 +1,5 @@
 <?php
-require_once (".gitignore/dbcred.php");
+require_once("gitignore/dbcred.php");
 require_once ("passwordcheck.php");
 
 function set_validated($uid) { //UPDATE users SET email = ? WHERE id = ?

@@ -1,6 +1,6 @@
 <?php
 //require_once("head.php");
-//require_once('code.php');
+//require_once('gitignore/code.php');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
