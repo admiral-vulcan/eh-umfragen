@@ -3,9 +3,10 @@
 session_start();
 // include google API client
 require_once "assets/google/vendor/autoload.php";
+require_once "gitignore/gcred.php";
 
 // set google client ID
-$google_oauth_client_id = "***REMOVED***";
+$google_oauth_client_id = $GLOBALS["gcred"];
 
 // create google client object with client ID
 $client = new Google_Client([
