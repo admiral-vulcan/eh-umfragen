@@ -239,6 +239,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     Quellen:
                     <br><br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
                     <br><br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,
+                    <br><br><a href="https://www.deepl.com/" target="_blank" rel="nofollow">DeepL</a>,
                     <br><br><a href="https://unsplash.com" target="_blank" rel="nofollow">Unsplash</a>,
                     <br><br><a href="https://fontawesome.com" target="_blank" rel="nofollow">Font Awesome</a>,
                     <br><br><a href="https://jquery.com" target="_blank" rel="nofollow">jQuery</a>,

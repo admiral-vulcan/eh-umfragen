@@ -62,7 +62,7 @@ function password_is_vulnerable($pw, $score = FALSE)
                 break;
 
             default:
-                if (strcasecmp($lang, 'en') !== 0 || strcasecmp($lang, '') !== 0) $msg = str_replace("sie ist", "es ist", translate($msg, $lang));
+                if (strcasecmp($lang, 'en') !== 0 || strcasecmp($lang, '') !== 0) $msg = str_replace("sie ist", "es ist", translate($msg, "en", $lang));
                 if (substr($msg != ".", -1)) $msg = $msg . ".";
                 return $password_warning_sec . $msg; // not OK - return cracklib message //deepL free: 500.000 chars per month free. CHECK!
 

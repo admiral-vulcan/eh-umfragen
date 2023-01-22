@@ -1,5 +1,5 @@
 <?php
-
+require_once ("gitignore/deepLcred.php");
 //ini_set('display_errors', 1);
 //ini_set('display_startup_errors', 1);
 //error_reporting(E_ALL);
@@ -7,14 +7,21 @@
 
 
 
-function translate($source_text, $target_lang) {
-	$target_lang = strtoupper($target_lang);
+function translate($source_text, $source_lang = "en", $target_lang = "de") {
+    $source_lang = strtoupper($source_lang);
+    $target_lang = strtoupper($target_lang);
+
+    $textHash = hash('sha256', $source_lang.$target_lang.$source_text);
+    if (apcu_exists($textHash)) {
+        return apcu_fetch($textHash);
+    }
+
 	$ch = curl_init();
 
 	curl_setopt($ch, CURLOPT_URL, 'https://api-free.deepl.com/v2/translate');
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, "auth_key=dd0082e1-f69c-191e-9ec7-a2508da03b8a:fx&text=".$source_text."&target_lang=".$target_lang);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, "auth_key=" . $GLOBALS["deepLcred"] . "&text=".$source_text."&target_lang=".$target_lang);
 
 	$headers = array();
 	$headers[] = 'Content-Type: application/x-www-form-urlencoded';
@@ -29,6 +36,7 @@ function translate($source_text, $target_lang) {
 	$translatedWords = json_decode($result, true); // Decode the word
 	$result = $translatedWords['translations'][0]['text']; // Search the word
 
+    apcu_store($textHash, $result);
 	return $result; // Display the word
 }
 
