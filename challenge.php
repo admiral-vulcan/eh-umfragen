@@ -49,14 +49,19 @@
         if ($createMsg === "OK") { //everything worked
             alert("Vielen Dank!", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
         }
+        else alert("Passwort nicht akzeptiert.", $createMsg, "warning");
     }
-
     function postValifnN($str) {
         return $_POST[$str] ?? "";
     }
     function postCheckifnN($str) {
         if (isset($_POST[$str]) && $_POST[$str] == "on") return "checked";
         else return "";
+    }
+
+    if (isset($_POST['sendSetPwdMail']) && $_POST['sendSetPwdMail'] == 'true') {
+        sendCreatorNewPassword(postValifnN('emailSetPwd'));
+        //alert($_POST['sendSetPwdMail'], $_POST['email']);
     }
 
     ?>
@@ -71,7 +76,7 @@
         <input type="password" id="password" name="password" placeholder="Passwort" autocomplete="password" value="<?php echo postValifnN('password'); ?>" required>
         <span id="passwordEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
         <input type="hidden" id="gid" name="gid" value="<?php echo postValifnN('gid'); ?>">
-        <input type="submit" value="Anmelden"><div class="button" input type="submit" value="Anmelden"  onclick="alert('Kommt noch...');" >Passwort zurücksetzen</div>
+        <input type="submit" value="Anmelden"><div class="button" onclick="setPwdInfo();" >Passwort zurücksetzen</div>
     </form>
 
 
@@ -119,6 +124,14 @@
             <br>Damit wir neue Mitglieder freischalten können, müssen wir wissen, wer es ist. Deshalb wird in diesen Fällen sowohl der Name als auch die E-Mail-Adresse gespeichert.
             <br>Der Name wird dann so auch in neu erstellten Umfragen angezeigt.
             <br>E-Mail-Adressen und Namen können beim Ausfüllen von Umfragen dennoch nicht den Antworten zugeordnet werden.
+
+
+            <br>Gib bitte zweimal ein neues Passwort ein. Das Passwort muss mindestens 8 Zeichen lang sein und eine
+            Kombination aus Groß- und Kleinbuchstaben, Ziffern und Sonderzeichen enthalten - mindestens drei der vier
+            genannten Zeichenarten. Es wird auch überprüft, ob das Passwort ein leicht zu erratenes Muster enthält oder
+            auf bekannten Leak-Seiten auftaucht. So stellen wir sicher, dass Dein Passwort sicher ist.
+
+
             <br><a href="/?content=secureinfo" target="_blank">Wie werden meine privaten Daten gesendet? Ist das sicher?</a>
             <br><a href="/?content=passwordinfo" target="_blank">Wie wird mein Passwort gespeichert? Wer kann es sehen?</a>
         </p>
@@ -134,6 +147,16 @@
                         <br>Wenn Du Nein wählst, werden Google-bezogene Cookies dieser Seite (innerhalb unseres Einflussbereichs) gelöscht.<br>
                         <br>Möchtest Du dennoch fortfahren?
     ", "warning", false, "setUserAgreed();", "setUserDisagreed();");
+    ?>
+
+    <!-- no Mail To Set Pwd Warning -->
+    <?php
+    $noMailToSetPwdWarning = alert("Passwort zurücksetzen", "Bitte gib zuerst Deine studentische E-Mail-Adresse ein, um Dein Passwort zurückzusetzen.", "warning", false);
+    ?>
+
+    <!-- set pwd info -->
+    <?php
+    $setPwdInfo = alert("Passwort zurücksetzen", "Wir senden Dir eine E-Mail mit einem Link, der 24 Stunden lang gültig ist. Klicke auf den Link, um ein neues Passwort zu setzen. <br>Möchtest Du fortfahren?", "warning", false, "sendSetPwdMail();", "close");
     ?>
 
 
@@ -687,6 +710,40 @@
 
         function hidePassword2reg() {
             password2reg.setAttribute('type', 'password');
+        }
+
+        function setPwdInfo() {
+            if (email.value !== "") {
+                showAlert(<?php echo $setPwdInfo; ?>);
+            }
+            else {
+                showAlert(<?php echo $noMailToSetPwdWarning; ?>);
+            }
+        }
+        function sendSetPwdMail() {
+            var email = document.getElementById("email").value;
+
+            var myForm = document.createElement("FORM");
+            myForm.setAttribute("id","setPwdForm");
+            document.body.appendChild(myForm);
+
+            var emailInput = document.createElement("INPUT");
+            emailInput.setAttribute("id","emailInput");
+            emailInput.setAttribute("type","hidden");
+            emailInput.setAttribute("name","emailSetPwd");
+            emailInput.setAttribute("value", email);
+            document.getElementById("setPwdForm").appendChild(emailInput);
+
+            var sendSetPwdMailInput = document.createElement("INPUT");
+            sendSetPwdMailInput.setAttribute("id","sendSetPwdMailInput");
+            sendSetPwdMailInput.setAttribute("type","hidden");
+            sendSetPwdMailInput.setAttribute("name","sendSetPwdMail");
+            sendSetPwdMailInput.setAttribute("value", "true");
+            document.getElementById("setPwdForm").appendChild(sendSetPwdMailInput);
+
+            myForm.method = "POST";
+            myForm.action = window.location.href;
+            myForm.submit();
         }
     </script>
 

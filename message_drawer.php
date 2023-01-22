@@ -25,6 +25,8 @@
 </script>
 <?php
 function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump = '', $noORlinkdump = '', $errType = '') {
+    //alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump = '', $noORlinkdump = '', $errType = '')
+
     $scriptStart = "<script type=\"application/javascript\">showAlert(\"";
     $scriptEnd = "</script>";
     if ($type != "info" && $type != "warning" && $type != "error") return;
@@ -78,15 +80,24 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                         </p><br>
                         <?php
                         if ($yesORoklinkORdump == "" || $noORlinkdump == "") {
-                        ?>
-                        <a class='button large fit' onclick='hideAlert("<?php echo $GLOBALS['alertid']; ?>")'>OK</a>
-                        <?php
+                            ?>
+                            <a class='button large fit' onclick='hideAlert("<?php echo $GLOBALS['alertid']; ?>")'>OK</a>
+                            <?php
                         }
                         else {
-                        ?>
+                            ?>
                             <a class='button large fit' onclick='<?php echo $yesORoklinkORdump; ?>'>Ja</a>
-                            <a class='button large fit' onclick='<?php echo $noORlinkdump; ?>'>Nein</a>
+
                             <?php
+                            if ($noORlinkdump == "close") {
+                                ?>
+                                <a class='button large fit' onclick='hideAlert("<?php echo $GLOBALS['alertid']; ?>")'>Nein</a>
+                                <?php
+                            } else {
+                                ?>
+                                <a class='button large fit' onclick='<?php echo $noORlinkdump; ?>'>Nein</a>
+                                <?php
+                            }
                         }
                         ?>
                     </li>

@@ -328,6 +328,16 @@ function get_creator_data($cid) {
     }
 }
 
+function get_creator_cid($email) {
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM creators WHERE email = ?");
+    $statement->execute([$email]);
+    while($row = $statement->fetch()) {
+        return $row['cid'];
+    }
+    return -1;
+}
+
 function create_creator($gid, $email, $gmail, $firstname, $familyname, $password1, $password2, $agb, $gPicAgree, $gPic): bool|int|string
 {
 
@@ -406,6 +416,16 @@ function verifyPassword($cid, $pwd) {
     alert("", $hash);
     if (isset($hash)) return password_verify($pwd, $hash);
     else return false;
+}
+
+function setPassword($cid, $pwd) {
+    $pwdIsBad = check_password_is_bad($pwd);
+    if ($pwdIsBad != '') return $pwdIsBad;
+    $pwdhash = hashPassword($pwd);
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("UPDATE creators SET pwdhash = ? WHERE cid = ?");
+    $statement->execute([$pwdhash, $cid]);
+    return "OK";
 }
 
 function checkCreatorEmail($email) {

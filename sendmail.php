@@ -1,6 +1,7 @@
 <?php
 require_once ("vendor/autoload.php");
 require_once('gitignore/code.php');
+require_once ('pwdChgSet.php');
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -58,7 +59,16 @@ function sendCreatorConfirmation($cid, $uemail) { //, $target
     //echo $uemail . $mail_content;
     sendmail($mail_content, "Hey Creator, nur noch ein Klick!", $uemail);
 }
+
+function sendCreatorNewPassword($email) {
+    $mail1 = file_get_contents('https://' . $_SERVER['HTTP_HOST'] . '/maildata/mail-pwd-chg-du-1.html');
+    $mail2 = file_get_contents('https://' . $_SERVER['HTTP_HOST'] . '/maildata/mail-pwd-chg-du-2.html');
+    $link1 = 'https://' . $_SERVER['HTTP_HOST'] . '?content=newpass&psetstr='.genPwdMailKey($email);
+    $mail_content = $mail1.$link1.$mail2;
+    //echo $uemail . $mail_content;
+    sendmail($mail_content, "Passwort zurücksetzen", $email);
+}
 /*
-sendconfirmation("6e854g6d5g65b4","rau1@studnet.eh-ludwigsburg.de");
+sendconfirmation("6e854g6d5g65b4","rau1@studnet.eh-ludwigsburg.de", "studs");
 */
 ?>
