@@ -45,7 +45,7 @@ if ($hasresults == 1) {
     $results = loadResults($thisid);
     echo ": Ergebnisse, n=" . $results["n"];
 }
-if (isset($_GET["entwurf"]) && $_GET["entwurf"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
+if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
 if ($backview) echo " (Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!)";
 echo "</h2>";
 
@@ -85,7 +85,7 @@ $denum = 0;
 
 echo "</header><form action='' method='post'>";
 
-if (((isset($_GET["entwurf"]) && $_GET["entwurf"] == 1) || $thisid != 0 && get_active($thisid) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) || $backview) {      //check if survey is set active
+if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $thisid != 0 && get_active($thisid) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) || $backview) {      //check if survey is set active
 
     $lastFollowUpNum = 0;
     $thisFollowUpNum = 0;
@@ -94,15 +94,22 @@ if (((isset($_GET["entwurf"]) && $_GET["entwurf"] == 1) || $thisid != 0 && get_a
 
         $thisType = extractNumber($surveys[$thisSurveyNumber][$i][0])["string"];
         $thisFollowUpNum = extractNumber($surveys[$thisSurveyNumber][$i][0])["number"];
-if ($thisFollowUpNum > 0 && $lastFollowUpNum == 0) {
-    $lastFollowUpNum = $thisFollowUpNum;
-}
-elseif ($lastFollowUpNum > 0) {
-    //somehow do fancy shit: OPEN UP HIDDEN QUESTIONS DYNAMICALLY IF USER ANSWERED PREV QU
-    $lastFollowUpNum--;
-}
+
 
         if (sizeof($surveys[$thisSurveyNumber][$i]) > 0) { //check if not empty
+
+
+            if ($thisFollowUpNum > 0 && $lastFollowUpNum == 0) {
+                $lastFollowUpNum = $thisFollowUpNum;
+                echo "<div class='toggleDiv' style='display: block' id='toggle". $i . "'>";
+            }
+            elseif ($lastFollowUpNum > 0) {
+                echo "<div class='toggleDiv' style='display: none' id='toggle". $i . "'>";
+                $lastFollowUpNum--;
+            }
+            else echo "<div class='toggleDiv' style='display: block' id='toggle". $i . "'>";
+
+
             if ($thisType === "gruppe") {
                 echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
                 echo '<div><p class="poll">' . $surveys[$thisSurveyNumber][$i][1] . '<select name="' .
@@ -160,6 +167,7 @@ elseif ($lastFollowUpNum > 0) {
                 echo "<div id='fullpage' onclick='this.style.display=\"none\";'></div>";
                 $denum++;
             }
+            echo "</div>";
         }
     }
 } elseif (get_active($thisid) == 0 && $hasresults == 0) {      //check if survey is set inactive
@@ -167,7 +175,7 @@ elseif ($lastFollowUpNum > 0) {
 }
 
 
-if (!((isset($_GET["entwurf"]) && $_GET["entwurf"] == "1") || $backview) && get_active($thisid) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) {
+if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_active($thisid) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) {
     echo "<br><br><input type='hidden' name='content' value='sendsurvey' />";
     echo "<input type='hidden' name='target' value='" . $target . "' />";
     echo '<div><p>Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein. <br>
@@ -728,6 +736,11 @@ if ($hasresults == 1) {
             }
             ?>
 
+
+
+
+
+
 //this must be here, color_scheme_handler wouldn't work otherwise :/
             var ex1 = document.getElementById('auto');
             var ex2 = document.getElementById('light');
@@ -775,3 +788,38 @@ function extractNumber($string) {
 ?>
 
 
+
+
+<script type="application/javascript">
+
+
+
+    // Get all elements with the class "toggleDiv"
+    var toggleElements = document.getElementsByClassName("toggleDiv");
+
+    // Add an event listener to each input element to listen for changes
+    for(var i = 0; i < toggleElements.length; i++) {
+        var inputs = toggleElements[i].getElementsByTagName("input");
+        for(var j = 0; j < inputs.length; j++) {
+            inputs[j].addEventListener("change", toggleDiv);
+        }
+        var selects = toggleElements[i].getElementsByTagName("select");
+        for(var j = 0; j < selects.length; j++) {
+            selects[j].addEventListener("change", toggleDiv);
+        }
+
+    }
+
+    // The function that will be called when an input element changes
+    function toggleDiv() {
+        var divId = this.name; // The id of the div to toggle is the same as the name of the input element
+        var divIdArr = divId.split("x");
+        divId = divIdArr[0];
+        var divToToggle = document.getElementById("toggle" + divId);
+        console.log(divId);
+        divToToggle.nextElementSibling.style.display = "block";
+    }
+
+
+
+</script>

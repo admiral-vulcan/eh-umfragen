@@ -5,13 +5,15 @@
         <br>
         <h2>Aktuelle Umfragen</h2>
         <?php
+        if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
+        else  $draft = "";
         if (!isset($surveys)) $surveys = [];
         if (sizeof($surveys) > 0) {
             for ($i = sizeof($surveys) - 1; $i >= 0 ; $i--) {
                 $thisid = utf8Encode($surveys[$i][0][0]);
                 if (get_active($thisid) != 0) {
                     $activestate = "offen seit ". date("d. m. Y, H:i", get_since($thisid)) . " Uhr";
-                    echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . "' rel='nofollow'><h3>" .
+                    echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "' rel='nofollow'><h3>" .
                         "&emsp;&emsp;#" . $thisid . " ".
                         $surveys[$i][0][1] . " (".
                         $activestate
@@ -32,7 +34,7 @@
                 $since = get_since($thisid);
                 $wasactive = $inactivesince - $since;
                 $activestate = "war " . secondsToTime($wasactive) . " offen";
-                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . "' rel='nofollow'><h3>" .
+                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "' rel='nofollow'><h3>" .
                     "&emsp;&emsp;#" . $thisid . " ".
                     $surveys[$i][0][1] . " (" .
                     $activestate
@@ -50,7 +52,7 @@
             if (get_active($thisid) == 0 && get_hasresults($thisid) == 0) {
                 $ineval++;
                 $activestate = "geschlossen seit " . date("d. m. Y, H:i", get_inactivesince($thisid)) . " Uhr";
-                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . "' rel='nofollow'><h3>" .
+                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "' rel='nofollow'><h3>" .
                     "&emsp;&emsp;#" . $thisid . " ".
                     $surveys[$i][0][1] . " (" .
                     $activestate

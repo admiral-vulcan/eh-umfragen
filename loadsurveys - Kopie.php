@@ -10,7 +10,7 @@
  * [datei][1...][2...] = Optionen
  */
 $surveys = [];
-if ($_GET["entwurf"] == "1") $files = glob("surveys-test/*.csv");
+if ($_GET["draft"] == "1") $files = glob("surveys-test/*.csv");
 else $files = glob("surveys/*.csv");
 
 for ($i = 0; $i < sizeof($files); $i++) {

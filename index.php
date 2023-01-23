@@ -31,6 +31,8 @@ require_once ("database_com.php");
 require_once ("session_handler.php");
 require_once ("loadsurveys.php");
 require_once ("loadresults.php");
+if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
+else  $draft = "";
 if (!isset($surveys)) $surveys = [];
 if (!isset($color_scheme)) $color_scheme = "auto";
 if ( isset($_GET["survey"]) ) {
@@ -203,7 +205,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                 if (get_hasresults($thisid) == 1) $activestate = "Ergebnisse";
                 elseif (get_active($thisid) == 0) $activestate = "geschlossen";
                 else $activestate = "offen";
-                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . "'>
+                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "'>
                     <p>" . "#" . $thisid . " ". $surveys[$i][0][1] . "</p></a>&emsp;➥". $surveys[$i][0][2] . "<br><br><br>";
             }
             ?>

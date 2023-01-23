@@ -10,7 +10,7 @@
  * [datei][1...][2...] = Optionen
  */
 $surveys = [];
-if (isset($_GET["entwurf"]) == "1") $files = glob("surveys-test/*.csv");
+if (isset($_GET["draft"]) == "1") $files = glob("surveys-test/*.csv");
 else $files = glob("surveys/*.csv");
 
 for ($i = 0; $i < sizeof($files); $i++) {
@@ -42,7 +42,7 @@ for ($i = 0; $i < sizeof($files); $i++) {
 //for future use
 function loadSurveys() {
     $surveys = [];
-    if (isset($_GET["entwurf"]) && $_GET["entwurf"] == "1") $files = glob("surveys-test/*.csv");
+    if (isset($_GET["draft"]) && $_GET["draft"] == "1") $files = glob("surveys-test/*.csv");
     else $files = glob("surveys/*.csv");
 
     for ($i = 0; $i < sizeof($files); $i++) {
