@@ -1,5 +1,7 @@
 <?php
-require_once ("message_drawer.php");
+
+$GLOBALS["lang"] = "de";
+
 function verToInt($str) {
     $pos = strpos($str,'.');
     if ($pos !== false) {
@@ -21,7 +23,11 @@ $ver_int = intval($ver_float);     //0
 $version = $ver_str;                    //legacy reasons, but it's nice to have
 
 require_once ("utf8Encode.php");
+require_once ("translate.php");
+require_once ("head.php");
+require_once ("message_drawer.php");
 require_once ("hdd_handler.php");
+require_once ("zitate.php");
 require_once ("geturl.php");
 require_once("gitignore/code.php");
 require_once ("sanitize.php");
@@ -43,10 +49,10 @@ if ( isset($_GET["survey"]) ) {
             $thisSurveyNumber = $i;
         }
     }
-    $title = "EH-Umfragen.de - " . $surveys[$thisSurveyNumber][0][1];
-    $description = $surveys[$thisSurveyNumber][0][2];
+    $title = "eh-umfragen.de - " . translate($surveys[$thisSurveyNumber][0][1], "de", $GLOBALS["lang"]);
+    $description1 = $surveys[$thisSurveyNumber][0][2];
+    $description1 = translate($surveys[$thisSurveyNumber][0][2], "de", $GLOBALS["lang"]);
 }
-require_once ("head.php");
 require_once ("color_scheme_handler.php");
 require_once ("graphdrawer.php");
 require_once("assets/php/skyandweatherHandler.php");
@@ -65,7 +71,9 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
     <br>Dabei können Fehler aufkommen, die die Seite unbrauchbar machen. 
     <br>Falls Du unabsichtlich hier angekommen bist, gehe bitte zur produktiven Domain zurück: <a href='https://www.eh-umfragen.de'>www.eh-umfragen.de</a>.
     ", "info", false);
- echo '<div style="position: fixed; top: 4em; width: 100%"><h2 style="text-align: center"><a style="cursor: pointer" onclick="showAlert(' . $testInfo . ')">Potentiell fehlerhaltige Testversion</a></h2></div>';
+ echo '<div style="position: fixed; top: 4em; width: 100%"><h2 style="text-align: center"><a style="cursor: pointer" onclick="showAlert(' . $testInfo . ')">' .
+ translate("Potentiell fehlerhaltige Testversion", 'de', $GLOBALS['lang'])
+ . '</a></h2></div>';
 }
 ?>
 <body class="is-preload" id="top">
@@ -112,12 +120,12 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         </nav>
         <nav class="main">
             <div class="color_scheme_container">
-                <label for="color_scheme" class="color_scheme"><div>Design&emsp;&emsp;</div></label>
+                <label for="color_scheme" class="color_scheme"><div><?php echo translate("Design", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;</div></label>
                 <select tabindex="3" aria-label="Designauswahl" name="color_scheme" class="color_scheme_select" id="color_scheme">
-                    <option value="1" id="auto" <?php if ($color_scheme === "auto") echo "selected" ?>>Auto</option>
-                    <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected" ?>>Hell</option>
-                    <option value="3" id="dark" <?php if ($color_scheme === "dark") echo "selected" ?>>Dunkel</option>
-                    <option value="4" id="contrast" <?php if ($color_scheme === "contrast") echo "selected" ?>>Kontrast</option>
+                    <option value="1" id="auto" <?php if ($color_scheme === "auto") echo "selected"; ?>>Auto</option>
+                    <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected"; echo ">" . translate("Hell", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="3" id="dark" <?php if ($color_scheme === "dark") echo "selected"; echo ">" . translate("Dunkel", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="4" id="contrast" <?php if ($color_scheme === "contrast") echo "selected"; echo ">" . translate("Hochkontrast", "de", $GLOBALS["lang"]); ?></option>
                 </select>
             </div>
         </nav>
@@ -128,7 +136,9 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     <li>
                         <form class="not-selectable">&emsp;
                             <input  aria-label="E.H. Wetter anzeigen" type="checkbox" name="weather_checkbox" id="weather_checkbox">
-                            <label class="weather_scheme" for="weather_checkbox">EH-Wetter</label>
+                            <label class="weather_scheme" for="weather_checkbox">
+                                <?php echo translate("EH-Wetter", "de", $GLOBALS["lang"]); ?>
+                            </label>
                         </form>
                     </li>
                 </ul>
@@ -142,8 +152,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                 for ($i = 0; $i < sizeof($surveys); $i++) {
                     echo "<li><a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . "' rel='nofollow'>" .
                         $surveys[$i][0][1] . "</a></li>";
-                }*/
-                ?>
+                }*/ ?>
             </ul>
         </nav>
     </header>
@@ -155,20 +164,21 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     <source srcset="images/logo.avif" type="image/avif">
                     <img src="images/logo.png" alt="Ein Klemmbrett als Logo" style='padding-left: 1.5em; padding-top: 1.5em; width: 30%; text-align: right; vertical-align: middle;'>
                 </picture>
-                &emsp;&emsp;Menü
+                &emsp;&emsp;
+                <?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>
             </h2>
             <a href="/">
-                <h3>Startseite</h3>
-                <p style=''>Zurück zur Startseite</p>
+                <h3><?php echo translate("Startseite", "de", $GLOBALS["lang"]); ?></h3>
+                <p style=''><?php echo translate("Zurück zur Startseite", "de", $GLOBALS["lang"]); ?></p>
             </a>
             <br>
-            <h3>Creator-Bereich</h3>
+            <h3><?php echo translate("Creator-Bereich", "de", $GLOBALS["lang"]); ?></h3>
             <?php
             if (!isset($_SESSION['cid'])) {
                 if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     ?>
                     <a href='?creator=challenge'>
-                        <p>Login</p>
+                        <p><?php echo translate("Login", "de", $GLOBALS["lang"]); ?></p>
                     </a>
                     <?php
                 }
@@ -176,8 +186,8 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     ?>
                     <a style="cursor: not-allowed;">
                         <p>
-                            <abbr style="border-bottom: none !important; cursor: inherit !important; text-decoration: none !important;" title="Der Creator-Bereich ist noch nicht fertig." >
-                                Login
+                            <abbr style="border-bottom: none !important; cursor: inherit !important; text-decoration: none !important;" title="<?php echo translate("Der Creator-Bereich ist noch nicht fertig.", "de", $GLOBALS["lang"]); ?>" >
+                                <?php echo translate("Login", "de", $GLOBALS["lang"]); ?>
                             </abbr>
                         </p>
                     </a>
@@ -187,18 +197,18 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
             else {
                 ?>
                 <a href='?creator=profile'>
-                    <p>Profil</p>
+                    <p><?php echo translate("Profil", "de", $GLOBALS["lang"]); ?></p>
                 </a>
                 <a href='?creator=creator'>
-                    <p>Creator</p>
+                    <p><?php echo translate("Creator", "de", $GLOBALS["lang"]); ?></p>
                 </a>
                 <a href='?creator=logout'>
-                    <p>Logout</p>
+                    <p><?php echo translate("Logout", "de", $GLOBALS["lang"]); ?></p>
                 </a>
                 <?php
             }
             ?>
-            <br><h3>Umfragen</h3>
+            <br><h3><?php echo translate("Umfragen", "de", $GLOBALS["lang"]); ?></h3>
             <?php
             for ($i = sizeof($surveys) - 1; $i >= 0 ; $i--) {
                 $thisid = utf8Encode($surveys[$i][0][0]);
@@ -206,7 +216,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                 elseif (get_active($thisid) == 0) $activestate = "geschlossen";
                 else $activestate = "offen";
                 echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "'>
-                    <p>" . "#" . $thisid . " ". $surveys[$i][0][1] . "</p></a>&emsp;➥". $surveys[$i][0][2] . "<br><br><br>";
+                    <p>" . "#" . $thisid . " ". translate($surveys[$i][0][1], "de", $GLOBALS["lang"]) . "</p></a>&emsp;➥". translate($surveys[$i][0][2], "de", $GLOBALS["lang"]) . "<br><br><br>";
             }
             ?>
         </section>
@@ -225,7 +235,10 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         <!-- About -->
         <?php
         if (isset($_GET["logout"])) session_destroy();
-        require ("about.php")
+        require ("about.php");
+        if (strtolower($GLOBALS["lang"]) != "de") {
+            echo "<br><p>" . translate("Diese Seite wurde live von <a href='https://www.deepl.com/' target='_blank' rel='nofollow'>deepL</a> übersetzt.", "de", $GLOBALS["lang"]) . "</p><br>";
+        }
         ?>
         <!-- Footer -->
         <div style="white-space: normal;">
@@ -235,9 +248,9 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                         <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
                         -->
                     <li><a href="https://github.com/admiral-vulcan/eh-umfragen/" class="icon brands fa-github" target="_blank" rel="nofollow"><span class="label">Github</span></a></li>
-                    <li><a href="mailto:kontakt@eh-umfragen.de" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+                    <li><a href="mailto:kontakt@eh-umfragen.de" class="icon solid fa-envelope"><span class="label">E-Mail</span></a></li>
                 </ul>
-                <p class="copyright">EH-Umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de">Kontakt</a> &ensp; &ensp; <a href="?content=impressum" target="_blank">Impressum</a> &ensp; &ensp; <a href="?content=agb" target="_blank">AGB</a> &ensp; &ensp; <a href="?content=cookies" target="_blank">Cookies</a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank">Datenschutz</a> &ensp; &ensp; <a href="?content=lizenz" target="_blank">Lizenz</a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank">Übertragung</a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank">Passwortspeicherung</a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank">Mailnutzung</a><br><br><br>
+                <p class="copyright">eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de">Kontakt</a> &ensp; &ensp; <a href="?content=impressum" target="_blank">Impressum</a> &ensp; &ensp; <a href="?content=agb" target="_blank">AGB</a> &ensp; &ensp; <a href="?content=cookies" target="_blank">Cookies</a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank">Datenschutz</a> &ensp; &ensp; <a href="?content=lizenz" target="_blank">Lizenz</a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank">Übertragung</a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank">Passwortspeicherung</a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank">Mailnutzung</a><br><br><br>
                     Quellen:
                     <br><br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
                     <br><br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,

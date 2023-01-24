@@ -145,8 +145,9 @@ function drawLegend($werte) {
 
     $allKeys .= $GLOBALS["backgroundColorRed"] . $GLOBALS["backgroundColorGreen"] . $GLOBALS["backgroundColorBlue"];
     $allKeys .= "legend";
-    $keysHash = hash('sha256', $allKeys);
+    $keysHash = hash('sha256', $GLOBALS["lang"] . $allKeys);
     if (apcu_exists($keysHash)) {
+        //apcu_delete($keysHash);
         return apcu_fetch($keysHash);
     }
 
@@ -171,6 +172,7 @@ function drawLegend($werte) {
         }
         else $color = imagecolortransparent($diagramm, $hintergrund);
         $key = wordwrap($key, 20, "\n");
+        $key = translate($key, "de", $GLOBALS["lang"]);
         $wordwrapper += substr_count( $key, "\n" );
 
         //echo $wordwrapper . "<br>";
@@ -198,6 +200,7 @@ function getAlt($werte) {
 
     foreach ($werte as $key => $value) {
         $key = wordwrap($key, 20, "\n");
+        $key = translate($key, "de", $GLOBALS["lang"]);
         $wordwrapper += substr_count($key, "\n");
         $alt .= $key . ": ";
         $alt .= $value . "%; ";

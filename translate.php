@@ -11,34 +11,60 @@ function translate($source_text, $source_lang = "en", $target_lang = "de") {
     $source_lang = strtoupper($source_lang);
     $target_lang = strtoupper($target_lang);
 
+
+    if ($source_lang == $target_lang) return $source_text;
+
     $textHash = hash('sha256', $source_lang.$target_lang.$source_text);
     if (apcu_exists($textHash)) {
+        //if (str_contains($source_text, "Computerraum")) apcu_delete($textHash); //delete this entry
+        //if ($source_text == "3. Computerraum (A-Gebäude, 2. OG)") apcu_delete($textHash); //delete this entry
+        //if ($target_lang == "RO") apcu_delete($textHash); //delete if certain language
         return apcu_fetch($textHash);
     }
 
-	$ch = curl_init();
 
-	curl_setopt($ch, CURLOPT_URL, 'https://api-free.deepl.com/v2/translate');
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, "auth_key=" . $GLOBALS["deepLcred"] . "&text=".$source_text."&target_lang=".$target_lang);
+    $numPres = numeralPreserve($source_text, $target_lang);
+    $source_text = $numPres["str"];
+    $numPres = $numPres["num"];
 
-	$headers = array();
-	$headers[] = 'Content-Type: application/x-www-form-urlencoded';
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-	$result = curl_exec($ch);
-	if (curl_errno($ch)) {
-		echo 'Error:' . curl_error($ch);
-	}
-	curl_close($ch);
+    $ch = curl_init();
 
-	$translatedWords = json_decode($result, true); // Decode the word
-	$result = $translatedWords['translations'][0]['text']; // Search the word
+    curl_setopt($ch, CURLOPT_URL, 'https://api-free.deepl.com/v2/translate');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "auth_key=" . $GLOBALS["deepLcred"] . "&text=".$source_text."&source_lang=".$source_lang."&target_lang=".$target_lang); //pro version:  . "&formality=personal" or formal
 
+    $headers = array();
+    $headers[] = 'Content-Type: application/x-www-form-urlencoded';
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+    $result = curl_exec($ch);
+    if (curl_errno($ch)) {
+        echo 'Error:' . curl_error($ch);
+    }
+    curl_close($ch);
+
+    $translatedWords = json_decode($result, true); // Decode the word
+    $result = $translatedWords['translations'][0]['text']; // Search the word
+    $result = preg_replace("/<br>\./", "<br>", $result); //dirty hack for some languages... try not to translate <br> in future versions! :(
+    $result = $numPres . $result;
     apcu_store($textHash, $result);
-	return $result; // Display the word
+    return $result; // Display the word
 }
+function numeralPreserve($str, $lang) {
+    $output = array("str" => $str, "num" => "");
+    if (preg_match("/(.*?)(?:^|>)([0-9]+)\.([^0-9].*)/", $str, $matches)) {
+        $output["num"] = $matches[1].">".$matches[2] . (strtolower($lang) == 'en' ? ': ' : '. ');
+        $output["str"] = $matches[3];
+    }
+    return $output;
+}
+
+
+
+//echo numeralPreserve("3. Computerraum (A-Gebäude, 2. OG)", "EN")["num"];
 
 // usage
 // echo translate("How are you today?", "DE");
+//echo translate("Hallo, wie geht es dir?", "de", "ro");

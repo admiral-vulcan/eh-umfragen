@@ -1,8 +1,8 @@
 1;Laptopnutzung;Welche Laptops nutzt Ihr?;Wenn man sich im Hörsaal umsieht, stehen immer recht viele Laptops auf den Tischen. Doch welche Marke wird am meisten von Studierenden genutzt? Und wie oft?;Falls Du mehrere hast, beziehe Dich bitte auf das Gerät, das Du am häufigsten nutzt.;Umfrage von: Miriam Brieger, Felix Rau;;;;;;;;;
 Studierende;;;;;;;;;;;;;;
-oder;Welche Laptopmarke nutzt Du persönlich für Dein Studium?;Acer;Apple;Asus;Dell;Honor;HP;Lenovo;Medion;Microsoft;Samsung;Wo steht das?;andere Marke;gar keinen Laptop
+oder2;Welche Laptopmarke nutzt Du persönlich für Dein Studium?;Acer;Apple;Asus;Dell;Honor;HP;Lenovo;Medion;Microsoft;Samsung;Wo steht das?;andere Marke;gar keinen Laptop
 oder;Falls Du einen nutzt: Wie oft hast Du das Gerät an der EH dabei?;jedes Mal;oft;manchmal;selten;nie;;;;;;;;
 und;Falls Du keinen Laptop nutzt, welches Gerät benutzt Du sonst für Dein Studium?;eigener PC;eigenes Tablet;Schreibmaschine;PCs an der EH;sonstiges/kein eigenes Gerät, ich schnorre mich durch;;;;;;;;
-gruppe;In welchem Semester studierst Du?;1.;2.;3.;4.;5.;6.;7.;8.;9.;10. oder höher;;;
+gruppe1;In welchem Semester studierst Du?;1.;2.;3.;4.;5.;6.;7.;8.;9.;10. oder höher;;;
 gruppe;Welchem Geschlecht fühlst Du Dich zugehörig?;männlich;weiblich;divers;;;;;;;;;;
 textfeld;Möchtest Du noch etwas äußern?;;;;;;;;;;;;;

@@ -1,12 +1,15 @@
 <?php
-if (!isset($title)) $title = "EH-Umfragen.de - Umfragen von und für Studierende der EH";
-if (!isset($abstract)) $abstract = "Hier findet Ihr relevante Umfragen für Euch!";
-if (!isset($description)) $description = "Hier findet Ihr Umfragen, die für Euch relevant sind! Ob sie Teil einer modultypischen Arbeit sind oder gerade nur ein Hirngespinst, hier werdet Ihr fündig!";
-if (!isset($keywords)) $keywords = "Umfragen Evangelischen Hochschule Ludwigsburg Studierende";
+if (!isset($title)) $title = "eh-umfragen.de - " . translate("Umfragen von und für Studierende der EH", "de", $GLOBALS["lang"]);
+if (!isset($abstract)) $abstract = translate("Hier findet Ihr relevante Umfragen für Euch!", "de", $GLOBALS["lang"]);
+if (!isset($description1)) $description = translate("Hier findet Ihr Umfragen, die für Euch relevant sind! Ob sie Teil einer modultypischen Arbeit sind oder gerade nur ein Hirngespinst, hier werdet Ihr fündig!", "de", $GLOBALS["lang"]);
+if (!isset($keywords)) $keywords = translate("Umfragen Evangelischen Hochschule Ludwigsburg Studierende", "de", $GLOBALS["lang"]);
 if (!isset($this_uri)) $this_uri = "https://www.eh-umfragen.de";
+if (!isset($GLOBALS["lang"])) $GLOBALS["lang"] = "de";
+if (strtolower($GLOBALS["lang"]) == "en") $locale = "en_US";
+else $locale = strtolower($GLOBALS["lang"]) . "_" . strtoupper($GLOBALS["lang"]);
 ?>
 <!DOCTYPE HTML>
-<html lang="de" xml:lang="de">
+<html lang="<?php echo $GLOBALS["lang"] ?>" xml:lang="<?php echo $GLOBALS["lang"] ?>">
 <html prefix="og: https://ogp.me/ns#">
 <head>
     <title><?php echo $title ?></title>
@@ -15,11 +18,11 @@ if (!isset($this_uri)) $this_uri = "https://www.eh-umfragen.de";
     <meta property="og:type" content="Website" />
     <meta property="og:image" content="https://www.eh-umfragen.de/images/logo.png" />
     <meta property="og:description" content="<?php echo $description ?>" />
-    <meta property="og:locale" content="de_DE" />
-    <meta property="og:site_name" content="EH-Umfragen.de" />
+    <meta property="og:locale" content="<?php echo $locale ?>" />
+    <meta property="og:site_name" content="eh-umfragen.de" />
     <meta name="twitter:card" content="<?php echo $abstract ?>" />
     <meta name="twitter:site" content="<?php echo $this_uri ?>" />
-    <meta name="twitter:title" content="EH-Umfragen.de" />
+    <meta name="twitter:title" content="eh-umfragen.de" />
     <meta name="twitter:description" content="<?php echo $description ?>" />
     <meta name="twitter:image" content="https://www.eh-umfragen.de/images/logo.png" />
     <meta name="description" content="<?php echo $description ?>">
@@ -30,7 +33,7 @@ if (!isset($this_uri)) $this_uri = "https://www.eh-umfragen.de";
     <meta name="google-site-verification" content="U7PXkW4rjTeYgOfn1WvG0aMP5EX2uYnEbnEPHsDUKkw" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta charset="utf-8" />
-    <meta http-equiv="content-language" content="de" />
+    <meta http-equiv="content-language" content="<?php echo $GLOBALS["lang"] ?>" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="robots" content="index,follow">
     <meta name="author" content="Felix Rau">

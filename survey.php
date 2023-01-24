@@ -1,4 +1,5 @@
 <?php
+require_once ("convertTimeFormatInString.php");
 
 if (!isset($surveys)) $surveys = [];
 if (!isset($thisSurveyNumber)) $thisSurveyNumber = [];
@@ -23,8 +24,14 @@ for ($i = 0; $i < sizeof($surveys); $i++) {
 
 $thisid = utf8Encode($surveys[$thisSurveyNumber][0][0]);
 $inactivesince = get_inactivesince($thisid);
+$inactivesince = date("d. ", $inactivesince) . translate(date("F", $inactivesince), "en", "de") . date(" Y", $inactivesince) . " um " . date("H:i", $inactivesince) . " Uhr.";
+if (strtolower($GLOBALS["lang"]) == "en") $inactivesince = convertTimeFormatInString($inactivesince);
 $since = get_since($thisid);
+$since = date("d. ", $since) . translate(date("F", $since), "en", "de") . date(" Y", $since) . " um " . date("H:i", $since) . " Uhr.";
+if (strtolower($GLOBALS["lang"]) == "en") $since = convertTimeFormatInString($since);
 $wasactive = $inactivesince - $since;
+$wasactive = date("d. ", $wasactive) . translate(date("F", $wasactive), "en", "de") . date(" Y", $wasactive) . " um " . date("H:i", $wasactive) . " Uhr.";
+if (strtolower($GLOBALS["lang"]) == "en") $wasactive = convertTimeFormatInString($wasactive);
 $hasresults = get_hasresults($thisid);
 $backview = false;
 if (isset($_GET["forceresults"]) && $_GET["forceresults"] == 1) $hasresults = 1;
@@ -32,50 +39,56 @@ if (isset($_GET["backview"]) && $_GET["backview"] == 1) {
     $hasresults = 0;
     $backview = true;
 }
+echo "<h1>eh-umfragen.de - " . translate("Eure Umfragen", "de", $GLOBALS["lang"]) . "</h1>";
+echo zitat("lebenswirklichkeit");
 
 ?>
-<h1>EH-Umfragen.de - Eure Umfragen</h1>
-<p><i>Die Wissenschaft ist Teil der Lebenswirklichkeit; es ist das Was, das Wie und Warum von allem in unserer Erfahrung.</i><br>Rachel Carson</p>
-<br>
 
 
 <?php
-echo "<h2>#" . $thisid . " " . $surveys[$thisSurveyNumber][0][1];
+$title = translate($surveys[$thisSurveyNumber][0][1], "de", $GLOBALS["lang"]);
+$titleDE = $surveys[$thisSurveyNumber][0][1];
+$description1 = translate($surveys[$thisSurveyNumber][0][2], "de", $GLOBALS["lang"]);
+$description2 = translate($surveys[$thisSurveyNumber][0][3], "de", $GLOBALS["lang"]);
+$description3 = translate($surveys[$thisSurveyNumber][0][4], "de", $GLOBALS["lang"]);
+$description4 = translate($surveys[$thisSurveyNumber][0][5], "de", $GLOBALS["lang"]);
+echo "<h2>#" . $thisid . " " . $title;
 if ($hasresults == 1) {
     $results = loadResults($thisid);
-    echo ": Ergebnisse, n=" . $results["n"];
+    echo translate(": Ergebnisse, n=" . $results["n"], "de", $GLOBALS["lang"]);
 }
 if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
-if ($backview) echo " (Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!)";
+if ($backview) echo " (" . translate("Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
 echo "</h2>";
 
-if ($surveys[$thisSurveyNumber][0][2] != "") {
-    echo "<h3>" . $surveys[$thisSurveyNumber][0][2] . "</h3>";
+if ($description1 != "") {
+    echo "<h3>" . $description1 . "</h3>";
 }
 
-if ($surveys[$thisSurveyNumber][0][4] != "") {
-    if ($surveys[$thisSurveyNumber][0][3] != "") {
-        echo "<h3>" . $surveys[$thisSurveyNumber][0][3] . "</h3>";
+if ($description3 != "") {
+    if ($description2 != "") {
+        echo "<h3>" . $description2 . "</h3>";
     }
 } else {
-    if ($surveys[$thisSurveyNumber][0][3] != "") {
-        echo "" . $surveys[$thisSurveyNumber][0][3] . "<br>";
+    if ($description2 != "") {
+        echo $description2 . "<br>";
     }
 }
-if ($surveys[$thisSurveyNumber][0][4] != "") {
-    echo "" . $surveys[$thisSurveyNumber][0][4] . "<br>";
+if ($description3 != "") {
+    echo $description3 . "<br>";
 
 
-    if ($surveys[$thisSurveyNumber][0][5] != "") {
-        echo "" . $surveys[$thisSurveyNumber][0][5] . "<br>";
+    if ($description4 != "") {
+        echo $description4 . "<br>";
     }
     echo "";
 }
-echo "Zielgruppe: " . $targettext . "<br>";
-echo "Geöffnet seit: " . date("d. m. Y, H:i", $since) . " Uhr<div id='choose_anchor'></div>";
-if ($inactivesince > 0) echo "Geschlossen seit: " . date("d. m. Y, H:i", $inactivesince) . " Uhr<br>";
-if ($hasresults == 1) echo "<div class='printmenot'><br><a href='/?survey=" . $surveys[$thisSurveyNumber][0][1] . "&backview=1'>Geschlossene Umfrage nochmals anzeigen</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">Diese Seite drucken</a>&emsp;||&emsp;<a href='" . $results["file"] . "'>Rohdaten herunterladen</a><br><br>Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.</div>";
-if ($backview) echo "<div class='printmenot'><br><a href='/?survey=" . $surveys[$thisSurveyNumber][0][1] . "'>Zurück zur Auswertung</a><br><br>Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.</div>";
+
+echo translate("Zielgruppe: " . $targettext, "de", $GLOBALS["lang"]) . "<br>";
+echo translate("Geöffnet seit dem " . $since, "de", $GLOBALS["lang"]) . "<div id='choose_anchor'></div>";
+if ($inactivesince > 0) echo translate("Geschlossen seit dem " . $inactivesince, "de", $GLOBALS["lang"]) . "<br>";
+if ($hasresults == 1) echo "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&backview=1'>" . translate("Geschlossene Umfrage nochmals anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='" . $results["file"] . "'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
+if ($backview) echo "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
 echo "<br>";
 ?>
 
@@ -112,49 +125,49 @@ if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $thisid != 0 && get_activ
 
             if ($thisType === "gruppe") {
                 echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' . $surveys[$thisSurveyNumber][$i][1] . '<select name="' .
+                echo '<div><p class="poll">' .  translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . '<select name="' .
                     $i - $denum . '" id="' . $surveys[$thisSurveyNumber][$i][1] .
                     '" title="' . $surveys[$thisSurveyNumber][$i][1] .
-                    '" required><option id="none" value="none"  hidden disabled selected value>Bitte auswählen</option>';
+                    '" required><option id="none" value="none"  hidden disabled selected value>' . translate('Bitte auswählen', 'de', $GLOBALS["lang"]) . '</option>';
                 for ($j = 2; $j < sizeof($surveys[$thisSurveyNumber][$i]); $j++) {
                     echo '<option id="' . $label_id .
                         '" value="' . $j - 2 . '">' .
-                        $surveys[$thisSurveyNumber][$i][$j] . '</option>';
+                        translate($surveys[$thisSurveyNumber][$i][$j], 'de', $GLOBALS["lang"]) . '</option>';
                     $label_id++;
                 }
                 echo '</p></optgroup></select></div>';
             } elseif ($thisType === "oder") {
                 echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' . $surveys[$thisSurveyNumber][$i][1] . '<br>';
+                echo '<div><p class="poll">' . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . '<br>';
                 for ($j = 2; $j < sizeof($surveys[$thisSurveyNumber][$i]); $j++) {
                     echo '<input type="radio" id="' . $label_id . '" name="' .
                         $i - $denum . '" value="' . $j - 2 .
                         '" required><label for="' .
-                        $label_id . '">' . $surveys[$thisSurveyNumber][$i][$j] .
+                        $label_id . '">' . translate($surveys[$thisSurveyNumber][$i][$j], 'de', $GLOBALS["lang"]) .
                         '</label>';
                     $label_id++;
                 }
                 echo '</p></div>';
             } elseif ($thisType === "und") {
                 //echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' . $surveys[$thisSurveyNumber][$i][1] . '<br>';
+                echo '<div><p class="poll">' . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . '<br>';
                 for ($j = 2; $j < sizeof($surveys[$thisSurveyNumber][$i]); $j++) {
                     echo '<input type="checkbox" id="' . $label_id . '" name="' .
                         $i - $denum . 'x' . $j . '" value="' . $j - 2 . '"><label for="' .
-                        $label_id . '">' . $surveys[$thisSurveyNumber][$i][$j] .
+                        $label_id . '">' . translate($surveys[$thisSurveyNumber][$i][$j], 'de', $GLOBALS["lang"]) .
                         '</label>';
                     $label_id++;
                 }
                 echo '</p></div>';
             } elseif ($thisType === "textfeld") {
                 echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' . $surveys[$thisSurveyNumber][$i][1] .
-                    '<input placeholder="Bitte ausfüllen" type="text" id="' .
+                echo '<div><p class="poll">' . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) .
+                    '<input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="text" id="' .
                     $label_id . '" name="' . $i - $denum .
                     '"></p></div>'; //required?
                 $label_id++;
             } elseif ($thisType === "info") {
-                echo "<p>" . $surveys[$thisSurveyNumber][$i][1] . "</p>";
+                echo "<p>" . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . "</p>";
                 $denum++;
             } elseif ($thisType === "img") {
                 echo "    <div class='gallery'>
@@ -171,20 +184,20 @@ if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $thisid != 0 && get_activ
         }
     }
 } elseif (get_active($thisid) == 0 && $hasresults == 0) {      //check if survey is set inactive
-    echo "<br><br><br><p><b>Danke für Dein Interesse!</b><br>Diese Umfrage ist geschlossen und war " . secondsToTime($wasactive) . " offen.<br>Schau bald wieder vorbei, wenn unsere Ergebnisse veröffentlicht sind.</p><br><br><br>";
+    echo "<br><br><br><p><b>" . translate("Danke für Dein Interesse!</b><br>Diese Umfrage ist geschlossen und war " . secondsToTime($wasactive) . " offen.<br>Schau bald wieder vorbei, wenn unsere Ergebnisse veröffentlicht sind.", "de", $GLOBALS["lang"]) . "</p><br><br><br>";
 }
 
 
 if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_active($thisid) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) {
     echo "<br><br><input type='hidden' name='content' value='sendsurvey' />";
     echo "<input type='hidden' name='target' value='" . $target . "' />";
-    echo '<div><p>Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein. <br>
-&emsp;&emsp;<a><span tooltip="Nur so können wir sicherstellen, dass nur Studierende der EH teilnehmen und niemand mehrfach teilnimmt.">Warum das?</span></a><br>
-&emsp;&emsp;<a><span tooltip="Ja, denn wir speichern nur den Hash-Wert und nicht die Adresse selbst.">Ist die Umfrage dann noch anonym?</span></a><br>
-&emsp;&emsp;<a href="/?content=mailinfo" target="_blank">Klicke hier für mehr Informationen.</a>
-<input placeholder="Bitte ausfüllen" type="email" id="email" name="email" required></p></div>';
+    echo '<div><p>' . translate('Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein.', 'de', $GLOBALS["lang"]) . ' <br>
+&emsp;&emsp;<a><span tooltip="' . translate('Nur so können wir sicherstellen, dass nur Studierende der EH teilnehmen und niemand mehrfach teilnimmt.', 'de', $GLOBALS["lang"]) . '">' . translate('Warum das?', 'de', $GLOBALS["lang"]) . '</span></a><br>
+&emsp;&emsp;<a><span tooltip="' . translate('Ja, denn wir speichern nur den Hash-Wert und nicht die Adresse selbst.', 'de', $GLOBALS["lang"]) . '">' . translate('Ist die Umfrage dann noch anonym?<', 'de', $GLOBALS["lang"]) . '/span></a><br>
+&emsp;&emsp;<a href="/?content=mailinfo" target="_blank">' . translate('Klicke hier für mehr Informationen.', 'de', $GLOBALS["lang"]) . '</a>
+<input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="email" id="email" name="email" required></p></div>';
     echo "<input type='hidden' name='sid' value='" . $surveys[$thisSurveyNumber][0][0] . "' />";
-    echo '<br><input type="submit" value="Abschicken"></form></section>';
+    echo '<br><input type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
 
 
 
@@ -274,8 +287,8 @@ if ($hasresults == 1) {
         } else $resultsRight = $results;
     } else $resultsRight = $results;
 
-    if (!isset($resultsLeft["n"])) $resultsLeft["n"] = "0; Diese Option hat niemand ausgewählt."; // Wenn niemand so geantwortet hat.
-    if (!isset($resultsRight["n"])) $resultsRight["n"] = "0; Diese Option hat niemand ausgewählt."; // Wenn niemand so geantwortet hat.
+    if (!isset($resultsLeft["n"])) $resultsLeft["n"] = "0; " . translate("Diese Option hat niemand ausgewählt.", "de", $GLOBALS["lang"]); // Wenn niemand so geantwortet hat.
+    if (!isset($resultsRight["n"])) $resultsRight["n"] = "0; " . translate("Diese Option hat niemand ausgewählt.", "de", $GLOBALS["lang"]); // Wenn niemand so geantwortet hat.
 
     $thisSurveyHead = getSurveyHeads(loadSurveys(), $thisSurveyNumber);
     ?>
@@ -285,13 +298,13 @@ if ($hasresults == 1) {
         <div class="table-row">
             <div class="table-cell" id="left_form">
                 <div id='left_choices'>
-                    <label for="result_scheme_left_Q" class='printmenot'>Wähle eine lineare Ansicht aller Ergebnisse oder Ergebnisse in Relation zu einer Antwort.</label>
+                    <label for="result_scheme_left_Q" class='printmenot'><?php echo translate("Wähle eine lineare Ansicht aller Ergebnisse oder Ergebnisse in Relation zu einer Antwort.", "de", $GLOBALS["lang"]); ?></label>
                     <select id="result_scheme_left_Q" name="result_scheme_left_Q">
-                        <option value="all_results">Alle Ergebnisse</option>
+                        <option value="all_results"><?php echo translate("Alle Ergebnisse", "de", $GLOBALS["lang"]); ?></option>
                         <?php
                         for ($i = 0; $i < sizeof($resultsLeft["QNA"]); $i++) {
                             if ($resultsLeft["QNA"][$i][1] != "offene Frage" && $resultsLeft["QNA"][$i][0] != "Umfrage abgegeben" && $resultsLeft["QNA"][$i][0] != "E-Mail ist validiert") { //dirty hack, never mind
-                                $thisQ = $resultsLeft["QNA"][$i][0];
+                                $thisQ = translate($resultsLeft["QNA"][$i][0], "de", $GLOBALS["lang"]);
                                 echo "<option value='" . $i . "' ";
                                 if (isset($_GET["leftQ"]) && $i == $_GET["leftQ"]) echo "selected";
                                 echo ">" . $thisQ . "</option>";
@@ -306,7 +319,7 @@ if ($hasresults == 1) {
                         <select id="result_scheme_left_A" name="result_scheme_left_A">
                             <?php
                             for ($i = 1; $i < sizeof($resultsLeft["QNA"][$_GET["leftQ"]]); $i++) {
-                                $thisA = $resultsLeft["QNA"][$_GET["leftQ"]][$i];
+                                $thisA = translate($resultsLeft["QNA"][$_GET["leftQ"]][$i], "de", $GLOBALS["lang"]);
                                 echo "<option value='" . $i - 1 . "' ";
                                 if (isset($_GET["leftA"]) && $i - 1 == $_GET["leftA"]) echo "selected";
                                 echo ">" . $thisA . "</option>";
@@ -379,29 +392,29 @@ if ($hasresults == 1) {
                                 echo $thisHead;
                             }
 
-                            echo "<hr><h2>" . $resultsLeft["QNA"][$i][0] . "</h2>";
-                            if ($resultsLeft["type"][$i] == "multi") echo "<p>Mehrfachauswahl</p>";
-                            else echo "<p>Einfachauswahl</p>"; //($resultsLeft["type"][$i] == "single")
+                            echo "<hr><h2>" . translate($resultsLeft["QNA"][$i][0], "de", $GLOBALS["lang"]) . "</h2>";
+                            if ($resultsLeft["type"][$i] == "multi") echo "<p>".translate("Mehrfachauswahl", "de", $GLOBALS["lang"])."</p>";
+                            else echo "<p>".translate("Einfachauswahl", "de", $GLOBALS["lang"])."</p>"; //($resultsLeft["type"][$i] == "single")
                             ?>
                             <form>
                                 <input type="radio" name="diagram_scheme" id="left_circle_<?php echo $i; ?>"
                                        value="1" checked>
                                 <label class="graph_scheme" for="left_circle_<?php echo $i; ?>"
-                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);">Kreisdiagramm</label>
+                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Kreisdiagramm", "de", $GLOBALS["lang"]); ?></label>
                                 <input type="radio" name="diagram_scheme" id="left_rectangle_<?php echo $i; ?>"
                                        value="1">
                                 <label class="graph_scheme" for="left_rectangle_<?php echo $i; ?>"
-                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);">Säulendiagramm</label>
+                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Säulendiagramm", "de", $GLOBALS["lang"]); ?></label>
                                 <input type="radio" name="diagram_scheme" id="left_both_<?php echo $i; ?>"
                                        value="1">
                                 <label class="graph_scheme" for="left_both_<?php echo $i; ?>"
-                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);">Beide</label>
+                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Beide Diagramme", "de", $GLOBALS["lang"]); ?></label>
                             </form>
                             <?php
                             if ($i == 0) echo "<br><br><br>"; //stupid workaround-bugfix-hack. o_O
-                            echo '<br><img style="margin-top: -3em" alt="Legende: '. getAlt($resultsLeft["counts"]["assign"][$i]) . '" src="data:image/png;base64,' . drawLegend($resultsLeft["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\'Hier ist wohl ein Fehler passiert. \';" />';
-                            echo '<br><div id="left_circle_graph_' . $i . '"><img alt="ein automatisch generiertes Kreisdiagramm" src="data:image/png;base64,' . drawCircle($resultsLeft["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\'Hier ist wohl ein Fehler passiert. \';" /></div>';
-                            echo '<div id="left_rectangle_graph_' . $i . '" style="display: none"><img alt="ein automatisch generiertes Säulendiagramm" src="data:image/png;base64,' . drawRectangle($resultsLeft["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\'Hier ist wohl ein Fehler passiert. \';" /></div>';
+                            echo '<br><img style="margin-top: -3em" alt="' . translate('Legende:', 'de', $GLOBALS['lang']) . ' ' . getAlt($resultsLeft["counts"]["assign"][$i]) . '" src="data:image/png;base64,' . drawLegend($resultsLeft["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
+                            echo '<br><div id="left_circle_graph_' . $i . '"><img alt="'.translate('ein automatisch generiertes Kreisdiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawCircle($resultsLeft["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" /></div>';
+                            echo '<div id="left_rectangle_graph_' . $i . '" style="display: none"><img alt="'.translate('ein automatisch generiertes Säulendiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawRectangle($resultsLeft["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" /></div>';
                             echo "<br>";
                             echo "</div><hr>";
                         } else {
@@ -411,13 +424,14 @@ if ($hasresults == 1) {
                             echo '<div id="left_circle_' . $i . '" style="display: none"></div>';
                             echo '<div id="left_rectangle_' . $i . '" style="display: none"></div>';
                             echo '<div id="left_both_' . $i . '" style="display: none"></div>';
-                            echo "<hr><h2>" . $resultsLeft["QNA"][$i][0] . "</h2>";
-                            echo "<h2>" . $resultsLeft["open"][$i]["count"] . " Antworten:</h2>";
+                            echo "<hr><h2>" . translate($resultsLeft["QNA"][$i][0], "de", $GLOBALS["lang"]) . "</h2>";
+                            if ($resultsLeft["open"][$i]["count"] == 1) echo "<h2>" . $resultsLeft["open"][$i]["count"] . " " . translate("Antwort", "de", $GLOBALS["lang"]) . ":</h2>";
+                            echo "<h2>" . $resultsLeft["open"][$i]["count"] . " " . translate("Antworten", "de", $GLOBALS["lang"]) . ":</h2>";
                             $k = 0;
                             for ($j = 0; $j < sizeof($resultsLeft["open"][$i]); $j++) {
                                 if (isset($resultsLeft["open"][$i][$j]) && $resultsLeft["open"][$i][$j] != 0) {
                                     $k++;
-                                    echo "<p>#" . $k . ": " . $resultsLeft["open"][$i][$j] . "</p><br>";
+                                    echo "<p>#" . $k . ": " . translate($resultsLeft["open"][$i][$j], "de", $GLOBALS["lang"]) . "</p><br>";
                                 }
                             }
                             echo "<br>";
@@ -446,9 +460,9 @@ if ($hasresults == 1) {
             </div>
             <div class="table-cell" id="right_form">
                 <div id='right_choices'>
-                    <label for="result_scheme_right_Q" class='printmenot'>Wähle eine lineare Ansicht aller Ergebnisse oder Ergebnisse in Relation zu einer Antwort.</label>
+                    <label for="result_scheme_right_Q" class='printmenot'><?php echo translate("Wähle eine lineare Ansicht aller Ergebnisse oder Ergebnisse in Relation zu einer Antwort.", "de", $GLOBALS["lang"]); ?></label>
                     <select id="result_scheme_right_Q" name="result_scheme_right_Q">
-                        <option value="all_results">Alle Ergebnisse</option>
+                        <option value="all_results"><?php echo translate("Alle Ergebnisse", "de", $GLOBALS["lang"]); ?></option>
                         <?php
                         for ($i = 0; $i < sizeof($resultsRight["QNA"]); $i++) {
                             if ($resultsRight["QNA"][$i][1] != "offene Frage" && $resultsRight["QNA"][$i][0] != "Umfrage abgegeben" && $resultsRight["QNA"][$i][0] != "E-Mail ist validiert") { //das muss sauberer gehen aber hey, wenns tut
@@ -540,28 +554,29 @@ if ($hasresults == 1) {
                                 echo $thisHead;
                             }
 
-                            echo "<hr><h2>" . $resultsRight["QNA"][$i][0] . "</h2>";
-                            if ($resultsRight["type"][$i] == "multi") echo "<p>Mehrfachauswahl</p>";
-                            else echo "<p>Einfachauswahl</p>"; //($resultsRight["type"][$i] == "single")
+                            echo "<hr><h2>" . translate($resultsRight["QNA"][$i][0], "de", $GLOBALS["lang"]) . "</h2>";
+                            if ($resultsRight["type"][$i] == "multi") echo "<p>".translate("Mehrfachauswahl", "de", $GLOBALS["lang"])."</p>";
+                            else echo "<p>".translate("Einfachauswahl", "de", $GLOBALS["lang"])."</p>"; //($resultsRight["type"][$i] == "single")
                             ?>
                             <form>
                                 <input type="radio" name="diagram_scheme" id="right_circle_<?php echo $i; ?>"
                                        value="1" checked>
                                 <label class="graph_scheme" for="right_circle_<?php echo $i; ?>"
-                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);">Kreisdiagramm</label>
+                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Kreisdiagramm", "de", $GLOBALS["lang"]); ?></label>
                                 <input type="radio" name="diagram_scheme" id="right_rectangle_<?php echo $i; ?>"
                                        value="1">
                                 <label class="graph_scheme" for="right_rectangle_<?php echo $i; ?>"
-                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);">Säulendiagramm</label>
+                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Säulendiagramm", "de", $GLOBALS["lang"]); ?></label>
                                 <input type="radio" name="diagram_scheme" id="right_both_<?php echo $i; ?>"
                                        value="1">
                                 <label class="graph_scheme" for="right_both_<?php echo $i; ?>"
-                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);">Beide</label>
+                                       style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Beide Diagramme", "de", $GLOBALS["lang"]); ?></label>
                             </form>
                             <?php
-                            echo '<br><img style="margin-top: -3em" alt="Legende: '. getAlt($resultsRight["counts"]["assign"][$i]) . '" src="data:image/png;base64,' . drawLegend($resultsRight["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\'Hier ist wohl ein Fehler passiert. \';" />';
-                            echo '<br><div id="right_circle_graph_' . $i . '"><img alt="ein automatisch generiertes Kreisdiagramm" src="data:image/png;base64,' . drawCircle($resultsRight["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\'Hier ist wohl ein Fehler passiert. \';" /></div>';
-                            echo '<div id="right_rectangle_graph_' . $i . '" style="display: none"><img alt="ein automatisch generiertes Säulendiagramm" src="data:image/png;base64,' . drawRectangle($resultsRight["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\'Hier ist wohl ein Fehler passiert. \';" /></div>';
+                            if ($i == 0) echo "<br><br><br>"; //stupid workaround-bugfix-hack. o_O
+                            echo '<br><img style="margin-top: -3em" alt="' . translate('Legende:', 'de', $GLOBALS['lang']) . ' ' . getAlt($resultsRight["counts"]["assign"][$i]) . '" src="data:image/png;base64,' . drawLegend($resultsRight["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
+                            echo '<br><div id="right_circle_graph_' . $i . '"><img alt="'.translate('ein automatisch generiertes Kreisdiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawCircle($resultsRight["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" /></div>';
+                            echo '<div id="right_rectangle_graph_' . $i . '" style="display: none"><img alt="'.translate('ein automatisch generiertes Säulendiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawRectangle($resultsRight["counts"]["assign"][$i]) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" /></div>';
                             echo "<br>";
                             echo "</div><hr>";
                         } else {
@@ -571,13 +586,14 @@ if ($hasresults == 1) {
                             echo '<div id="right_circle_' . $i . '" style="display: none"></div>';
                             echo '<div id="right_rectangle_' . $i . '" style="display: none"></div>';
                             echo '<div id="right_both_' . $i . '" style="display: none"></div>';
-                            echo "<hr><h2>" . $resultsRight["QNA"][$i][0] . "</h2>";
-                            echo "<h2>" . $resultsRight["open"][$i]["count"] . " Antworten:</h2>";
+                            echo "<hr><h2>" . translate($resultsRight["QNA"][$i][0], "de", $GLOBALS["lang"]) . "</h2>";
+                            if ($resultsRight["open"][$i]["count"] == 1) echo "<h2>" . $resultsRight["open"][$i]["count"] . " " . translate("Antwort", "de", $GLOBALS["lang"]) . ":</h2>";
+                            echo "<h2>" . $resultsRight["open"][$i]["count"] . " " . translate("Antworten", "de", $GLOBALS["lang"]) . ":</h2>";
                             $k = 0;
                             for ($j = 0; $j < sizeof($resultsRight["open"][$i]); $j++) {
                                 if (isset($resultsRight["open"][$i][$j]) && $resultsRight["open"][$i][$j] != 0) {
                                     $k++;
-                                    echo "<p>#" . $k . ": " . $resultsRight["open"][$i][$j] . "</p><br>";
+                                    echo "<p>#" . $k . ": " . translate($resultsRight["open"][$i][$j], "de", $GLOBALS["lang"]) . "</p><br>";
                                 }
                             }
                             echo "<br>";
@@ -817,7 +833,11 @@ function extractNumber($string) {
         divId = divIdArr[0];
         var divToToggle = document.getElementById("toggle" + divId);
         console.log(divId);
-        divToToggle.nextElementSibling.style.display = "block";
+        if (divToToggle.nextElementSibling.nodeType === Node.ELEMENT_NODE) {
+            if (divToToggle.nextElementSibling.classList.contains("toggleDiv")) {
+                divToToggle.nextElementSibling.style.display = "block";
+            }
+        }
     }
 
 

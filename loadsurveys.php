@@ -4,7 +4,7 @@
  * Dim1: Umfragedatei, Dim2: Reihe, Dim3: Spaltenkästchen
  * [datei][0][0] = Titel
  * [datei][0][1] = Beschreibung
- * [datei][0][2] = id# (wenn bereits in Datenbank!)
+ * [datei][0][...] = zusätzliche Infos
  * [datei][1...][0] = Fragetyp
  * [datei][1...][1] = Frage
  * [datei][1...][2...] = Optionen
@@ -29,6 +29,15 @@ for ($i = 0; $i < sizeof($files); $i++) {
                 //if ($row > 0) {
                 //if ($c === 0) {
                 $surveys[$i][$j][$c] = utf8Encode($data[$c]);
+                if ($c > 0) {
+                    if (
+                        str_contains("und", $surveys[$i][$j][0]) ||
+                        str_contains("oder", $surveys[$i][$j][0]) ||
+                        str_contains("gruppe", $surveys[$i][$j][0]) ||
+                        str_contains("textfeld", $surveys[$i][$j][0]) ||
+                        str_contains("info", $surveys[$i][$j][0])
+                    ) $surveys[$i][$j][$c] = translate($surveys[$i][$j][$c], "de", $GLOBALS["lang"]);
+                }
                 //}
                 //}
             }

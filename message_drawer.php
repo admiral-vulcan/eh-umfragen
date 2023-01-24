@@ -25,6 +25,8 @@
 </script>
 <?php
 function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump = '', $noORlinkdump = '', $errType = '') {
+    $title = translate($title, "de", $GLOBALS["lang"]);
+    $msg = translate($msg, "de", $GLOBALS["lang"]);
     //alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump = '', $noORlinkdump = '', $errType = '')
 
     $scriptStart = "<script type=\"application/javascript\">showAlert(\"";
@@ -36,7 +38,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
         case 'info':
             ?>
             <div  class="<?php echo $type; ?>" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.75) scaleY(0.94);">
-                <h2 style="outline-style: double; padding-left: 0.5em">Information</h2>
+                <h2 style="outline-style: double; padding-left: 0.5em"><?php echo translate("Information", "de", $GLOBALS["lang"]); ?></h2>
                 <ul class="actions stacked">
                     <li>
                         <h3><?php echo $title; ?></h3>
@@ -68,7 +70,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
         case 'warning':
             ?>
             <div  class="<?php echo $type; ?>" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.75) scaleY(0.94);">
-                <h2 style="outline-style: double; padding-left: 0.5em">Warnung</h2>
+                <h2 style="outline-style: double; padding-left: 0.5em"><?php echo translate("Warnung", "de", $GLOBALS["lang"]); ?></h2>
                 <ul class="actions stacked">
                     <li>
                         <h3><?php echo $title; ?></h3>
@@ -86,16 +88,16 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                         }
                         else {
                             ?>
-                            <a class='button large fit' onclick='<?php echo $yesORoklinkORdump; ?>'>Ja</a>
+                            <a class='button large fit' onclick='<?php echo $yesORoklinkORdump; ?>'><?php echo translate("Ja", "de", $GLOBALS["lang"]); ?></a>
 
                             <?php
                             if ($noORlinkdump == "close") {
                                 ?>
-                                <a class='button large fit' onclick='hideAlert("<?php echo $GLOBALS['alertid']; ?>")'>Nein</a>
+                                <a class='button large fit' onclick='hideAlert("<?php echo $GLOBALS['alertid']; ?>")'><?php echo translate("Nein", "de", $GLOBALS["lang"]); ?></a>
                                 <?php
                             } else {
                                 ?>
-                                <a class='button large fit' onclick='<?php echo $noORlinkdump; ?>'>Nein</a>
+                                <a class='button large fit' onclick='<?php echo $noORlinkdump; ?>'><?php echo translate("Nein", "de", $GLOBALS["lang"]); ?></a>
                                 <?php
                             }
                         }
@@ -115,7 +117,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
         case 'error':
             ?>
             <div  class="<?php echo $type; ?>" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.75) scaleY(0.94);">
-                <h2 style="outline-style: double; padding-left: 0.5em">Fehler</h2>
+                <h2 style="outline-style: double; padding-left: 0.5em"><?php echo translate("Fehler", "de", $GLOBALS["lang"]); ?></h2>
                 <ul class="actions stacked">
                     <li>
                         <h3><?php echo $title; ?></h3>
@@ -126,8 +128,8 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                                 echo $msg;
                                 if ($yesORoklinkORdump != "" || $noORlinkdump != "") {
                                     if ($noORlinkdump != "") $noORlinkdump = " link-dump: " . $noORlinkdump;
-                                    echo "<br><br>Das tut uns leid, bitte sende uns folgende E-Mail. <br>Sie enthält bereits alle Infos, die wir brauchen, Du musst nichts hinzufügen.<br><br>Danke für Deine Unterstützung.<br>
-                                    <br> <a href='mailto:kontakt@eh-umfragen.de?subject=" . $yesORoklinkORdump . $noORlinkdump . "'>>>E-Mail senden<<</a>";
+                                    echo "<br><br>".translate("Das tut uns leid, bitte sende uns folgende E-Mail. <br>Sie enthält bereits alle Infos, die wir brauchen, Du musst nichts hinzufügen.<br><br>Danke für Deine Unterstützung.", "de", $GLOBALS["lang"])."<br>
+                                    <br> <a href='mailto:kontakt@eh-umfragen.de?subject=" . $yesORoklinkORdump . $noORlinkdump . "'>>>".translate("E-Mail senden", "de", $GLOBALS["lang"])."<<</a>";
                                 }
                                 ?>
                             </b>
