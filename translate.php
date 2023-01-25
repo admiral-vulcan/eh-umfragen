@@ -107,6 +107,8 @@ function stripHtmlTags($str) {
     return ["str" => $str, "startingTags" => $startingTags, "closingTags" => $closingTags];
 }
 
+$waitForTranslation = alert("Please wait", "Please wait for the language to load. If it's the first time the server handles this language's data, it could take a while...", "info", false);
+
 //echo numeralPreserve("3. Computerraum (A-Gebäude, 2. OG)", "EN")["num"];
 
 // usage
@@ -137,6 +139,9 @@ echo preg_replace("/\?lang=[a-zA-Z]{2}/", "$1?lang=de", "lol /?lang=fr lol /?lan
         select.addEventListener('change', function() {
             // Get the selected value
             const selectedValue = this.value;
+
+            showAlert(<?php echo $waitForTranslation; ?>);
+
             // Wait 200ms before reloading the page
             setTimeout(function() {
                 // Get the current URL
