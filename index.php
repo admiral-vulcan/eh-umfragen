@@ -1,6 +1,34 @@
 <?php
-
-$GLOBALS["lang"] = "de";
+/* old version
+function getDefaultLanguage() {
+    $validLanguages = array("en", "de", "fr", "es", "it", "pt", "ru", "pl", "nl", "tr", "el", "sv", "da", "fi", "ro");
+    $language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+    if (isset($_GET["lang"])) $language = $_GET["lang"];
+    if (in_array($language, $validLanguages)) {
+        return $language;
+    } else {
+        return "en";
+    }
+}
+*/
+function getDefaultLanguage() {
+    $validLanguages = array("en", "de", "fr", "es", "it", "pt", "ru", "pl", "nl", "tr", "el", "sv", "da", "fi", "ro");
+    if (isset($_GET["lang"]) && in_array($_GET["lang"], $validLanguages)) {
+        setcookie('language', $_GET["lang"], time() + (86400 * 30 * 365), "/"); // 86400 = 1 day
+        return $_GET["lang"];
+    } elseif (isset($_COOKIE["language"]) && in_array($_COOKIE["language"], $validLanguages)) {
+        return $_COOKIE["language"];
+    } else {
+        $language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+        if (in_array($language, $validLanguages)) {
+            return $language;
+        } else {
+            return "en";
+        }
+    }
+}
+$GLOBALS["lang"] = getDefaultLanguage();
+//$GLOBALS["lang"] = "fr"; //override
 
 function verToInt($str) {
     $pos = strpos($str,'.');
@@ -23,9 +51,9 @@ $ver_int = intval($ver_float);     //0
 $version = $ver_str;                    //legacy reasons, but it's nice to have
 
 require_once ("utf8Encode.php");
+require_once ("message_drawer.php");
 require_once ("translate.php");
 require_once ("head.php");
-require_once ("message_drawer.php");
 require_once ("hdd_handler.php");
 require_once ("zitate.php");
 require_once ("geturl.php");

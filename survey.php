@@ -389,7 +389,7 @@ if ($hasresults == 1) {
                                     $x++;
                                 }
                                 $x = $headAt;
-                                echo $thisHead;
+                                echo translate($thisHead, "de", $GLOBALS["lang"]);
                             }
 
                             echo "<hr><h2>" . translate($resultsLeft["QNA"][$i][0], "de", $GLOBALS["lang"]) . "</h2>";
@@ -551,7 +551,7 @@ if ($hasresults == 1) {
                                     $x++;
                                 }
                                 $x = $headAt;
-                                echo $thisHead;
+                                echo translate($thisHead, "de", $GLOBALS["lang"]);
                             }
 
                             echo "<hr><h2>" . translate($resultsRight["QNA"][$i][0], "de", $GLOBALS["lang"]) . "</h2>";
