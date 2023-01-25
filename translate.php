@@ -7,8 +7,8 @@ require_once ("gitignore/deepLcred.php");
 
 if (!isset($_COOKIE['firstTimeLang']) || $_COOKIE['firstTimeLang'] != $GLOBALS["lang"]) {
 
-    if ($GLOBALS["lang"] == "en") alert(translate("Experimentelle Übersetungsfunktion", "de", $GLOBALS["lang"]), translate("Diese Seite ist auf Deutsch geschrieben und wird automatisch mit deepL übersetzt. Möglicherweise ist aktuell noch nicht alles übersetzt. Diese Funktion kann zudem beim ersten Laden einer neuen Sprache sehr lange dauern und potenziell Fehler und unbeabsichtigte Formulierungen verursachen. Falls dem so ist, wechsele zur <a href='/?lang=de'>Originalversion auf Deutsch</a>.<br>Diese Warnung wird nur ein Mal pro Sprachwechsel angezeigt.", "de", $GLOBALS["lang"]), "warning");
-    elseif ($GLOBALS["lang"] != "de") alert(translate("Experimentelle Übersetungsfunktion", "de", $GLOBALS["lang"]), translate("Diese Seite ist auf Deutsch geschrieben und wird automatisch mit deepL übersetzt. Möglicherweise ist aktuell noch nicht alles übersetzt. Diese Funktion kann zudem beim ersten Laden einer neuen Sprache sehr lange dauern und potenziell Fehler und unbeabsichtigte Formulierungen verursachen. Falls dem so ist, wechsele zur <a href='/?lang=de'>Originalversion auf Deutsch</a>.<br>Wechsele alternativ zur <a href='/?lang=en'>englischen</a> Version, da diese recht gut funktioniert.<br>Diese Warnung wird nur ein Mal pro Sprachwechsel angezeigt.", "de", $GLOBALS["lang"]), "warning");
+    if ($GLOBALS["lang"] == "en") alert(translate("Experimentelle Übersetungsfunktion", "de", $GLOBALS["lang"]), translate("Diese Seite ist auf Deutsch geschrieben und wird automatisch mit <a href='https://www.deepl.com/' target='_blank' rel='nofollow'>DeepL</a> übersetzt. Möglicherweise ist aktuell noch nicht alles übersetzt. Diese Funktion kann zudem beim ersten Laden einer neuen Sprache sehr lange Ladezeiten haben und potenziell Fehler, wie unbeabsichtigte Formulierungen, Widersprüche, Doppeldeutigkeiten oder ähnliche verursachen. Deshalb distanzieren wir uns von der Übersetzung und bieten Euch im Menü immer an, die Sprache zur <a href='/?lang=de'>deutschen Originalversion</a> zu wechseln.<br>Diese Warnung wird nur ein Mal pro Sprachwechsel angezeigt.", "de", $GLOBALS["lang"]), "warning");
+    elseif ($GLOBALS["lang"] != "de") alert(translate("Experimentelle Übersetungsfunktion", "de", $GLOBALS["lang"]), translate("Diese Seite ist auf Deutsch geschrieben und wird automatisch mit <a href='https://www.deepl.com/' target='_blank' rel='nofollow'>DeepL</a> übersetzt. Möglicherweise ist aktuell noch nicht alles übersetzt. Diese Funktion kann zudem beim ersten Laden einer neuen Sprache sehr lange Ladezeiten haben und potenziell Fehler, wie unbeabsichtigte Formulierungen, Widersprüche, Doppeldeutigkeiten oder ähnliche verursachen. Deshalb distanzieren wir uns von der Übersetzung und bieten Euch im Menü immer an, die Sprache zur <a href='/?lang=de'>deutschen Originalversion</a> zu wechseln.<br>Oder wechsle alternativ zur <a href='/?lang=en'>englischen</a> Version, da diese recht gut funktioniert.<br>Diese Warnung wird nur ein Mal pro Sprachwechsel angezeigt.", "de", $GLOBALS["lang"]), "warning");
 
     setcookie("firstTimeLang", $GLOBALS["lang"], time() + (86400 * 30 * 365), "/"); //86400 is 1 day
 }
@@ -127,3 +127,46 @@ echo $stuff["closingTags"];
 echo preg_replace("/\?lang=[a-zA-Z]{2}/", "$1?lang=de", "lol /?lang=fr lol /?lang=fr lol", 1);
 
 */
+?>
+<script type="application/javascript">
+    window.addEventListener("load", function() {
+        // Get the select element
+        const select = document.querySelector('.language_select');
+
+        // Listen for change event on the select element
+        select.addEventListener('change', function() {
+            // Get the selected value
+            const selectedValue = this.value;
+            // Wait 200ms before reloading the page
+            setTimeout(function() {
+                // Get the current URL
+                let currentUrl = window.location.href;
+
+                // Check if the selected value is "lang_auto"
+                if (selectedValue === "lang_auto") {
+                    // Delete the "language" cookie
+                    document.cookie = 'language=; expires=-1;';
+                    document.cookie = 'firstTimeLang=; expires=-1;';
+
+                    // Strip the "lang" parameter from the URL
+                    currentUrl = currentUrl.replace(/[?&]lang=\w+/, "");
+                } else {
+                    // Check if the URL already contains a query string
+                    if (currentUrl.indexOf('?lang=') !== -1) {
+                        // If so, replace the existing lang parameter with the new selected value
+                        currentUrl = currentUrl.replace(/lang=\w+/, `lang=${selectedValue}`);
+                    } else if (currentUrl.indexOf('?') === -1) {
+                        // If not, append the selected value as a new query string
+                        currentUrl += `?lang=${selectedValue}`;
+                    } else {
+                        // If so, append the selected value to the existing query string
+                        currentUrl += `&lang=${selectedValue}`;
+                    }
+                }
+
+                // Reload the page with the updated URL
+                window.location.href = currentUrl;
+            }, 200);
+        });
+    });
+</script>

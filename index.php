@@ -127,13 +127,13 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                         echo '
                         <picture class="clickableIMG" style="height: 100%;  vertical-align: top;" >
                     <source srcset="' . $profilePic['path'] . '.avif" type="image/avif">
-                        <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . $profilePic['alt'] . '" class="clickableIMG" style="height: 100%;  vertical-align: top;" onclick="window.location.href=\'/?creator=profile\'">
+                        <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . translate($profilePic['alt'], 'de', $GLOBALS['lang']) . '" class="clickableIMG" style="height: 100%;  vertical-align: top;" onclick="window.location.href=\'/?creator=profile\'">
                         </picture>
                         ';
                     else echo '
                         <picture class="clickableIMG" style="height: 100%;  vertical-align: top;" >
                     <source srcset="' . $profilePic['path'] . '.avif" type="image/avif">
-                    <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . $profilePic['alt'] . '" class="clickableIMG" style="height: 100%;  vertical-align: top;" onclick="window.location.href=\'/\'">
+                    <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . translate($profilePic['alt'], 'de', $GLOBALS['lang']) . '" class="clickableIMG" style="height: 100%;  vertical-align: top;" onclick="window.location.href=\'/\'">
                         </picture>
                     ';
                     ?>
@@ -149,7 +149,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         <nav class="main">
             <div class="color_scheme_container">
                 <label for="color_scheme" class="color_scheme"><div><?php echo translate("Design", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;</div></label>
-                <select tabindex="3" aria-label="Designauswahl" name="color_scheme" class="color_scheme_select" id="color_scheme">
+                <select tabindex="2" aria-label="Designauswahl" name="color_scheme" class="color_scheme_select" id="color_scheme">
                     <option value="1" id="auto" <?php if ($color_scheme === "auto") echo "selected"; ?>>Auto</option>
                     <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected"; echo ">" . translate("Hell", "de", $GLOBALS["lang"]); ?></option>
                     <option value="3" id="dark" <?php if ($color_scheme === "dark") echo "selected"; echo ">" . translate("Dunkel", "de", $GLOBALS["lang"]); ?></option>
@@ -190,11 +190,37 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         <section style="padding-left: 1em">
             <h2><picture>
                     <source srcset="images/logo.avif" type="image/avif">
-                    <img src="images/logo.png" alt="Ein Klemmbrett als Logo" style='padding-left: 1.5em; padding-top: 1.5em; width: 30%; text-align: right; vertical-align: middle;'>
+                    <img src="images/logo.png" alt="<?php echo translate($profilePic['alt'], 'de', $GLOBALS['lang']); ?>" style='padding-left: 1.5em; padding-top: 1.5em; width: 30%; text-align: right; vertical-align: middle;'>
                 </picture>
                 &emsp;&emsp;
-                <?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>
+                <?php //echo translate("Menü", "de", $GLOBALS["lang"]); ?>
             </h2>
+            <div class="language_container">
+                <div class="language_select_container">
+                    <label for="language_select" class="language_label"><div class="language_label_div"><?php echo translate("Sprache", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;</div></label> <!--  -->
+                    <select tabindex="2" aria-label="Sprachauswahl" name="language_select" class="language_select">
+                        <option class="language" value="lang_auto" <?php if ($GLOBALS["lang"] === "") echo "selected"; ?> >Auto</option>
+                        <option class="language" value="de" <?php if ($GLOBALS["lang"] === "de") echo "selected"; echo ">" . translate("Deutsch", "de", "de"); ?></option>
+                        <option class="language" value="en" <?php if ($GLOBALS["lang"] === "en") echo "selected"; echo ">" . translate("Englisch", "de", "en"); ?></option>
+                        <option class="language" value="fr" <?php if ($GLOBALS["lang"] === "fr") echo "selected"; echo ">" . translate("Französisch", "de", "fr"); ?></option>
+                        <option class="language" value="it" <?php if ($GLOBALS["lang"] === "it") echo "selected"; echo ">" . translate("Italienisch", "de", "it"); ?></option>
+                        <option class="language" value="ro" <?php if ($GLOBALS["lang"] === "ro") echo "selected"; echo ">" . translate("Rumänisch", "de", "ro"); ?></option>
+                        <option class="language" value="pl" <?php if ($GLOBALS["lang"] === "pl") echo "selected"; echo ">" . translate("Polnisch", "de", "pl"); ?></option>
+                        <option class="language" value="es" <?php if ($GLOBALS["lang"] === "es") echo "selected"; echo ">" . translate("Spanisch", "de", "es"); ?></option>
+                        <option class="language" value="ru" <?php if ($GLOBALS["lang"] === "ru") echo "selected"; echo ">" . translate("Russisch", "de", "ru"); ?></option>
+                        <option class="language" value="tr" <?php if ($GLOBALS["lang"] === "tr") echo "selected"; echo ">" . translate("Türkisch", "de", "tr"); ?></option>
+                        <!--
+                        <option class="language" value="pt" <?php if ($GLOBALS["lang"] === "pt") echo "selected"; echo ">" . translate("Portugiesisch", "de", "pt"); ?></option>
+                        <option class="language" value="da" <?php if ($GLOBALS["lang"] === "da") echo "selected"; echo ">" . translate("Dänisch", "de", "da"); ?></option>
+                        <option class="language" value="el" <?php if ($GLOBALS["lang"] === "el") echo "selected"; echo ">" . translate("Griechisch", "de", "el"); ?></option>
+                        <option class="language" value="fi" <?php if ($GLOBALS["lang"] === "fi") echo "selected"; echo ">" . translate("Finnisch", "de", "fi"); ?></option>
+                        <option class="language" value="sv" <?php if ($GLOBALS["lang"] === "sv") echo "selected"; echo ">" . translate("Schwedisch", "de", "sv"); ?></option>
+                        <option class="language" value="nl" <?php if ($GLOBALS["lang"] === "nl") echo "selected"; echo ">" . translate("Niederländisch", "de", "nl"); ?></option>
+                        -->
+                    </select>
+                    </select>
+                </div>
+            </div>
             <a href="/">
                 <h3><?php echo translate("Startseite", "de", $GLOBALS["lang"]); ?></h3>
                 <p style=''><?php echo translate("Zurück zur Startseite", "de", $GLOBALS["lang"]); ?></p>
