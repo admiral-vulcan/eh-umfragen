@@ -115,7 +115,8 @@ $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
             ) {
                 ?>
                 }
-                <div class="clouds-3"></div> //wenige Wolken (nur 3)
+                <div class="clouds-1"></div>
+                <div class="clouds-2"></div> //wenige Wolken (nur 3)
                 <?php
             }
             elseif (

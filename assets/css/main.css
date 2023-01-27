@@ -4317,6 +4317,7 @@ img {
 	left: unset;
 	padding: unset;
 	opacity: 1;
+	z-index: -1;
 }
 
 .hemisphere {
@@ -4331,6 +4332,8 @@ img {
 .dark {
 	background-color: #212121;
 }
+
+
 
 .divider,
 .divider:after {
@@ -4369,41 +4372,39 @@ rotate3d(0, -1, 0, 120deg);
 
 @keyframes clouds-loop-1 {
 	to {
-		background-position: -1000px 0;
+		background-position: -2000px 0;
 	}
 }
 .clouds-1 {
-	opacity: 1;
-	background-image: url("../../images/clouds_2.avif");
+	opacity: 0.5;
+	background-image: url("../../images/clouds_1.avif");
 	background-position: -150% 50%;
-	animation: clouds-loop-1 300s infinite linear;
+	animation: clouds-loop-1 400s infinite linear;
 	animation-direction: reverse;
-	z-index: 1020;
 }
 @keyframes clouds-loop-2 {
 	to {
-		background-position: -2000px 0;
+		background-position: -1579px 0;
 	}
 }
 .clouds-2 {
 	opacity: 1;
-	background-image: url("../../images/clouds_1.avif");
-	background-position: -150% 50%;
-	animation: clouds-loop-2 400s infinite linear;
+	background-image: url("../../images/clouds_2.avif");
+	animation: clouds-loop-2 500s infinite linear;
 	animation-direction: reverse;
-	z-index: 1020;
 }
+
 @keyframes clouds-loop-3 {
 	to {
-		background-position: -1579px 0;
+		background-position: -1000px 0;
 	}
 }
 .clouds-3 {
 	opacity: 1;
 	background-image: url("../../images/clouds_3.avif");
-	animation: clouds-loop-3 500s infinite linear;
+	background-position: -150% 50%;
+	animation: clouds-loop-3 300s infinite linear;
 	animation-direction: reverse;
-	z-index: 1020;
 }
 
 
@@ -4426,6 +4427,7 @@ rotate3d(0, -1, 0, 120deg);
 	left: 0;
 	height: 500px;
 	-moz-animation-name: none;
+	z-index: 1020;
 }
 
 
@@ -4522,14 +4524,6 @@ rotate3d(0, -1, 0, 120deg);
 
 
 
-
-
-
-
-
-
-
-
 .snowflake {
 	--size: 1vw;
 	width: var(--size);
@@ -4538,7 +4532,6 @@ rotate3d(0, -1, 0, 120deg);
 	border-radius: 50%;
 	position: fixed;
 	top: -5vh;
-	z-index:-1;
 
 }
 @keyframes snowfall {
@@ -5017,7 +5010,6 @@ rotate3d(0, -1, 0, 120deg);
 	border-radius: 0 0 50% 50%;
 	box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3), 0 2px 5px rgba(0, 0, 0, 0.3);
 	top: -5vh;
-	z-index: -1;
 	opacity: 1;
 }
 
@@ -9535,4 +9527,8 @@ rotate3d(0, -1, 0, 120deg);
 /* added small blur every 6 raindrops */
 .raindrop:nth-child(6n) {
 	filter: blur(5px);
+}
+
+.snowflake, .raindrop {
+	z-index: 1020;
 }
