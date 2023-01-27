@@ -110,7 +110,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
 <!-- Wrapper -->
 <div id="wrapper">
     <!-- Header -->
-    <header id="header">
+    <header id="topBar">
         <nav class="main" style="min-height: 4em">
             <ul>
                 <li class="menu">
@@ -305,21 +305,20 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     <li><a href="mailto:kontakt@eh-umfragen.de" class="icon solid fa-envelope"><span class="label">E-Mail</span></a></li>
                 </ul>
                 <p class="copyright">eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de"><?php echo translate("Kontakt", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=impressum" target="_blank"><?php echo translate("Impressum", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=agb" target="_blank"><?php echo translate("AGB", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=cookies" target="_blank"><?php echo translate("Cookies", "en", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank"><?php echo translate("Datenschutz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=lizenz" target="_blank"><?php echo translate("Lizenz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank"><?php echo translate("Übertragung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank"><?php echo translate("Passwortspeicherung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank"><?php echo translate("Mailnutzung", "de", $GLOBALS["lang"]); ?></a><br><br><br>
-                    Quellen:
-                    <br><br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
-                    <br><br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,
-                    <br><br><a href="https://www.deepl.com/" target="_blank" rel="nofollow">DeepL</a>,
-                    <br><br><a href="https://unsplash.com" target="_blank" rel="nofollow">Unsplash</a>,
-                    <br><br><a href="https://fontawesome.com" target="_blank" rel="nofollow">Font Awesome</a>,
-                    <br><br><a href="https://jquery.com" target="_blank" rel="nofollow">jQuery</a>,
-                    <br><br><a href="https://github.com/ajlkn/responsive-tools" target="_blank" rel="nofollow">Responsive Tools</a>,
-                    <br><br><a href="https://colorbrewer2.org/#type=qualitative&scheme=Set3&n=12" target="_blank" rel="nofollow">COLORBREWER</a>,
-                    <br><br><a href="https://github.com/WebDevSHORTS/Parallax-Star-Background" target="_blank" rel="nofollow">Parallax Star background</a>,
-                    <br><br><a href="https://www.schattenbaum.net/php/kreisdiagramm_mit_gd-lib.php" target="_blank" rel="nofollow">Kreisdiagramm</a>,
-                    <br><br><a href="http://www.ulrichmierendorff.com/software/antialiased_arcs.html" target="_blank" rel="nofollow">Antialiased Filled Arcs</a>,
-                    <br><br><a href="https://datenschutz-generator.de/" target="_blank" rel="nofollow">Datenschutz-Generator.de von Dr. Thomas Schwenke</a>,
-                    <br><br><br><a href="/LIZENZ.md" target="_blank">Lizenziert unter der Apache Lizenz, Version 2.0</a>
-                    <br><br><a href="/LICENSE.md" target="_blank">Licensed under the Apache License, version 2.0</a>
+                    <?php echo translate('Quellen:', 'de', $GLOBALS['lang']); ?>
+                    <br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
+                    <br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,
+                    <br><a href="https://www.deepl.com/" target="_blank" rel="nofollow">DeepL</a>,
+                    <br><a href="https://unsplash.com" target="_blank" rel="nofollow">Unsplash</a>,
+                    <br><a href="https://fontawesome.com" target="_blank" rel="nofollow">Font Awesome</a>,
+                    <br><a href="https://jquery.com" target="_blank" rel="nofollow">jQuery</a>,
+                    <br><a href="https://github.com/ajlkn/responsive-tools" target="_blank" rel="nofollow">Responsive Tools</a>,
+                    <br><a href="https://colorbrewer2.org/#type=qualitative&scheme=Set3&n=12" target="_blank" rel="nofollow">COLORBREWER</a>,
+                    <br><a href="https://github.com/WebDevSHORTS/Parallax-Star-Background" target="_blank" rel="nofollow">Parallax Star background</a>,
+                    <br><a href="https://www.schattenbaum.net/php/kreisdiagramm_mit_gd-lib.php" target="_blank" rel="nofollow">Kreisdiagramm</a>,
+                    <br><a href="http://www.ulrichmierendorff.com/software/antialiased_arcs.html" target="_blank" rel="nofollow">Antialiased Filled Arcs</a>,
+                    <br><a href="https://datenschutz-generator.de/" target="_blank" rel="nofollow">Datenschutz-Generator.de von Dr. Thomas Schwenke</a>,
+                    <br><br><a href="/LICENSE.md" target="_blank"><?php echo translate('Apache Lizenz (Textfassung, Englisch), Version 2.0', 'de', $GLOBALS['lang']); ?></a>
                     <?php
                     if ( isset($_GET["content"]) && (
                         $_GET["content"] === "impressum" or
