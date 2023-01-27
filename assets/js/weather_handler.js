@@ -1,9 +1,9 @@
 const sky = document.getElementById("sky");
 const sun = document.getElementById("sun");
 const moon = document.getElementById("moon");
-const now = new Date("2023-02-05T02:00:00+01:00");
+//const now = new Date("2023-02-05T02:00:00+01:00");
 //const now = new Date("2023-02-05T12:00:00+01:00");
-//const now = new Date();
+const now = new Date();
 const latitude = 48.894051; //Ludwigsburg lat
 const longitude = 9.195517; //Ludwigsburg long
 const starfield = document.getElementById("starfield");
