@@ -23,7 +23,7 @@ function translate($source_text, $source_lang = "en", $target_lang = "de") {
 
     if (apcu_exists($textHash)) {
         //if (preg_match("/[0-9]/", $source_text)) apcu_delete($textHash); //delete this entry
-        //if (str_contains($source_text, "?lang=de")) apcu_delete($textHash); //delete this entry
+        //if (str_contains($source_text, "Goethe")) apcu_delete($textHash); //delete this entry
         //if ($source_text == "3. Computerraum (A-Gebäude, 2. OG)") apcu_delete($textHash); //delete this entry
         //if ($target_lang == "FR") apcu_delete($textHash); //delete if certain language
         return apcu_fetch($textHash);
@@ -94,17 +94,26 @@ function removeNewLines($str) {
 function stripHtmlTags($str) {
     $startingTags = "";
     $closingTags = "";
-    preg_match('/^(<[^>]*>)/', $str, $matches);
-    if (count($matches) > 0) {
-        $startingTags = $matches[1];
-        $str = preg_replace('/^(<[^>]*>)/', '', $str, 1);
+
+    while (true) {
+        $strippedTags = 0;
+        preg_match('/^(<[^>]*>)/', $str, $matches);
+        if (count($matches) > 0) {
+            $startingTags .= $matches[1];
+            $str = preg_replace('/^(<[^>]*>)/', '', $str, 1);
+            $strippedTags++;
+        }
+        preg_match('/(<\/[^>]*>$)/', $str, $matches);
+        if (count($matches) > 0) {
+            $closingTags = $matches[1] . $closingTags;
+            $str = preg_replace('/(<\/[^>]*>$)/', '', $str, 1);
+            $strippedTags++;
+        }
+        if ($strippedTags == 0) {
+            break;
+        }
     }
-    preg_match('/(<\/[^>]*>$)/', $str, $matches);
-    if (count($matches) > 0) {
-        $closingTags = $matches[1];
-        $str = preg_replace('/(<\/[^>]*>$)/', '', $str, 1);
-    }
-    return ["str" => $str, "startingTags" => $startingTags, "closingTags" => $closingTags];
+    return ["str" => $str, "startingTags" => $startingTags, "closingTags" => $closingTags, "strippedTags" => $strippedTags];
 }
 
 $waitForTranslation = alert("Please wait", "Please wait for the language to load. If it's the first time the server handles this language's data, it could take a while...", "info", false);
@@ -115,6 +124,12 @@ $waitForTranslation = alert("Please wait", "Please wait for the language to load
 // echo translate("How are you today?", "DE");
 //echo translate("Hallo, wie geht es dir?", "de", "ro");
 /*
+$z = "
+<p><i>Die Wissenschaft ist Teil der Lebenswirklichkeit; es ist das Was, das Wie und Warum von allem in unserer Erfahrung.</i><br>Rachel Carson</p>
+<br>
+";
+echo stripHtmlTags($z)["str"];
+
 $str = "<p>
 1. Außenbereich des A-Gebäudes";
 echo numeralPreserve($str, "en")["num"];
