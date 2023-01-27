@@ -168,7 +168,7 @@ if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $thisid != 0 && get_activ
                 $label_id++;
             } elseif ($thisType === "info") {
                 echo "<p>" . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . "</p>";
-                $denum++;
+                //$denum++; not working if this is here, don't know y :/
             } elseif ($thisType === "img") {
                 echo "    <div class='gallery'>
     
@@ -178,7 +178,7 @@ if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $thisid != 0 && get_activ
     </picture>
     </div>";
                 echo "<div id='fullpage' onclick='this.style.display=\"none\";'></div>";
-                $denum++;
+                //$denum++; not working if this is here, don't know y :/
             }
             echo "</div>";
         }
