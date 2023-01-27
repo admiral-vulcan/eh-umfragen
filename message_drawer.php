@@ -25,8 +25,10 @@
 </script>
 <?php
 function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump = '', $noORlinkdump = '', $errType = '') {
-    $title = translate($title, "de", $GLOBALS["lang"]);
-    $msg = translate($msg, "de", $GLOBALS["lang"]);
+    if ($title !== "Please wait" && $msg !== "Please wait for the language to load. If it's the first time the server handles this language's data, it could take a while...") {
+        $title = translate($title, "de", $GLOBALS["lang"]);
+        $msg = translate($msg, "de", $GLOBALS["lang"]);
+    }
     //alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump = '', $noORlinkdump = '', $errType = '')
 
     $scriptStart = "<script type=\"application/javascript\">showAlert(\"";

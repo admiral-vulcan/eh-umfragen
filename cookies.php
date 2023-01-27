@@ -1,9 +1,9 @@
 <section id="intro">
     <header>
-        <h1>Cookies</h1>
-
+        <h1><?php echo translate('Cookies', 'de', $GLOBALS['lang']); ?></h1>
 
         <div style="text-align: justify; hyphens: auto;">
+            <?php echo translate('
             <h2>Allgemeines</h2>
             <p>Cookies sind lokal auf dem Endgerät gespeicherte Informationen einer Internetseite. Diese können technisch notwendig sein (nicht einwilligungspflichtig) oder zu wirtschaftlichen Zwecken dienen (einwilligungspflichtig). </p>
 
@@ -14,12 +14,13 @@
 
             <h2>Wirtschaftliche genutzte Cookies</h2>
             <p>Wir speichern keine Cookies zu wirtschaftlichen Zwecken.</p>
+            ', 'de', $GLOBALS['lang']); ?>
         </div>
     </header>
 </section>
 <section>
     <div  style="width: 100%; position: fixed; left: 0; bottom: 0; background: var(--generic-body-back); opacity: .8;">
         <ul class="actions stacked">
-            <li><a href="JavaScript:window.close()" class="button large fit">Tab schließen</a></li>
+            <li><a href="JavaScript:window.close()" class="button large fit"><?php echo translate('Tab schließen', 'de', $GLOBALS['lang']); ?></a></li>
         </ul></div>
 </section>
