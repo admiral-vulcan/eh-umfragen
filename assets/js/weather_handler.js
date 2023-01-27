@@ -5,17 +5,15 @@ const starfield = document.getElementById("starfield");
 const skyandweathercontainer = document.getElementById("skyandweather-container");
 const weathertemperature = document.getElementById("weather_temperature");
 const times = SunCalc.getTimes(new Date(), 48.894051, 9.195517);
-var moonPhaseFrac = SunCalc.getMoonIllumination(new Date()).phase;
-var moonPositionAlt = SunCalc.getMoonPosition(new Date(), 48.894051, 9.195517).altitude;
-var currentTime = new Date().getHours() * 60 + new Date().getMinutes();
+const moonPhaseFrac = SunCalc.getMoonIllumination(new Date()).phase;
+const moonPositionAlt = SunCalc.getMoonPosition(new Date(), 48.894051, 9.195517).altitude;
+const currentTime = new Date().getHours() * 60 + new Date().getMinutes();
 const sunset = times.sunset.getHours() * 60 + times.sunset.getMinutes();
 const sunrise = times.sunrise.getHours() * 60 + times.sunrise.getMinutes();
 const noon = times.solarNoon.getHours() * 60 + times.solarNoon.getMinutes();
 const nauticalDusk = times.nauticalDusk.getHours() * 60 + times.nauticalDusk.getMinutes();
 const nauticalDawn = times.nauticalDawn.getHours() * 60 + times.nauticalDawn.getMinutes();
-
 const temperature = document.getElementById("temperature").value;
-
 const topDiv = document.getElementById("top");
 const computedStyle = window.getComputedStyle(topDiv);
 const color = computedStyle.getPropertyValue("color");
@@ -81,7 +79,6 @@ function parseColor(color) {
     return [0, 0, 0];
 }
 
-
 function calculateMinSunHeight() {
     const screenWidth = window.innerWidth;
     if (screenWidth < minScreenWidth) {
@@ -92,6 +89,7 @@ function calculateMinSunHeight() {
         return minSunHeight * (maxScreenWidth - screenWidth) / (maxScreenWidth - minScreenWidth);
     }
 }
+
 function calculateMinMoonHeight() {
     let minMoonHeight;
     const screenWidth = window.innerWidth;
@@ -110,6 +108,7 @@ function calculateMinMoonHeight() {
     return minMoonHeight;
 }
 
+/*
 const sunCutter = document.getElementById("sunCutter");
 
 function calculateBorderTop() {
@@ -122,6 +121,7 @@ function calculateBorderTop() {
     //sunCutter.style.clipPath = "polygon(0 10%, 100% "+borderTop+", 100% 0, 0 0)";
     return borderTop;
 }
+*/
 
 function calculateOpacityGradient(sunHeight) {
     let opacityGradient;
@@ -161,7 +161,6 @@ function calculateSunColorCenterGradient(sunHeight) {
     }
     return sunColorCenterGradient.toFixed();
 }
-
 
 function updateColors(sunHeight) {
     let skyColor;
@@ -234,15 +233,12 @@ function updateColors(sunHeight) {
         sunColorAura = "#000000";
     }
 
-
     let opacityGradient = calculateOpacityGradient(sunHeight);
     let sunColorAuraGradient = calculateSunColorAuraGradient(sunHeight);
     let sunColorCenterGradient = calculateSunColorCenterGradient(sunHeight);
 
-
     sky.style.background = "linear-gradient(190deg, "+skyColor+" 5%, rgba(0,0,0,0) 40%)";
     sun.style.background = "linear-gradient(24deg, rgba(0,0,0,0) "+opacityGradient+"%, "+sunColorAura+" "+sunColorAuraGradient+"%, "+sunColorCenter+" "+sunColorCenterGradient+"%)"; //sun color
-
 }
 
 function setSun(currentTime, minSunHeight, maxSunHeight, maxDay, nauticalDawn, nauticalDusk) {
@@ -262,7 +258,6 @@ function setSun(currentTime, minSunHeight, maxSunHeight, maxDay, nauticalDawn, n
         // At night: at minimum height
         sunHeight = minSunHeight;
     }
-
     updateColors(sunHeight);
     sunHeight = (sunHeight*100).toFixed() + "%";
     sun.style.bottom = sunHeight;
@@ -273,7 +268,7 @@ function setMoon(minMoonHeight, maxMoonHeight, moonAltitude) {
     let moonHeightTop;
     if (moonAltitude >= 0) {
         // Moon is above the horizon: calculate moon height based on altitude
-        moonHeight = minMoonHeight + (maxMoonHeight - minMoonHeight) * moonAltitude / 90;
+        moonHeight = minMoonHeight + (maxMoonHeight - minMoonHeight) * (moonAltitude + 1.57) / (2 * 1.57);
         // Invert moonHeight to work with CSS top
         moonHeight = 1 - moonHeight;
         moonHeightTop = (moonHeight*100).toFixed() + "%";
@@ -281,11 +276,9 @@ function setMoon(minMoonHeight, maxMoonHeight, moonAltitude) {
         // Moon is below the horizon: set minimum height
         moonHeightTop = "-100%";
     }
-
-
-
     moon.style.top = moonHeightTop;
 }
+
 
 function setMoonPhase(deg) {
     deg = deg*-1+180;
@@ -294,7 +287,6 @@ function setMoonPhase(deg) {
     let degphase = deg;
     if (deg >  90) degphase += 180;
     if (deg > 270) degphase += 180;
-
 
     document.querySelector('.divider').style.transform = `rotate3d(0, -1, 0, ${degphase}deg)`
 
@@ -325,7 +317,6 @@ function setMoonPhase(deg) {
     }
 }
 
-
 // Get the checkbox element
 var weatherCheckbox = document.getElementById('weather_checkbox');
 
@@ -346,7 +337,6 @@ if (color !== "rgb(0, 0, 0)" && background !== "rgb(255, 255, 255)") {
     if (weatherCheckbox.checked) showWeather();
 }
 else hideWeather();
-
 
 function checkUserWeatherState() {
 
@@ -375,6 +365,7 @@ function checkUserWeatherState() {
         }
     }
 }
+
 function reactUserWeatherState() {
     if (weatherCheckbox.checked) {
         Cookies.set("weather", "show");
@@ -431,12 +422,8 @@ function isAvifSupported() {
     return avif.width > 0;
 }
 */
-// This function sets a cookie with the given name and value, that expires after the given number of days
-
 
 // Run the function when the site is loaded
 window.addEventListener('load', checkUserWeatherState);
-
-
 // Add an event listener for the checkbox's "click" event
 weatherCheckbox.addEventListener("click", reactUserWeatherState);
