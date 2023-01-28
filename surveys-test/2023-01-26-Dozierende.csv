@@ -1,7 +1,9 @@
-0;Dozierendenbewertung;Dozierendenbewertung;lorem ipsum;lorem ipsum;Umfrage von: Lena Weigelt, Miriam Brieger, Felix Rau
+10;Dozierendenbewertung;Dozierendenbewertung;lorem ipsum;lorem ipsum;Umfrage von: Lena Weigelt, Miriam Brieger, Felix Rau
 Studierende;;;;;
-info;Info;;;;
-und;Frage 1;Antwort 1;Antwort 2;;
-gruppe;versteckte Frage 1;Antwort 1;Antwort 2;;
-und;lol;;;;
+oder1;Frage;Antwort 1;Antwort 2;;
+img;versteckte Frage;Antwort 1;Antwort 2;;
+info;hier stehen lustige sachen;;;;
+gruppe1;Frage;Antwort 1;Antwort 2;;
+gruppe;versteckte Frage;Antwort 1;Antwort 2;;
+und;Frage;Antwort 1;Antwort 2;;
 info;Info;;;;
