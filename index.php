@@ -114,7 +114,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         <nav class="main" style="min-height: 4em">
             <ul>
                 <li class="menu">
-                    <a class="fa-bars" href="#menu" tabindex="1" aria-label="Menü">Menü</a
+                    <a class="fa-bars" href="#menu" tabindex="2" aria-label="<?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>"><?php echo translate("Menü", "de", $GLOBALS["lang"]); ?></a
                 </li>
             </>
         </nav>
@@ -149,7 +149,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         <nav class="main">
             <div class="color_scheme_container">
                 <label for="color_scheme" class="color_scheme"><div><?php echo translate("Design", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;</div></label>
-                <select tabindex="2" aria-label="Designauswahl" name="color_scheme" class="color_scheme_select" id="color_scheme">
+                <select tabindex="3" aria-label="<?php echo translate("Designauswahl", "de", $GLOBALS["lang"]); ?>" name="color_scheme" class="color_scheme_select" id="color_scheme">
                     <option value="1" id="auto" <?php if ($color_scheme === "auto") echo "selected"; ?>>Auto</option>
                     <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected"; echo ">" . translate("Hell", "de", $GLOBALS["lang"]); ?></option>
                     <option value="3" id="dark" <?php if ($color_scheme === "dark") echo "selected"; echo ">" . translate("Dunkel", "de", $GLOBALS["lang"]); ?></option>
@@ -163,7 +163,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                 <ul>
                     <li>
                         <form class="not-selectable">&emsp;
-                            <input  aria-label="E.H. Wetter anzeigen" type="checkbox" name="weather_checkbox" id="weather_checkbox">
+                            <input  aria-label="<?php echo translate("E.H. Wetter anzeigen", "de", $GLOBALS["lang"]); ?>" type="checkbox" name="weather_checkbox" id="weather_checkbox">
                             <label class="weather_scheme" for="weather_checkbox">
                                 <?php echo translate("EH-Wetter", "de", $GLOBALS["lang"]); ?>
                             </label>
@@ -198,7 +198,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
             <div class="language_container">
                 <div class="language_select_container">
                     <label for="language_select" class="language_label"><div class="language_label_div"><?php echo translate("Sprache", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;</div></label> <!--  -->
-                    <select tabindex="2" aria-label="Sprachauswahl" name="language_select" class="language_select">
+                    <select tabindex="3" aria-label="<?php echo translate("Sprachauswahl", "de", $GLOBALS["lang"]); ?>" name="language_select" class="language_select">
                         <option class="language" value="lang_auto" <?php if ($GLOBALS["lang"] === "") echo "selected"; ?> >Auto</option>
                         <option class="language" value="de" <?php if ($GLOBALS["lang"] === "de") echo "selected"; echo ">" . translate("Deutsch", "de", "de"); ?></option>
                         <option class="language" value="en" <?php if ($GLOBALS["lang"] === "en") echo "selected"; echo ">" . translate("Englisch", "de", "en"); ?></option>

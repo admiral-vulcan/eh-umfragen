@@ -3899,12 +3899,14 @@ scrollbar {
 }
 
 .info, .warning, .error {
-	width: 96%;
+	width: 100px;
+	min-width: 50%;
+	max-width: 96%;
 	position: fixed;
 	left: 2%;
 	right: 1em;
-	bottom: auto;
-	top: 10%;
+	/*bottom: auto;*/
+	top: 0;
 	background: var(--generic-body-back);
 	opacity: var(--error-opacity);
 	display: none;
@@ -3919,11 +3921,18 @@ scrollbar {
 	z-index: 10005;
 
 }
+
 .info h3, .warning h3, .error h3 {
 	line-height: 1;
 	font-size: 2em;
 	font-weight: bolder;
 	text-align: center;
+}
+
+.alert {
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 }
 
 .field-icon {
