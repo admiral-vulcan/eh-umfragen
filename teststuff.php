@@ -7,15 +7,33 @@ error_reporting(E_ALL);
 
 
 
-if (isset($_GET["test"])) {
-	$number = 0;
-	$string = $_GET["test"];
+function stripHtmlTags($str) {
+    $startingTags = "";
+    $closingTags = "";
 
-	preg_match('/\d+$/', $string, $matches);
-	if (isset($matches[0])) $number = intval($matches[0]);
-	$string = preg_replace('/\d+$/', '', $string);
-	
-	echo "comb: \"" . $_GET["test"] . "\"<br>";
-	echo "number: \"" . $number . "\"<br>";
-	echo "string: \"" . $string . "\"<br>";
+    while (true) {
+        $strippedTags = 0;
+        preg_match('/^(<[^>]*>)/', $str, $matches);
+        if (count($matches) > 0) {
+            $startingTags .= $matches[1];
+            $str = preg_replace('/^(<[^>]*>)/', '', $str, 1);
+            $strippedTags++;
+        }
+        preg_match('/(<\/[^>]*>$)/', $str, $matches);
+        if (count($matches) > 0) {
+            $closingTags = $matches[1] . $closingTags;
+            $str = preg_replace('/(<\/[^>]*>$)/', '', $str, 1);
+            $strippedTags++;
+        }
+        if ($strippedTags == 0) {
+            break;
+        }
+    }
+    return ["str" => $str, "startingTags" => $startingTags, "closingTags" => $closingTags, "strippedTags" => $strippedTags];
 }
+
+
+
+
+$z = "<p><i>Die Wissenschaft ist Teil der Lebenswirklichkeit; es ist das Was, das Wie und Warum von allem in unserer Erfahrung.</i><br>Rachel Carson</p>";
+echo stripHtmlTags($z)["closingTags"];
