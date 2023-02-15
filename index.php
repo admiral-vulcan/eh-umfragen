@@ -53,10 +53,10 @@ $version = $ver_str;                    //legacy reasons, but it's nice to have
 require_once ("utf8Encode.php");
 require_once ("message_drawer.php");
 require_once ("translate.php");
+require_once ("geturl.php");
 require_once ("head.php");
 require_once ("hdd_handler.php");
 require_once ("zitate.php");
-require_once ("geturl.php");
 require_once("gitignore/code.php");
 require_once ("sanitize.php");
 require_once ("get_ip.php");
