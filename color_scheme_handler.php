@@ -42,6 +42,7 @@ $colorsvibrant = array(
 
     "scheme" => "dark"
 );
+
 $colorspastel = array(
     array(215,48,39),
     array(252,141,89),
@@ -158,7 +159,6 @@ if ($color_scheme === "auto") {                                 /*** ELSEIF FOR 
     $GLOBALS["colors"] = $colorspastel;
 }
 setcookie('prefers_color_scheme', '', time() - 3600, '/'); // empty value and past timestamp
-
 ?>
 <script src="assets/js/src/js.cookie.min.js"></script>
 <script type="text/javascript">
