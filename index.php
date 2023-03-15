@@ -148,7 +148,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         </nav>
         <nav class="main">
             <div class="color_scheme_container">
-                <label for="color_scheme" class="color_scheme"><div><?php echo translate("Design", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;</div></label>
+                <label for="color_scheme" class="color_scheme"><div><?php echo translate("Design", "de", $GLOBALS["lang"]); ?><!-- &emsp;&emsp; --></div></label>
                 <select tabindex="3" aria-label="<?php echo translate("Designauswahl", "de", $GLOBALS["lang"]); ?>" name="color_scheme" class="color_scheme_select" id="color_scheme">
                     <option value="1" id="auto" <?php if ($color_scheme === "auto") echo "selected"; ?>>Auto</option>
                     <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected"; echo ">" . translate("Hell", "de", $GLOBALS["lang"]); ?></option>
