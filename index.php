@@ -192,12 +192,12 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     <source srcset="images/logo.avif" type="image/avif">
                     <img src="images/logo.png" alt="<?php echo translate($profilePic['alt'], 'de', $GLOBALS['lang']); ?>" style='padding-left: 1.5em; padding-top: 1.5em; width: 30%; text-align: right; vertical-align: middle;'>
                 </picture>
-                &emsp;&emsp;
+                &emsp;&emsp;<!-- hmm -->
                 <?php //echo translate("Menü", "de", $GLOBALS["lang"]); ?>
             </h2>
             <div class="language_container">
-                <div class="language_select_container">
-                    <label for="language_select" class="language_label"><div class="language_label_div"><?php echo translate("Sprache", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;</div></label> <!--  -->
+                <div class="language_select_container" style="margin-left: 1em">
+                    <label for="language_select" class="language_label"><div class="language_label_div"><?php echo translate("Sprache", "de", $GLOBALS["lang"]); ?></div></label> <!--  -->
                     <select tabindex="3" aria-label="<?php echo translate("Sprachauswahl", "de", $GLOBALS["lang"]); ?>" name="language_select" class="language_select">
                         <option class="language" value="lang_auto" <?php if ($GLOBALS["lang"] === "") echo "selected"; ?> >Auto</option>
                         <option class="language" value="de" <?php if ($GLOBALS["lang"] === "de") echo "selected"; echo ">" . translate("Deutsch", "de", "de"); ?></option>

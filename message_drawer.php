@@ -1,6 +1,8 @@
 <script type="application/javascript">
     function showAlert($id) {
         const thisAlert = document.getElementById("alert"+$id);
+
+        thisAlert.style.transform = "scaleX(0.50) scaleY(0.75)"; // reset scale (effects case if message has been shown before)
         thisAlert.setAttribute("aria-hidden", "false");
         const links = thisAlert.querySelectorAll("a");
         links.forEach(function(link){
@@ -104,7 +106,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
     switch ($type) {
         case 'info':
             ?>
-            <div  class="alert <?php echo $type; ?>"  aria-hidden="true" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.75) scaleY(0.94);">
+            <div  class="alert <?php echo $type; ?>"  aria-hidden="true" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.50) scaleY(0.75);">
                 <h2 style="outline-style: double; padding-left: 0.5em"><?php echo translate("Information", "de", $GLOBALS["lang"]); ?></h2>
                 <ul class="actions stacked">
                     <li>
@@ -136,7 +138,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
             break;
         case 'warning':
             ?>
-            <div  class="alert <?php echo $type; ?>" aria-hidden="true" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.75) scaleY(0.94);">
+            <div  class="alert <?php echo $type; ?>" aria-hidden="true" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.50) scaleY(0.75);">
                 <h2 style="outline-style: double; padding-left: 0.5em"><?php echo translate("Warnung", "de", $GLOBALS["lang"]); ?></h2>
                 <ul class="actions stacked">
                     <li>
@@ -183,7 +185,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
             break;
         case 'error':
             ?>
-            <div  class="alert <?php echo $type; ?>" aria-hidden="true" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.75) scaleY(0.94);">
+            <div  class="alert <?php echo $type; ?>" aria-hidden="true" id="alert<?php echo $GLOBALS['alertid']; ?>" style="display: none; opacity: 0; transform: scaleX(0.50) scaleY(0.75);">
                 <h2 style="outline-style: double; padding-left: 0.5em"><?php echo translate("Fehler", "de", $GLOBALS["lang"]); ?></h2>
                 <ul class="actions stacked">
                     <li>

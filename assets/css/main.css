@@ -3898,28 +3898,60 @@ scrollbar {
 	background: var(--generic-white);
 }
 
+/* alert messages */
+@media only screen and (max-width: 767px) {
+	/* CSS styles for mobile devices */
+	.info, .warning, .error {
+		width: 100px;
+		min-width: 90%;
+		max-width: 99%;
+		position: fixed;
+		left: 2%;
+	}
+}
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+	/* CSS styles for tablets */
+	.info, .warning, .error {
+		width: 100px;
+		min-width: 80%;
+		max-width: 98%;
+		position: fixed;
+		left: 2%;
+	}
+}
+@media only screen and (min-width: 1024px) and (max-width: 1279px) {
+	/* CSS styles for small desktops */
+	.info, .warning, .error {
+		width: 100px;
+		min-width: 60%;
+		max-width: 97%;
+		position: fixed;
+		left: 2%;
+	}
+}
+@media only screen and (min-width: 1280px) {
+	/* CSS styles for large desktops */
+	.info, .warning, .error {
+		width: 100px;
+		min-width: 50%;
+		max-width: 96%;
+		position: fixed;
+		left: 2%;
+	}
+}
+
 .info, .warning, .error {
-	width: 100px;
-	min-width: 50%;
-	max-width: 96%;
-	position: fixed;
-	left: 2%;
-	right: 1em;
-	/*bottom: auto;*/
 	top: 0;
 	background: var(--generic-body-back);
 	opacity: var(--error-opacity);
 	display: none;
 	outline-style: double;
-
 	-moz-transition: transform 0.5s ease, opacity 0.5s ease;
 	-webkit-transition: transform 0.5s ease, opacity 0.5s ease;
 	-ms-transition: transform 0.5s ease, opacity 0.5s ease;
 	transition: transform 0.5s ease, opacity 0.5s ease;
-
 	box-shadow: 0 0 100px black;
 	z-index: 10005;
-
 }
 
 .info h3, .warning h3, .error h3 {
