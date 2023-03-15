@@ -357,5 +357,5 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
     $elapsed = intval(($end - $start)/1000000);
     echo "<br> Serverseitige Seitenladezeit: $elapsed ms.<br><br><br>";
 }
+echo "</html>";
 ?>
-</html>
