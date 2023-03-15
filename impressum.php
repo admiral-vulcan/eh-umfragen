@@ -5,7 +5,7 @@
 
         <div style="text-align: justify; hyphens: auto;">
             <h2 id="m46"><?php echo translate('Diensteanbieter', 'de', $GLOBALS['lang']); ?></h2>
-            <img class="iadd" alt="Adresse" style="pointer-events: none;">
+            <img class="iadd" alt="Adresse" style="pointer-events: none;" src="/images/iadd.png">
             <br>
             <br>
 

@@ -99,7 +99,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
     <br>Dabei können Fehler aufkommen, die die Seite unbrauchbar machen. 
     <br>Falls Du unabsichtlich hier angekommen bist, gehe bitte zur produktiven Domain zurück: <a href='https://www.eh-umfragen.de'>www.eh-umfragen.de</a>.
     ", "info", false);
- echo '<div style="position: fixed; top: 4em; width: 100%"><h2 style="text-align: center"><a style="cursor: pointer" onclick="showAlert(' . $testInfo . ')">' .
+    echo '<div style="position: fixed; top: 4em; width: 100%;"><h2 style="text-align: center;"><!--suppress JSVoidFunctionReturnValueUsed --><a style="cursor: pointer;" onclick="showAlert(' . $testInfo . ')">' .
  translate("Potentiell fehlerhaltige Testversion", 'de', $GLOBALS['lang'])
  . '</a></h2></div>';
 }
@@ -111,7 +111,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
 <div id="wrapper">
     <!-- Header -->
     <header id="topBar">
-        <nav class="main" style="min-height: 4em">
+        <nav class="main" style="min-height: 4em;">
             <ul>
                 <li class="menu">
                     <a class="fa-bars" href="#menu" tabindex="2" aria-label="<?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>"><?php echo translate("Menü", "de", $GLOBALS["lang"]); ?></a
@@ -187,7 +187,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
     <!-- Menu -->
     <section class="not-selectable" id="menu">
         <!-- Links -->
-        <section style="padding-left: 1em">
+        <section style="padding-left: 1em;">
             <h2><picture>
                     <source srcset="images/logo.avif" type="image/avif">
                     <img src="images/logo.png" alt="<?php echo translate($profilePic['alt'], 'de', $GLOBALS['lang']); ?>" style='padding-left: 1.5em; padding-top: 1.5em; width: 30%; text-align: right; vertical-align: middle;'>

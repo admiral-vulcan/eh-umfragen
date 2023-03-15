@@ -100,7 +100,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
 
     $scriptStart = "<script type=\"application/javascript\">showAlert(\"";
     $scriptEnd = "</script>";
-    if ($type != "info" && $type != "warning" && $type != "error") return;
+    if ($type != "info" && $type != "warning" && $type != "error") return "";
     $GLOBALS['alertid'] = $GLOBALS['alertid']+1;
 
     switch ($type) {
@@ -111,19 +111,17 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                 <ul class="actions stacked">
                     <li>
                         <h3><?php echo $title; ?></h3>
-                        <p>
-                        <center>
-                            <b><?php echo $msg; ?>
+                        <div style="text-align: center;">
+                            <b>
+                                <?php echo $msg; ?>
                             </b>
-                        </center>
-                        </p><br>
+                        </div><br>
                         <a tabindex='-1' class='button large fit' "
                         <?php
                         echo "onclick='hideAlert(" . $GLOBALS["alertid"] . "); ";
                         if ($yesORoklinkORdump !== "") echo " setTimeout(function() { window.location.href = \"" . $yesORoklinkORdump . "\"; }, 500);";
-                        echo "'";
+                        echo "'\">OK</a>";
                         ?>
-                        ">OK</a>
                     </li>
                 </ul>
             </div>
@@ -143,12 +141,11 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                 <ul class="actions stacked">
                     <li>
                         <h3><?php echo $title; ?></h3>
-                        <p>
-                        <center>
+                        <div style="text-align: center;">
                             <b><?php echo $msg; ?>
                             </b>
-                        </center>
-                        </p><br>
+                        </div>
+                        <br>
                         <?php
                         if ($yesORoklinkORdump == "" || $noORlinkdump == "") {
                             ?>
@@ -190,8 +187,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                 <ul class="actions stacked">
                     <li>
                         <h3><?php echo $title; ?></h3>
-                        <p>
-                        <center>
+                        <div style="text-align: center;">
                             <b>
                                 <?php
                                 echo $msg;
@@ -202,8 +198,8 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                                 }
                                 ?>
                             </b>
-                        </center>
-                        </p><br>
+                        </div>
+                        <br>
                         <a tabindex='-1' class='button large fit' onclick='hideAlert("<?php echo $GLOBALS['alertid']; ?>")'>OK</a>
                         <a tabindex="-1" style="opacity: 0; height: 0; width: 0"></a> <!-- in order to bind the users tabbing and the difficulty of selecting the last value -->
                     </li>
@@ -250,7 +246,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
 
                 // Lower the z-index of all other alert elements
                 for (var j = 0; j < alertElements.length; j++) {
-                    if (alertElements[j] != this) {
+                    if (alertElements[j] !== this) {
                         alertElements[j].style.zIndex = "10004";
                     }
                 }

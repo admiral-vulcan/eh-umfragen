@@ -2,7 +2,7 @@
 require_once ("geturl.php");
 if (!isset($title)) $title = "eh-umfragen.de - " . translate("Umfragen von und für Studierende der EH", "de", $GLOBALS["lang"]);
 if (!isset($abstract)) $abstract = translate("Hier findet Ihr relevante Umfragen für Euch!", "de", $GLOBALS["lang"]);
-if (!isset($description1)) $description = translate("Hier findet Ihr Umfragen, die für Euch relevant sind! Ob sie Teil einer modultypischen Arbeit sind oder gerade nur ein Hirngespinst, hier werdet Ihr fündig!", "de", $GLOBALS["lang"]);
+if (!isset($description)) $description = translate("Hier findet Ihr Umfragen, die für Euch relevant sind! Ob sie Teil einer modultypischen Arbeit sind oder gerade nur ein Hirngespinst, hier werdet Ihr fündig!", "de", $GLOBALS["lang"]);
 if (!isset($keywords)) $keywords = translate("Umfragen Evangelischen Hochschule Ludwigsburg Studierende", "de", $GLOBALS["lang"]);
 if (!isset($this_uri)) $this_uri = "https://www.eh-umfragen.de";
 if (!isset($GLOBALS["lang"])) $GLOBALS["lang"] = "de";
@@ -10,8 +10,7 @@ if (strtolower($GLOBALS["lang"]) == "en") $locale = "en_US";
 else $locale = strtolower($GLOBALS["lang"]) . "_" . strtoupper($GLOBALS["lang"]);
 ?>
 <!DOCTYPE HTML>
-<html lang="<?php echo $GLOBALS["lang"] ?>" xml:lang="<?php echo $GLOBALS["lang"] ?>">
-<html prefix="og: https://ogp.me/ns#">
+<html lang="<?php echo $GLOBALS["lang"] ?>" xml:lang="<?php echo $GLOBALS["lang"] ?>" prefix="og: https://ogp.me/ns#">
 <head>
     <title><?php echo $title ?></title>
     <meta property="og:title" content="<?php echo $title ?>" />
