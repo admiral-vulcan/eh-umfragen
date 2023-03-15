@@ -1,20 +1,19 @@
-
 :root {
-    --generic-mid-grey: #000000;
-    --generic-light-grey: #000000;
-    --generic-dark-grey: #000000;
+    --generic-mid-grey: black;
+    --generic-light-grey: black;
+    --generic-dark-grey: black;
     --generic-hover: #d96d6d;
-    --generic-white: #ffffff;
-    --generic-body-back: #ffffff;
-    --generic-grey-opacity-065: #000000;
-    --generic-grey-opacity-03: #000000;
-    --generic-grey-opacity-0075: #ffffff;
-    --generic-grey-opacity-005: #000000;
+    --generic-white: white;
+    --generic-body-back: white;
+    --generic-grey-opacity-065: black;
+    --generic-grey-opacity-03: black;
+    --generic-grey-opacity-0075: white;
+    --generic-grey-opacity-005: black;
     --error-opacity: 1;
 }
 
 .color_scheme_select {
-    color: rgba(0,0,0,1);
+    color: black;
 }
 
 #menu, #header {
@@ -22,4 +21,8 @@
     border-width: 0.2em;
     border-color: black;
     min-height: 4em;
+}
+
+p, i, a {
+    font-weight: bold !important;
 }

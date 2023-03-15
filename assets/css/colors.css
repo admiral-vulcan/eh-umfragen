@@ -111,30 +111,34 @@
         z-index: -1;
     }
 }
-@media (-ms-high-contrast: active) or (prefers-contrast: high) or (prefers-contrast: high) {
-
+@media (-ms-high-contrast: active) or (prefers-contrast: more) { /* TODO: prefers-contrast: custom - for special color variants. get them somehow*/
     :root {
-        --generic-mid-grey: #000000;
-        --generic-light-grey: #000000;
-        --generic-dark-grey: #000000;
-        --generic-hover: #8f4848;
-        --generic-white: #ffffff;
-        --generic-body-back: #ffffff;
-        --generic-body-back-rgb: rgb(255, 255, 255);
-        --generic-grey-opacity-065: #000000;
-        --generic-grey-opacity-03: #000000;
-        --generic-grey-opacity-0075: #ffffff;
-        --generic-grey-opacity-005: #000000;
+        --generic-mid-grey: black;
+        --generic-light-grey: black;
+        --generic-dark-grey: black;
+        --generic-hover: #d96d6d;
+        --generic-white: white;
+        --generic-body-back: white;
+        --generic-grey-opacity-065: black;
+        --generic-grey-opacity-03: black;
+        --generic-grey-opacity-0075: white;
+        --generic-grey-opacity-005: black;
         --error-opacity: 1;
     }
 
     .color_scheme_select {
-        color: rgba(0,0,0,1);
+        color: black;
     }
+
     #menu, #header {
-        border-style: solid;
+        border-style: outset;
         border-width: 0.2em;
         border-color: black;
+        min-height: 4em;
+    }
+
+    p, i, a {
+        font-weight: bold !important;
     }
 }
 
