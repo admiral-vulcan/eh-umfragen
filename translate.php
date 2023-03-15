@@ -73,7 +73,7 @@ function translate($source_text, $source_lang = "en", $target_lang = "de") {
 }
 
 
-function numeralPreserve($str) {
+function numeralPreserve($str): array|string|null {
     $output = array("str" => $str, "num" => "");
     if (preg_match("/(.*?)(?:^|>)([0-9]+)\.([^0-9].*)/", $str, $matches)) {
         if (preg_match("/>([0-9]+)/", $str)) $output["num"] = $matches[1].">".$matches[2] . ". ";
@@ -82,14 +82,13 @@ function numeralPreserve($str) {
     }
     return $output;
 }
-function replaceDotWithColon($str) {
-    $str = preg_replace('/(\d+)\. /', '$1: ', $str);
-    return $str;
+function replaceDotWithColon($str): array|string|null {
+    return preg_replace('/(\d+)\. /', '$1: ', $str);
 }
-function removeNewLines($str) {
+function removeNewLines($str): array|string|null {
     return str_replace(array("\r\n", "\r", "\n"), '', $str);
 }
-function stripHtmlTags($str) {
+function stripHtmlTags($str): array|string|null {
     $startingTags = "";
     $closingTags = "";
 
