@@ -148,12 +148,12 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         </nav>
         <nav class="main">
             <div class="color_scheme_container">
-                <label for="color_scheme" class="color_scheme"><div><?php echo translate("Design", "de", $GLOBALS["lang"]); ?><!-- &emsp;&emsp; --></div></label>
+                <label for="color_scheme" class="color_scheme"><?php echo translate("Design", "de", $GLOBALS["lang"]); ?><!-- &emsp;&emsp; --></label>
                 <select tabindex="3" aria-label="<?php echo translate("Designauswahl", "de", $GLOBALS["lang"]); ?>" name="color_scheme" class="color_scheme_select" id="color_scheme">
                     <option value="1" id="auto" <?php if ($color_scheme === "auto") echo "selected"; ?>>Auto</option>
-                    <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected"; echo ">" . translate("Hell", "de", $GLOBALS["lang"]); ?></option>
-                    <option value="3" id="dark" <?php if ($color_scheme === "dark") echo "selected"; echo ">" . translate("Dunkel", "de", $GLOBALS["lang"]); ?></option>
-                    <option value="4" id="contrast" <?php if ($color_scheme === "contrast") echo "selected"; echo ">" . translate("Hochkontrast", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected"; ?>><?php echo translate("Hell", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="3" id="dark" <?php if ($color_scheme === "dark") echo "selected"; ?>><?php echo translate("Dunkel", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="4" id="contrast" <?php if ($color_scheme === "contrast") echo "selected"; ?>><?php echo translate("Hochkontrast", "de", $GLOBALS["lang"]); ?></option>
                 </select>
             </div>
         </nav>
@@ -192,32 +192,30 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                     <source srcset="images/logo.avif" type="image/avif">
                     <img src="images/logo.png" alt="<?php echo translate($profilePic['alt'], 'de', $GLOBALS['lang']); ?>" style='padding-left: 1.5em; padding-top: 1.5em; width: 30%; text-align: right; vertical-align: middle;'>
                 </picture>
-                &emsp;&emsp;<!-- hmm -->
                 <?php //echo translate("Menü", "de", $GLOBALS["lang"]); ?>
             </h2>
             <div class="language_container">
-                <div class="language_select_container" style="margin-left: 1em">
+                <div class="language_select_container">
                     <label for="language_select" class="language_label"><div class="language_label_div"><?php echo translate("Sprache", "de", $GLOBALS["lang"]); ?></div></label> <!--  -->
                     <select tabindex="3" aria-label="<?php echo translate("Sprachauswahl", "de", $GLOBALS["lang"]); ?>" name="language_select" class="language_select">
                         <option class="language" value="lang_auto" <?php if ($GLOBALS["lang"] === "") echo "selected"; ?> >Auto</option>
-                        <option class="language" value="de" <?php if ($GLOBALS["lang"] === "de") echo "selected"; echo ">" . translate("Deutsch", "de", "de"); ?></option>
-                        <option class="language" value="en" <?php if ($GLOBALS["lang"] === "en") echo "selected"; echo ">" . translate("Englisch", "de", "en"); ?></option>
-                        <option class="language" value="fr" <?php if ($GLOBALS["lang"] === "fr") echo "selected"; echo ">" . translate("Französisch", "de", "fr"); ?></option>
-                        <option class="language" value="it" <?php if ($GLOBALS["lang"] === "it") echo "selected"; echo ">" . translate("Italienisch", "de", "it"); ?></option>
-                        <option class="language" value="ro" <?php if ($GLOBALS["lang"] === "ro") echo "selected"; echo ">" . translate("Rumänisch", "de", "ro"); ?></option>
-                        <option class="language" value="pl" <?php if ($GLOBALS["lang"] === "pl") echo "selected"; echo ">" . translate("Polnisch", "de", "pl"); ?></option>
-                        <option class="language" value="es" <?php if ($GLOBALS["lang"] === "es") echo "selected"; echo ">" . translate("Spanisch", "de", "es"); ?></option>
-                        <option class="language" value="ru" <?php if ($GLOBALS["lang"] === "ru") echo "selected"; echo ">" . translate("Russisch", "de", "ru"); ?></option>
-                        <option class="language" value="tr" <?php if ($GLOBALS["lang"] === "tr") echo "selected"; echo ">" . translate("Türkisch", "de", "tr"); ?></option>
+                        <option class="language" value="de" <?php if ($GLOBALS["lang"] === "de") echo "selected"; ?>><?php echo translate("Deutsch", "de", "de"); ?></option>
+                        <option class="language" value="en" <?php if ($GLOBALS["lang"] === "en") echo "selected"; ?>><?php echo translate("Englisch", "de", "en"); ?></option>
+                        <option class="language" value="fr" <?php if ($GLOBALS["lang"] === "fr") echo "selected"; ?>><?php echo translate("Französisch", "de", "fr"); ?></option>
+                        <option class="language" value="it" <?php if ($GLOBALS["lang"] === "it") echo "selected"; ?>><?php echo translate("Italienisch", "de", "it"); ?></option>
+                        <option class="language" value="ro" <?php if ($GLOBALS["lang"] === "ro") echo "selected"; ?>><?php echo translate("Rumänisch", "de", "ro"); ?></option>
+                        <option class="language" value="pl" <?php if ($GLOBALS["lang"] === "pl") echo "selected"; ?>><?php echo translate("Polnisch", "de", "pl"); ?></option>
+                        <option class="language" value="es" <?php if ($GLOBALS["lang"] === "es") echo "selected"; ?>><?php echo translate("Spanisch", "de", "es"); ?></option>
+                        <option class="language" value="ru" <?php if ($GLOBALS["lang"] === "ru") echo "selected"; ?>><?php echo translate("Russisch", "de", "ru"); ?></option>
+                        <option class="language" value="tr" <?php if ($GLOBALS["lang"] === "tr") echo "selected"; ?>><?php echo translate("Türkisch", "de", "tr"); ?></option>
                         <!--
-                        <option class="language" value="pt" <?php if ($GLOBALS["lang"] === "pt") echo "selected"; echo ">" . translate("Portugiesisch", "de", "pt"); ?></option>
-                        <option class="language" value="da" <?php if ($GLOBALS["lang"] === "da") echo "selected"; echo ">" . translate("Dänisch", "de", "da"); ?></option>
-                        <option class="language" value="el" <?php if ($GLOBALS["lang"] === "el") echo "selected"; echo ">" . translate("Griechisch", "de", "el"); ?></option>
-                        <option class="language" value="fi" <?php if ($GLOBALS["lang"] === "fi") echo "selected"; echo ">" . translate("Finnisch", "de", "fi"); ?></option>
-                        <option class="language" value="sv" <?php if ($GLOBALS["lang"] === "sv") echo "selected"; echo ">" . translate("Schwedisch", "de", "sv"); ?></option>
-                        <option class="language" value="nl" <?php if ($GLOBALS["lang"] === "nl") echo "selected"; echo ">" . translate("Niederländisch", "de", "nl"); ?></option>
+                        <option class="language" value="pt" <?php if ($GLOBALS["lang"] === "pt") echo "selected"; ?>><?php echo translate("Portugiesisch", "de", "pt"); ?></option>
+                        <option class="language" value="da" <?php if ($GLOBALS["lang"] === "da") echo "selected"; ?>><?php echo translate("Dänisch", "de", "da"); ?></option>
+                        <option class="language" value="el" <?php if ($GLOBALS["lang"] === "el") echo "selected"; ?>><?php echo translate("Griechisch", "de", "el"); ?></option>
+                        <option class="language" value="fi" <?php if ($GLOBALS["lang"] === "fi") echo "selected"; ?>><?php echo translate("Finnisch", "de", "fi"); ?></option>
+                        <option class="language" value="sv" <?php if ($GLOBALS["lang"] === "sv") echo "selected"; ?>><?php echo translate("Schwedisch", "de", "sv"); ?></option>
+                        <option class="language" value="nl" <?php if ($GLOBALS["lang"] === "nl") echo "selected"; ?>><?php echo translate("Niederländisch", "de", "nl"); ?></option>
                         -->
-                    </select>
                     </select>
                 </div>
             </div>
