@@ -72,6 +72,7 @@
 
 // Set focus on the first tabindex=1 element
         tabindex1Elements[0].focus();
+        return 1;
     }
 
     function hideAlert($id) {

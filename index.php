@@ -99,7 +99,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
     <br>Dabei können Fehler aufkommen, die die Seite unbrauchbar machen. 
     <br>Falls Du unabsichtlich hier angekommen bist, gehe bitte zur produktiven Domain zurück: <a href='https://www.eh-umfragen.de'>www.eh-umfragen.de</a>.
     ", "info", false);
-    echo '<div style="position: fixed; top: 4em; width: 100%;"><h2 style="text-align: center;"><!--suppress JSVoidFunctionReturnValueUsed --><a style="cursor: pointer;" onclick="showAlert(' . $testInfo . ')">' .
+    echo '<div style="position: fixed; top: 4em; width: 100%;"><h2 style="text-align: center;"><a style="cursor: pointer;" onclick="showAlert(' . $testInfo . ')">' .
  translate("Potentiell fehlerhaltige Testversion", 'de', $GLOBALS['lang'])
  . '</a></h2></div>';
 }
