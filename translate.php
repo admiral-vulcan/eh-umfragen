@@ -24,9 +24,15 @@ function translate($source_text, $source_lang = "de", $target_lang = "en") {
 
     $textHash = hash('sha256', $source_lang.$target_lang.$source_text);
 
+    //$something = "Cette page est écrite en allemand et sera automatiquement traduite par </text><a href=\"https://www.deepl.com/\" target=\"_blank\" rel=\"nofollow\">DeepL</a>. Il est possible que tout ne soit pas encore traduit actuellement. Cette fonction peut en outre avoir des temps de chargement très longs lors du premier chargement d'une nouvelle langue et potentiellement provoquer des erreurs, telles que des formulations involontaires, des contradictions, des ambiguïtés ou autres. C'est pourquoi nous nous distançons de la traduction et vous proposons toujours dans le menu de changer de langue vers la <a href=\"/?lang=de\">version originale allemande</a>.<br>Ou bien de passer à la <a href=\"/?lang=en\">version anglaise</a>, car elle fonctionne plutôt bien.<br>Cet avertissement ne s'affiche qu'une fois par changement de langue.";
+    //$someHash = "af5a9cb9a3bf014851121b6cefab10eb2794f76300706c03496d6fa5752a17c8";
+    //apcu_store($someHash, $something); //(re)set something with known hash
     if (apcu_exists($textHash)) {
+        //if (str_contains(apcu_fetch($textHash), "plutôt")) apcu_delete($textHash); //delete
+        //if (str_contains(apcu_fetch($textHash), "plutôt")) echo ">>" . $textHash . "<<";
         //if (preg_match("/[0-9]/", $source_text)) apcu_delete($textHash); //delete this entry
         //if (str_contains($source_text, "Goethe")) apcu_delete($textHash); //delete
+        //if ($source_text == "bad") apcu_store($textHash, "bad"); //change this entry
         //if ($source_text == "bad") apcu_store($textHash, "bad"); //change this entry
         //if ($source_text == "3. Computerraum (A-Gebäude, 2. OG)") apcu_delete($textHash); //delete this entry
         //if ($target_lang == "FR") apcu_delete($textHash); //delete if certain language
