@@ -11,7 +11,7 @@ setcookie("firstTimeLang", $GLOBALS["lang"], time() + (86400 * 30 * 365), "/"); 
     elseif ($GLOBALS["lang"] != "de") alert(translate("Experimentelle Übersetzungsfunktion", "de", $GLOBALS["lang"]), translate("Diese Seite ist auf Deutsch geschrieben und wird automatisch mit <a href='https://www.deepl.com/' target='_blank' rel='nofollow'>DeepL</a> übersetzt. Möglicherweise ist aktuell noch nicht alles übersetzt. Diese Funktion kann zudem beim ersten Laden einer neuen Sprache sehr lange Ladezeiten haben und potenziell Fehler, wie unbeabsichtigte Formulierungen, Widersprüche, Doppeldeutigkeiten oder ähnliche verursachen. Deshalb distanzieren wir uns von der Übersetzung und bieten Euch im Menü immer an, die Sprache zur <a href='/?lang=de'>deutschen Originalversion</a> zu wechseln.<br>Oder wechsle alternativ zur <a href='/?lang=en'>englischen</a> Version, da diese recht gut funktioniert.<br>Diese Warnung wird nur ein Mal pro Sprachwechsel angezeigt.", "de", $GLOBALS["lang"]), "warning");
 }
 
-function translate($source_text, $source_lang = "en", $target_lang = "de") {
+function translate($source_text, $source_lang = "de", $target_lang = "en") {
     $source_text = str_replace('&#34;', '"', $source_text);
     $source_text = str_replace('&quot;', '"', $source_text);
     $source_text = str_replace('&#34', '"', $source_text);
@@ -26,7 +26,8 @@ function translate($source_text, $source_lang = "en", $target_lang = "de") {
 
     if (apcu_exists($textHash)) {
         //if (preg_match("/[0-9]/", $source_text)) apcu_delete($textHash); //delete this entry
-        //if (str_contains($source_text, "Goethe")) apcu_delete($textHash); //delete this entry
+        //if (str_contains($source_text, "Goethe")) apcu_delete($textHash); //delete
+        //if ($source_text == "bad") apcu_store($textHash, "bad"); //change this entry
         //if ($source_text == "3. Computerraum (A-Gebäude, 2. OG)") apcu_delete($textHash); //delete this entry
         //if ($target_lang == "FR") apcu_delete($textHash); //delete if certain language
         return apcu_fetch($textHash);
