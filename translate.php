@@ -12,6 +12,11 @@ setcookie("firstTimeLang", $GLOBALS["lang"], time() + (86400 * 30 * 365), "/"); 
 }
 
 function translate($source_text, $source_lang = "en", $target_lang = "de") {
+    $source_text = str_replace('&#34;', '"', $source_text);
+    $source_text = str_replace('&quot;', '"', $source_text);
+    $source_text = str_replace('&#34', '"', $source_text);
+    $source_text = str_replace('&quot', '"', $source_text);
+
     $source_lang = strtoupper($source_lang);
     $target_lang = strtoupper($target_lang);
 

@@ -316,7 +316,7 @@ if ($hasresults == 1) {
                     <?php
                     if (isset($_GET["leftQ"]) && $_GET["leftQ"] != "all_results") {
                         ?>
-                        <select id="result_scheme_left_A" name="result_scheme_left_A">
+                        <label for="result_scheme_left_A"></label><select id="result_scheme_left_A" name="result_scheme_left_A">
                             <?php
                             for ($i = 1; $i < sizeof($resultsLeft["QNA"][$_GET["leftQ"]]); $i++) {
                                 $thisA = translate($resultsLeft["QNA"][$_GET["leftQ"]][$i], "de", $GLOBALS["lang"]);
@@ -478,7 +478,7 @@ if ($hasresults == 1) {
                     <?php
                     if (isset($_GET["rightQ"]) && $_GET["rightQ"] != "all_results") {
                         ?>
-                        <select id="result_scheme_right_A" name="result_scheme_right_A">
+                        <label for="result_scheme_right_A"></label><select id="result_scheme_right_A" name="result_scheme_right_A">
                             <?php
                             for ($i = 1; $i < sizeof($resultsRight["QNA"][$_GET["rightQ"]]); $i++) {
                                 $thisA = $resultsRight["QNA"][$_GET["rightQ"]][$i];
