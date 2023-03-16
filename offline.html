@@ -2315,7 +2315,7 @@ scrollbar {
                 <h2>Du bist offline.</h2>
                 <p>Es scheint so, als wäre Deine Internetverbingung abgebrochen. Wir versuchen die Verbindung
                     wiederherzustellen. Lehne Dich zurück, trinke einen Schluck Tee und schaue gleich wieder vorbei.</p>
-                <p id="countdown">Nächster Verbindungsversuch startet in 30 Sekunden.</p>
+                <p id="countdown">Der nächste Verbindungsversuch startet in 30 Sekunden.</p>
                 <br> <br>
             </header>
         </section>
@@ -2380,7 +2380,7 @@ scrollbar {
         timeLeft--;
 
         // Update the countdown element with the new time left
-        countdownElement.textContent = `Nächster Verbindungsversuch startet in ${timeLeft} Sekunden.`;
+        countdownElement.textContent = `Der nächste Verbindungsversuch startet in ${timeLeft} Sekunden.`;
 
         // If the time runs out, clear the interval and display a message
         if (timeLeft === 0) {
