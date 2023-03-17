@@ -127,13 +127,13 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                         echo '
                         <picture class="clickableIMG" style="height: 100%;  vertical-align: top;" >
                     <source srcset="' . $profilePic['path'] . '.avif" type="image/avif">
-                        <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . translate($profilePic['alt'], 'de', $GLOBALS['lang']) . '" class="clickableIMG" style="height: 100%;  vertical-align: top;" onclick="window.location.href=\'/?creator=profile\'">
+                        <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . translate($profilePic['alt'], 'de', $GLOBALS['lang']) . '" class="clickableIMG" style="width:98%; height: 98%;  vertical-align: top;" onclick="window.location.href=\'/?creator=profile\'">
                         </picture>
                         ';
                     else echo '
                         <picture class="clickableIMG" style="height: 100%;  vertical-align: top;" >
                     <source srcset="' . $profilePic['path'] . '.avif" type="image/avif">
-                    <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . translate($profilePic['alt'], 'de', $GLOBALS['lang']) . '" class="clickableIMG" style="height: 100%;  vertical-align: top;" onclick="window.location.href=\'/\'">
+                    <img src="' . $profilePic['path'] . '.' . $profilePic['ext'] . '" alt="' . translate($profilePic['alt'], 'de', $GLOBALS['lang']) . '" class="clickableIMG" style="width: 98%; height: 98%;  vertical-align: top;" onclick="window.location.href=\'/\'">
                         </picture>
                     ';
                     ?>
