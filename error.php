@@ -100,7 +100,7 @@ $err_text .= " " . translate('Bitte gehe einen Schritt zurück oder zu unserer H
         <p><?php echo $err_text; ?></p>
     </header>
 </section>
-<canvas id="logo_err_ani"></canvas>
+<canvas id="logo_err_ani" aria-label="<?php echo translate('Ein Klemmbrett als Logo mit drei drehenden Zahnrädern in der Mitte und dem Wort Fehler darüber', 'de', $GLOBALS['lang']); ?>"></canvas>
 <br><br><br>
 <section>
     <div  style="width: 100%; position: fixed; left: 0; bottom: 0; background: var(--generic-body-back); opacity: .8;">
