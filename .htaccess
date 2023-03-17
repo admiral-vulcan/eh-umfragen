@@ -1,0 +1,22 @@
+ErrorDocument 301 /?content=error&code=301
+
+ErrorDocument 400 /?content=error&code=400
+ErrorDocument 401 /?content=error&code=401
+ErrorDocument 402 /?content=error&code=402
+ErrorDocument 403 /?content=error&code=403
+ErrorDocument 404 /?content=error&code=404
+ErrorDocument 405 /?content=error&code=405
+ErrorDocument 406 /?content=error&code=406
+ErrorDocument 408 /?content=error&code=408
+ErrorDocument 410 /?content=error&code=410
+ErrorDocument 413 /?content=error&code=413
+ErrorDocument 414 /?content=error&code=414
+ErrorDocument 415 /?content=error&code=415
+#ErrorDocument 418 /?content=error&code=418
+ErrorDocument 429 /?content=error&code=429
+
+ErrorDocument 500 /?content=error&code=500
+ErrorDocument 501 /?content=error&code=501
+ErrorDocument 502 /?content=error&code=502
+ErrorDocument 503 /?content=error&code=503
+ErrorDocument 504 /?content=error&code=504
