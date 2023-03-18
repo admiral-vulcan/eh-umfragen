@@ -2268,7 +2268,6 @@ input[type="radio"]:focus + label:before {
 input[type="radio"] + label:before {
 	border-radius: 100%;
 }
-
 ::-webkit-input-placeholder {
 	color: var(--placeholder-color) !important;
 	opacity: 1.0;
@@ -3153,6 +3152,67 @@ table.alt thead {
 table.alt tfoot {
 	border-top: 0;
 }
+
+
+
+/*Setting the table width is important!*/
+table.creator {
+	table-layout: fixed;
+	width: 52em;
+}
+/*Hide text outside the cell.*/
+table.creator td,
+table.creator th {
+	overflow: hidden;
+}
+
+/*Setting the width of column 1.*/
+table.creator td:nth-of-type(1),
+table.creator th:nth-of-type(1) {
+	width: 1em;
+}
+/*Setting the width of column 2.*/
+table.creator td:nth-of-type(2),
+table.creator th:nth-of-type(2) {
+	width: 3em;
+}
+/*Setting the width of column 3.*/
+table.creator td:nth-of-type(3),
+table.creator th:nth-of-type(3) {
+	width: 10em;
+}
+/*Setting the width of column 4.*/
+table.creator td:nth-of-type(4),
+table.creator th:nth-of-type(4) {
+	width: 5em;
+}
+/*Setting the width of column 5.*/
+table.creator td:nth-of-type(5),
+table.creator th:nth-of-type(5) {
+	width: 5em;
+}
+/*Setting the width of column 6.*/
+table.creator td:nth-of-type(6),
+table.creator th:nth-of-type(6) {
+	width: 5em;
+}
+/*Setting the width of column 7.*/
+table.creator td:nth-of-type(7),
+table.creator th:nth-of-type(7) {
+	width: 5em;
+}
+/*Setting the width of column 8.*/
+table.creator td:nth-of-type(8),
+table.creator th:nth-of-type(8) {
+	width: 6em;
+}
+/*Setting the width of column 9.*/
+table.creator td:nth-of-type(9),
+table.creator th:nth-of-type(9) {
+	width: 6em;
+}
+
+
 
 /* Header */
 

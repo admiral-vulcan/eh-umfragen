@@ -17,4 +17,6 @@ function toAVIF($inputFile, $outputFile) {
 // Destroy the Imagick object
     $imagick->destroy();
 }
+
+//toAVIF("../../images/small_logo.png", "../../images/small_logo.avif");
 ?>

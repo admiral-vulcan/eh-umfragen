@@ -104,6 +104,53 @@ function get_survey_name($sid) {
     $pdo = null;
     return $name;
 }
+function get_creator_name($cid) {
+
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM creators WHERE cid = ? LIMIT 1");
+    $statement->execute(array($cid));
+    while($row = $statement->fetch()) {
+        $name['cid'] = $cid;
+        $name['first'] = $row['firstname'];
+        $name['family'] = $row['familyname'];
+        break;
+    }
+    $pdo = null;
+    return $name;
+}
+function get_survey($sid) {
+    $survey = -1;
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM surveys WHERE id = ? LIMIT 1");
+    $statement->execute(array(sanitize($sid)));
+    while($row = $statement->fetch()) {
+        $survey = $row;
+        break;
+    }
+
+    $pdo = null;
+    return $survey;
+}
+function get_survey_contributors_names($sid) {
+    $name['cid'] = -1;
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM surveys WHERE id = ? LIMIT 1");
+    $statement->execute(array(sanitize($sid)));
+    while($row = $statement->fetch()) {
+        $name['cids'] = $row['contributors'];
+        break;
+    }
+    $substrings = explode(";", $name['cids']);
+    foreach ($substrings as $key => $value) {
+        $name[$key]['cid'] = $value;
+        $var = get_creator_name($value);
+        $name[$key]['first'] = $var['first'];
+        $name[$key]['family'] = $var['family'];
+    }
+
+    $pdo = null;
+    return $name;
+}
 
 function get_survey_id($name) {
     $id = -1;
@@ -325,6 +372,22 @@ function get_creator_data($cid) {
         $_SESSION['du'] = $row['du'];
         $_SESSION['isadmin'] = $row['isadmin'];
         $_SESSION['since'] = $row['since'];
+    }
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM surveys WHERE creator = ?");
+    $statement->execute([$cid]);
+    $i=0;
+    while($row = $statement->fetch()) {
+        $_SESSION['my_creations'][$i] = $row['id'];
+        $i++;
+    }
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM surveys WHERE contributors LIKE ?");
+    $statement->execute(["%$cid%"]);
+    $i=0;
+    while($row = $statement->fetch()) {
+        $_SESSION['my_contributions'][$i] = $row['id'];
+        $i++;
     }
 }
 
@@ -680,4 +743,5 @@ if (isset($_GET["storeresults"]) && intval($_GET["storeresults"]) > 0) echo read
 
 //echo get_type(1, 2);
 
+//echo checkCreatorUniqid(uniqid('', true));
 ?>

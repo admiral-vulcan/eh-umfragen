@@ -66,24 +66,24 @@
 
     ?>
     <br>
-    <h2>Anmeldung</h2>
+    <h2><?php echo translate("Login", "en", $GLOBALS["lang"]); ?></h2>
     <form method="POST" id="anmelden" style="max-width: 20em">
-        <input type="email" id="email" name="email" placeholder="Hochschul-E-Mail-Adresse" autocomplete="email" oninput="checkEmail()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('email'); ?>" required>
+        <input type="email" id="email" name="email" placeholder="<?php echo translate("Hochschul-E-Mail-Adresse", "de", $GLOBALS["lang"]); ?>" autocomplete="email" oninput="checkEmail()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('email'); ?>" required>
         <input type="hidden" id="firstname" name="firstname" value="<?php echo postValifnN('firstname'); ?>">
         <input type="hidden" id="familyname" name="familyname" value="<?php echo postValifnN('familyname'); ?>">
         <input type="hidden" id="gmail" name="gmail" value="<?php echo postValifnN('gmail'); ?>">
         <input type="hidden" id="gPic" name="gPic" value="<?php echo postValifnN('gPic'); ?>">
-        <input type="password" id="password" name="password" placeholder="Passwort" autocomplete="password" value="<?php echo postValifnN('password'); ?>" required>
+        <input type="password" id="password" name="password" placeholder="<?php echo translate("Passwort", "de", $GLOBALS["lang"]); ?>" autocomplete="password" value="<?php echo postValifnN('password'); ?>" required>
         <span id="passwordEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
         <input type="hidden" id="gid" name="gid" value="<?php echo postValifnN('gid'); ?>">
-        <input type="submit" value="Anmelden"><div class="button" onclick="setPwdInfo();" >Passwort zurücksetzen</div>
+        <input type="submit" value="<?php echo translate("Anmelden", "de", $GLOBALS["lang"]); ?>"><div class="button" onclick="setPwdInfo();" ><?php echo translate("Passwort zurücksetzen", "de", $GLOBALS["lang"]); ?></div>
     </form>
 
 
     <!-- p>Anmeldung via Apple zulassen. | ON | OFF </p> -->
-    <p>Registrierung und Anmeldung via Google zulassen?<br> <a style="cursor: pointer;" onclick='loadGoogleWarningbyUser();'>(Warnung anzeigen und Cookies löschen)</a></p>
+    <p><?php echo translate("Registrierung und Anmeldung via Google zulassen?", "de", $GLOBALS["lang"]); ?><br> <a style="cursor: pointer;" onclick='loadGoogleWarningbyUser();'>(<?php echo translate("Warnung anzeigen und Cookies löschen", "de", $GLOBALS["lang"]); ?>)</a></p>
     <div id="slider">
-        <div aria-label="Google-verwenden-Button" style="cursor: grab;" id="slider-thumb" class="not-selectable" tabindex="0"></div><p style="margin-top: 11px; margin-left: 4px; cursor: pointer; font-size: 11px; block-size: 22px;" class="not-selectable" id="slider-text"><b>Nein&emsp;&emsp;&emsp;&emsp;Ja</b></p>
+        <div aria-label="Google-verwenden-Button" style="cursor: grab;" id="slider-thumb" class="not-selectable" tabindex="0"></div><p style="margin-top: 11px; margin-left: 4px; cursor: pointer; font-size: 11px; block-size: 22px;" class="not-selectable" id="slider-text"><b><?php echo translate("Nein", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;&emsp;&emsp;<?php echo translate("Ja", "de", $GLOBALS["lang"]); ?></b></p>
     </div>
     <div id="g_id_onload"
          data-client_id="<?php echo $GLOBALS["gcred"]; ?>"
@@ -92,48 +92,44 @@
     <div style="position: absolute"><div id="google_btn"></div></div><br><br><br>
     <!-- <p>Anmeldung via Microsoft zulassen. | ON | OFF </p> -->
 
-    <h2>Registrierung</h2>
-    <p id="gRegInfo" style="display: none">Um die Registrierung mit Google abzuschließen, brauchen wir noch Deine Hochschul-E-Mail-Adresse und Deinen Namen.</p>
+    <h2><?php echo translate("Registrierung", "de", $GLOBALS["lang"]); ?></h2>
+    <p id="gRegInfo" style="display: none"><?php echo translate("Um die Registrierung mit Google abzuschließen, brauchen wir noch Deine Hochschul-E-Mail-Adresse und Deinen Namen.", "de", $GLOBALS["lang"]); ?></p>
     <form method="POST" id="registrieren" style="max-width: 20em">
-        <input type="text" id="firstnamereg" name="firstnamereg" placeholder="Vorname" autocomplete="given-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('firstnamereg'); ?>" required>
-        <input type="text" id="familynamereg" name="familynamereg" placeholder="Nachname" autocomplete="family-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('familynamereg'); ?>" required>
+        <input type="text" id="firstnamereg" name="firstnamereg" placeholder="<?php echo translate("Vorname", "de", $GLOBALS["lang"]); ?>" autocomplete="given-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('firstnamereg'); ?>" required>
+        <input type="text" id="familynamereg" name="familynamereg" placeholder="<?php echo translate("Nachname", "de", $GLOBALS["lang"]); ?>" autocomplete="family-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('familynamereg'); ?>" required>
 
-        <input type="email" id="emailreg" name="emailreg" placeholder="Hochschul-E-Mail-Adresse" autocomplete="email" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('emailreg'); ?>" required>
-        <input type="password" id="password1reg" name="password1reg" placeholder="Passwort" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password1reg'); ?>" required>
+        <input type="email" id="emailreg" name="emailreg" placeholder="<?php echo translate("Hochschul-E-Mail-Adresse", "de", $GLOBALS["lang"]); ?>" autocomplete="email" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('emailreg'); ?>" required>
+        <input type="password" id="password1reg" name="password1reg" placeholder="<?php echo translate("Passwort", "de", $GLOBALS["lang"]); ?>" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password1reg'); ?>" required>
 
         <span id="password1regEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 
-        <input type="password" id="password2reg" name="password2reg" placeholder="Passwort wiederholen" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password2reg'); ?>" required>
+        <input type="password" id="password2reg" name="password2reg" placeholder="<?php echo translate("Passwort wiederholen", "de", $GLOBALS["lang"]); ?>" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password2reg'); ?>" required>
 
         <span id="password2regEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 
         <div class="list" style="text-align: left;">
             <input type="checkbox" class="checkbox" id="AGB" name="AGB" <?php echo postCheckifnN('AGB'); ?> required>
-            <label for="AGB">Bitte stimme unseren <a href="?content=agb" target="_blank">>>AGB<<</a> zu.</label>
+            <label for="AGB"><?php echo translate('Bitte stimme unseren <a href="?content=agb" target="_blank">AGB</a> zu.', "de", $GLOBALS["lang"]); ?></label>
             <div id="gPicAgreeDIV" style="display: none">
                 <input type="checkbox" class="checkbox" id="gPicAgree" name="gPicAgree" <?php echo postCheckifnN('gPicAgree'); ?>>
-                <label for="gPicAgree">Möchtest Du Dein Google-Profilbild als Profilbild für hier verwenden?</label>
+                <label for="gPicAgree"><?php echo translate("Möchtest Du Dein Google-Profilbild als Profilbild für hier verwenden?", "de", $GLOBALS["lang"]); ?></label>
             </div>
         </div>
         <input type="hidden" id="gidreg" name="gidreg" value="<?php echo postValifnN('gidreg'); ?>">
         <input type="hidden" id="gmailreg" name="gmailreg" value="<?php echo postValifnN('gmailreg'); ?>">
         <input type="hidden" id="gPicreg" name="gPicreg" value="<?php echo postValifnN('gPicreg'); ?>">
-        <input type="submit" value="Registrieren">
+        <input type="submit" value="<?php echo translate("Registrieren", "de", $GLOBALS["lang"]); ?>">
     </form>
         <p>
-            <br>Damit wir neue Mitglieder freischalten können, müssen wir wissen, wer es ist. Deshalb wird in diesen Fällen sowohl der Name als auch die E-Mail-Adresse gespeichert.
-            <br>Der Name wird dann so auch in neu erstellten Umfragen angezeigt.
-            <br>E-Mail-Adressen und Namen können beim Ausfüllen von Umfragen dennoch nicht den Antworten zugeordnet werden.
+            <br><?php echo translate("Damit wir neue Mitglieder freischalten können, müssen wir wissen, wer es ist. Deshalb wird in diesen Fällen sowohl der Name als auch die E-Mail-Adresse gespeichert.", "de", $GLOBALS["lang"]); ?>
+            <br><?php echo translate("Der Name wird dann so auch in neu erstellten Umfragen angezeigt.", "de", $GLOBALS["lang"]); ?>
+            <br><?php echo translate("E-Mail-Adressen und Namen können beim Ausfüllen von Umfragen dennoch nicht den Antworten zugeordnet werden.", "de", $GLOBALS["lang"]); ?>
 
 
-            <br>Gib bitte zweimal ein neues Passwort ein. Das Passwort muss mindestens 8 Zeichen lang sein und eine
-            Kombination aus Groß- und Kleinbuchstaben, Ziffern und Sonderzeichen enthalten - mindestens drei der vier
-            genannten Zeichenarten. Es wird auch überprüft, ob das Passwort ein leicht zu erratenes Muster enthält oder
-            auf bekannten Leak-Seiten auftaucht. So stellen wir sicher, dass Dein Passwort sicher ist.
+            <br><?php echo translate("Gib bitte zweimal ein neues Passwort ein. Das Passwort muss mindestens 8 Zeichen lang sein und eine Kombination aus Groß- und Kleinbuchstaben, Ziffern und Sonderzeichen enthalten - mindestens drei der vier genannten Zeichenarten. Es wird auch überprüft, ob das Passwort ein leicht zu erratenes Muster enthält oder auf bekannten Leak-Seiten auftaucht. So stellen wir sicher, dass Dein Passwort sicher ist.", "de", $GLOBALS["lang"]); ?>
 
-
-            <br><a href="/?content=secureinfo" target="_blank">Wie werden meine privaten Daten gesendet? Ist das sicher?</a>
-            <br><a href="/?content=passwordinfo" target="_blank">Wie wird mein Passwort gespeichert? Wer kann es sehen?</a>
+            <br><a href="/?content=secureinfo" target="_blank"><?php echo translate("Wie werden meine privaten Daten gesendet? Ist das sicher?", "de", $GLOBALS["lang"]); ?></a>
+            <br><a href="/?content=passwordinfo" target="_blank"><?php echo translate("Wie wird mein Passwort gespeichert? Wer kann es sehen?", "de", $GLOBALS["lang"]); ?></a>
         </p>
 
     <!-- Google Warning -->

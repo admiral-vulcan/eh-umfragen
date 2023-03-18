@@ -1,6 +1,6 @@
-<h2>Mein Profil</h2>
-<p>Du bist eingeloggt und im PROFIL-Bereich angekommen. Herzlichen Glückwunsch!</p>
-<p>Dieser Bereich ist im Entstehen und funktioniert noch nicht (richtig).</p>
+<h2><?php echo translate("Mein Profil", "de", $GLOBALS["lang"]); ?></h2>
+<p><?php echo translate("Hier kannst Du Deine Profildaten und -einstellungen einsehen und ändern.", "de", $GLOBALS["lang"]); ?></p>
+<p><?php echo translate("Dieser Bereich ist im Entstehen und funktioniert noch nicht (richtig).", "de", $GLOBALS["lang"]); ?></p>
 <p>
 Profil TODO:
     <br>    Zu meinen Umfragen - Link
@@ -11,13 +11,13 @@ Profil TODO:
     <br>    Passwort ändern/setzen
     <br>    Konto löschen - DSGVO-konform 🤷‍
     <br>
-    <br>    Wir haben folgende Infos in der Datenbank:
+    <br>    Wir haben folgende Infos über Dich in unserer Datenbank:
 </p>
 <?php
 echo "<table>";
 echo "<tr>";
-echo "<th>Key</th>";
-echo "<th>Value</th>";
+echo "<th>" . translate("Schlüssel", "de", $GLOBALS["lang"]) . "</th>";
+echo "<th>" . translate("Wert", "de", $GLOBALS["lang"]) . "</th>";
 echo "</tr>";
 
 foreach ($_SESSION as $key => $value) {

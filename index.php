@@ -114,7 +114,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
         <nav class="main" style="min-height: 4em;">
             <ul>
                 <li class="menu">
-                    <a class="fa-bars" href="#menu" tabindex="2" aria-label="<?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>"><?php echo translate("Menü", "de", $GLOBALS["lang"]); ?></a
+                    <a class="fa-bars" id="mainmenu" href="#menu" tabindex="2" aria-label="<?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>"><?php echo translate("Menü", "de", $GLOBALS["lang"]); ?></a
                 </li>
             </>
         </nav>
@@ -340,7 +340,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
 <script src="assets/js/breakpoints.min.js"></script>
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="assets/js/futureimperfact.js"></script>
+<script src="assets/js/src/futureimperfact.js"></script>
 -->
 <script src="assets/js/suncalc.js"></script>
 <script src="assets/js/all.min.js"></script>
