@@ -1,15 +1,15 @@
 <div id="builder">
     <!-- Title -->
     <label for="title"><?php echo translate('Umfragetitel', 'de', $GLOBALS['lang']); ?></label>
-    <input type="text" name="title" id="title" placeholder="<?php echo translate('Ein prägnanter Titel, möglichst nur ein bis drei Wörter', 'de', $GLOBALS['lang']); ?>">
+    <input type="text" name="title" id="title" placeholder="<?php echo translate('prägnant, mögl. ein bis drei Wörter', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Description -->
     <label for="description"><?php echo translate('Umfragebeschreibung', 'de', $GLOBALS['lang']); ?></label>
-    <input type="text"  name="description" id="description" placeholder="<?php echo translate('Eine Beschreibung, die Sinn und Zweck der Umfrage erklärt', 'de', $GLOBALS['lang']); ?>">
+    <input type="text"  name="description" id="description" placeholder="<?php echo translate('Sinn und Zweck der Umfrage', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Additional contributors -->
     <label for="contributors"><?php echo translate('Weitere Mitwirkende (durch Kommata getrennt)', 'de', $GLOBALS['lang']); ?></label>
-    <input type="text" name="contributors" id="contributors" placeholder="<?php echo translate('Z.B. musterfrau1@studnet.eh-ludwigsburg.de, mustermann@studnet.eh-ludwigsburg.de', 'de', $GLOBALS['lang']); ?>">
+    <input type="text" name="contributors" id="contributors" placeholder="<?php echo translate('Vor und Nachnamen oder E-Mail-Adressen', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Target group -->
     <label for="target_group"><?php echo translate('Anvisierte Zielgruppe', 'de', $GLOBALS['lang']); ?></label>
