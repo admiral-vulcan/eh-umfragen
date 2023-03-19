@@ -9,6 +9,7 @@
  * [datei][1...][1] = Frage
  * [datei][1...][2...] = Optionen
  */
+
 $surveys = [];
 if (isset($_GET["draft"]) == "1") $files = glob("surveys-test/*.csv");
 else $files = glob("surveys/*.csv");
@@ -26,8 +27,6 @@ for ($i = 0; $i < sizeof($files); $i++) {
         }
         if ($columns !== 0) {
             for ($c = 0; $c < $columns; $c++) {
-                //if ($row > 0) {
-                //if ($c === 0) {
                 $surveys[$i][$j][$c] = utf8Encode($data[$c]);
                 if ($c > 0) {
                     if (
@@ -38,15 +37,12 @@ for ($i = 0; $i < sizeof($files); $i++) {
                         str_contains("info", $surveys[$i][$j][0])
                     ) $surveys[$i][$j][$c] = translate($surveys[$i][$j][$c], "de", $GLOBALS["lang"]);
                 }
-                //}
-                //}
             }
             $j++;
         }
     }
     fclose($handle);
 }
-
 
 //for future use
 function loadSurveys() {
@@ -67,11 +63,7 @@ function loadSurveys() {
             }
             if ($columns !== 0) {
                 for ($c = 0; $c < $columns; $c++) {
-                    //if ($row > 0) {
-                    //if ($c === 0) {
                     $surveys[$i][$j][$c] = utf8Encode($data[$c]);
-                    //}
-                    //}
                 }
                 $j++;
             }
@@ -80,9 +72,6 @@ function loadSurveys() {
     }
     return $surveys;
 }
-
-
-
 //testing
 /*
 echo "Umfragetitel: ";

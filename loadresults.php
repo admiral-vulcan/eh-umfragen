@@ -10,14 +10,7 @@
  * [datei][1...][2...] = Optionen
  */
 
-
 function loadResults($sid_or_sname) {
-
-
-
-
-
-
     if (intval($sid_or_sname) > 0) {
         $output["name"] = get_survey_name($sid_or_sname);
         $output["sid"] = $sid_or_sname;
@@ -28,14 +21,10 @@ function loadResults($sid_or_sname) {
     }
     else return -1;
 
-
-
-
     $results = [];
     $files = glob("results/*.csv");
-
     $fileNotFound = true;
-        for ($i = 0; $i < sizeof($files); $i++) {
+    for ($i = 0; $i < sizeof($files); $i++) {
         $j = 0; //this row
         if (str_contains(strtolower($files[$i]), strtolower($output["name"]))) {
             $fileNotFound = false;
@@ -54,8 +43,6 @@ function loadResults($sid_or_sname) {
                 for ($c = 0; $c < $columns; $c++) {
                     if (isset($data[$c]) && $data[$c] != "") $results[$j][$c] = utf8Encode($data[$c]);
                     else $results[$j][$c] = 0;
-                    //echo $c . " raw: " . utf8Encode($data[$c]) . "<br>";
-                    //echo $c . " dat: " . $results[$j][$c] . "<br>";
                 }
                 $j++;
             }
@@ -63,7 +50,6 @@ function loadResults($sid_or_sname) {
             break;
         }
     }
-
 
     $output["countOfQuestions"] =  sizeof($results[1]) - 2 ;
     for ($j = 1; $j < sizeof($results); $j++) {
@@ -79,7 +65,6 @@ function loadResults($sid_or_sname) {
                 }
                 else { //only one choice
                     $output["results"][$k][$j - 2] = clearQuestion($results[$j][$k]);
-                    //echo $results[$j][$k]. "<br>";
                 }
             }
         }
@@ -122,10 +107,7 @@ function loadResults($sid_or_sname) {
         }
     }
 
-
-
     if ($fileNotFound) alert("Auswertung fehlt", "Die Auswertungsdatei fehlt.", "error", "true", "loadresult error 1: CSV missing: " . $output["name"]);
-
     for ($i = 4; $i < sizeof($output["QNA"])-2; $i++) {
         if ($output["QNA"][$i][1] !== "offene Frage" && sizeof($output["QNA"][$i]) < 3) {
             alert("Auswertung beschädigt", "Die Auswertungsdatei ist beschädigt.", "error", "true", "loadresult error 2: wrong size of QNA at iteration: " . $i);
@@ -258,12 +240,10 @@ function clearQuestion($string) {
                     str_replace("free:", "",
                         str_replace("single:", "",
                             str_replace("multi:", "",
-                $string))))));
+                                $string))))));
 }
 
-
 function getSurveyHeads($surveys, $thisSurveyNumber) {
-    //echo "<br><br><br><br>";
     for ($i = 2; $i < sizeof($surveys[$thisSurveyNumber]); $i++) {
 
         if (sizeof($surveys[$thisSurveyNumber][$i]) > 0 ) { //check if not empty
