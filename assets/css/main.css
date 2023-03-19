@@ -4472,11 +4472,16 @@ img {
 }
 
 .color_scheme_select {
-	top: 10px;
 	position: relative;
 	min-width: 100px;
 	left: -1.4em;
 	padding-left: 10px;
+}
+
+@media screen and (max-width: 736px) {
+	.color_scheme_select {
+		margin: 0 0.125em 0 0.125em; /* changed for better readability*/
+	}
 }
 
 /* Safari only */
