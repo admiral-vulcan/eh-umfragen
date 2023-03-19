@@ -14,7 +14,7 @@ function getProfilePic() {
             // Get the file path without the extension
             $path = pathinfo($file, PATHINFO_DIRNAME) . '/' . pathinfo($file, PATHINFO_FILENAME);
             // If a file is found, return it along with the 'Profilbild' alt text and the file extension
-            return array('path' => $path, 'ext' => $ext, 'alt' => 'Profilbild');
+            if ($ext !== 'avif') return array('path' => $path, 'ext' => $ext, 'alt' => 'Profilbild');
         }
     }
     // If no file is found or cid is not set, return the default image with the 'Ein Klemmbrett als Logo' alt text
