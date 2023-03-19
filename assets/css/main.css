@@ -4170,7 +4170,7 @@ input[type="submit"],
 input[type="reset"],
 input[type="button"],
 .clickableIMG,
-select, button, .button, input, input:-webkit-autofill, input:-webkit-autofill, #slider, a, a * {
+select, button, .button, input, input:-webkit-autofill, input:-webkit-autofill, #slider, a, a p {
 	background-color: var(--generic-grey-opacity-0075);
 	-moz-transition: background-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease, transform 0.5s ease, letter-spacing 0.5s ease, border-radius 0.5s ease, outline 0.3s ease;
 	-webkit-transition: background-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease, transform 0.5s ease, letter-spacing 0.5s ease, border-radius 0.5s ease, outline 0.3s ease;
