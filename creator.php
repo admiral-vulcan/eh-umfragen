@@ -1,16 +1,23 @@
 <h2><?php echo translate("Mein Creator", "de", $GLOBALS["lang"]); ?></h2>
 <p><?php echo translate("Hier kannst Du Deine Umfragen erstellen, einsehen und auswerten.", "de", $GLOBALS["lang"]); ?></p>
 <p><?php echo translate("Dieser Bereich ist im Entstehen und funktioniert noch nicht (richtig).", "de", $GLOBALS["lang"]); ?></p>
-
-<div style="position: fixed; top: 4em;">
-    <button onclick="button_new();"><?php echo translate("Neu", "de", $GLOBALS["lang"]); ?></button>
-    <button onclick="button_open();"><?php echo translate("Öffnen", "de", $GLOBALS["lang"]); ?></button>
-    <button id="button_undo"><?php echo translate("Rückgängig", "de", $GLOBALS["lang"]); ?></button>
-    <button id="button_redo"><?php echo translate("Wiederholen", "de", $GLOBALS["lang"]); ?></button>
-    <button onclick="button_save();"><?php echo translate("Speichern", "de", $GLOBALS["lang"]); ?></button>
-    <button onclick="button_evaluate();"><?php echo translate("Auswerten", "de", $GLOBALS["lang"]); ?></button>
-    <button onclick="button_delete();"><?php echo translate("Löschen", "de", $GLOBALS["lang"]); ?></button>
-    <button onclick="button_close();"><?php echo translate("Schließen", "de", $GLOBALS["lang"]); ?></button>
+<!-- <div style="position: fixed; top: 4em;"> -->
+<div class="creator-buttons">
+    <button id="file-menu-toggle" onclick="toggleFileMenu();"><?php echo translate("Datei", "de", $GLOBALS["lang"]); ?></button>
+    <button id="edit-menu-toggle" onclick="toggleEditMenu();"><?php echo translate("Bearbeiten", "de", $GLOBALS["lang"]); ?></button>
+    <div class="file-menu-items" id="file-menu-items">
+        <button onclick="button_new();"><?php echo translate("Neu", "de", $GLOBALS["lang"]); ?></button>
+        <button onclick="button_open();"><?php echo translate("Öffnen", "de", $GLOBALS["lang"]); ?></button>
+        <button onclick="button_save();"><?php echo translate("Speichern", "de", $GLOBALS["lang"]); ?></button>
+        <button onclick="button_evaluate();"><?php echo translate("Auswerten", "de", $GLOBALS["lang"]); ?></button>
+        <button onclick="button_close();"><?php echo translate("Schließen", "de", $GLOBALS["lang"]); ?></button>
+    </div>
+    <div class="edit-menu-items" id="edit-menu-items">
+        <button id="button_undo"><?php echo translate("Rückgängig", "de", $GLOBALS["lang"]); ?></button>
+        <button id="button_redo"><?php echo translate("Wiederholen", "de", $GLOBALS["lang"]); ?></button>
+        <button onclick="button_evaluate();"><?php echo translate("Auswerten", "de", $GLOBALS["lang"]); ?></button>
+        <button onclick="button_delete();"><?php echo translate("Löschen", "de", $GLOBALS["lang"]); ?></button>
+    </div>
 </div>
 
 <br>
@@ -167,6 +174,75 @@ echo "</table>";
     <br>    Umfragen löschen (wäre ja schade) 🤷
 </p>
 <script type="application/javascript">
+    function setMenuItemsPosition() {
+        const positionOffset = document.getElementById("file-menu-toggle");
+        const editToggleElement = document.getElementById("edit-menu-toggle");
+        const editMenuItemsElement = document.getElementById("edit-menu-items");
+
+        const positionOffsetRect = positionOffset.getBoundingClientRect();
+        const positionOffsetXPosition = positionOffsetRect.left;
+        const editToggleRect = editToggleElement.getBoundingClientRect();
+        const editToggleXPosition = editToggleRect.left;
+
+        editMenuItemsElement.style.left = editToggleXPosition - positionOffsetXPosition + "px";
+    }
+
+    function closeMenusOnClick(event) {
+        const fileMenuToggleElement = document.getElementById("file-menu-toggle");
+        const fileMenuItemsElement = document.getElementById("file-menu-items");
+        const editMenuToggleElement = document.getElementById("edit-menu-toggle");
+        const editMenuItemsElement = document.getElementById("edit-menu-items");
+
+        if (window.innerWidth <= 1400) {
+            if (!fileMenuToggleElement.contains(event.target) && !fileMenuItemsElement.contains(event.target)) {
+                fileMenuItemsElement.style.display = 'none';
+            }
+
+            if (!editMenuToggleElement.contains(event.target) && !editMenuItemsElement.contains(event.target)) {
+                editMenuItemsElement.style.display = 'none';
+            }
+        }
+    }
+
+    function toggleFileMenu() {
+        const menuItems = document.getElementById('file-menu-items');
+        if (menuItems.style.display !== 'inline-block' && menuItems.style.display !== 'flex') {
+            menuItems.style.display = 'flex';
+            setMenuItemsPosition();
+        } else {
+            menuItems.style.display = 'none';
+        }
+    }
+
+    function toggleEditMenu() {
+        const menuItems = document.getElementById('edit-menu-items');
+        if (menuItems.style.display !== 'inline-block' && menuItems.style.display !== 'flex') {
+            menuItems.style.display = 'flex';
+            setMenuItemsPosition();
+        } else {
+            menuItems.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('click', closeMenusOnClick);
+
+    window.addEventListener("resize", setMenuItemsPosition);
+    window.addEventListener('resize', handleResize);
+
+    function handleResize() {
+        const fileMenuItems = document.getElementById('file-menu-items');
+        const EditMenuItems = document.getElementById('edit-menu-items');
+
+        if (window.innerWidth > 1400) {
+            fileMenuItems.style.display = 'inline-block';
+            EditMenuItems.style.display = 'inline-block';
+        }
+        else {
+            fileMenuItems.style.display = 'none';
+            EditMenuItems.style.display = 'none';
+        }
+    }
+
     function get_select_option() {
         var radios = document.getElementsByName('Umfrage');
 
