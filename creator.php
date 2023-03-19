@@ -2,9 +2,11 @@
 <p><?php echo translate("Hier kannst Du Deine Umfragen erstellen, einsehen und auswerten.", "de", $GLOBALS["lang"]); ?></p>
 <p><?php echo translate("Dieser Bereich ist im Entstehen und funktioniert noch nicht (richtig).", "de", $GLOBALS["lang"]); ?></p>
 
-<div>
+<div style="position: fixed; top: 4em;">
     <button onclick="button_new();"><?php echo translate("Neu", "de", $GLOBALS["lang"]); ?></button>
     <button onclick="button_open();"><?php echo translate("Öffnen", "de", $GLOBALS["lang"]); ?></button>
+    <button id="button_undo"><?php echo translate("Rückgängig", "de", $GLOBALS["lang"]); ?></button>
+    <button id="button_redo"><?php echo translate("Wiederholen", "de", $GLOBALS["lang"]); ?></button>
     <button onclick="button_save();"><?php echo translate("Speichern", "de", $GLOBALS["lang"]); ?></button>
     <button onclick="button_evaluate();"><?php echo translate("Auswerten", "de", $GLOBALS["lang"]); ?></button>
     <button onclick="button_delete();"><?php echo translate("Löschen", "de", $GLOBALS["lang"]); ?></button>
@@ -13,7 +15,11 @@
 
 <br>
 
-<div>
+<?php
+include ("survey-builder.php");
+?>
+
+<div id="my-surveys">
     <form>
 <?php
 echo "<h3>" . translate("Meine Umfragen", "de", $GLOBALS["lang"]) . "</h3>";
@@ -37,7 +43,7 @@ foreach ($_SESSION['my_creations'] as $key => $value) {
     $survey_contributors = get_survey_contributors_names($value);
     echo "<tr>";
     echo "<td>" . $value . "</td>";
-    echo "<td><input type='radio' name='Umfrage' id='" . $value . "'><label style='top: -3px;' for='" . $value . "'></label></td>";
+    echo "<td><input type='radio' name='Umfrage' id='" . $value . "'><label class='my-surveys' for='" . $value . "'></label></td>";
     echo "<td>" . translate($survey_name, "de", $GLOBALS["lang"]) . "</td>";
     echo "<td>" . $survey_creator['first'] . " " . $survey_creator['family'] . "</td>";
 
@@ -105,7 +111,7 @@ foreach ($_SESSION['my_contributions'] as $key => $value) {
     $survey_contributors = get_survey_contributors_names($value);
     echo "<tr>";
     echo "<td>" . $value . "</td>";
-    echo "<td><input type='radio' name='Umfrage' id='" . $value . "'><label style='top: -3px;' for='" . $value . "'></label></td>";
+    echo "<td><input type='radio' name='Umfrage' id='" . $value . "'><label class='my-surveys' for='" . $value . "'></label></td>";
     echo "<td>" . translate($survey_name, "de", $GLOBALS["lang"]) . "</td>";
     echo "<td>" . $survey_creator['first'] . " " . $survey_creator['family'] . "</td>";
 
@@ -200,3 +206,4 @@ echo "</table>";
         alert("Schließe");
     }
 </script>
+
