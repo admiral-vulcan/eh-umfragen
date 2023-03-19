@@ -14,7 +14,7 @@
     </div>
     <div class="edit-menu-items" id="edit-menu-items">
         <button id="button_undo"><?php echo translate("Rückgängig", "de", $GLOBALS["lang"]); ?></button>
-        <button id="button_redo"><?php echo translate("Wiederholen", "de", $GLOBALS["lang"]); ?></button>
+        <button id="button_redo"><?php if ($GLOBALS["lang"]==="en")echo "Redo"; else echo translate("Wiederherstellen", "de", $GLOBALS["lang"]); ?></button>
         <button onclick="button_evaluate();"><?php echo translate("Auswerten", "de", $GLOBALS["lang"]); ?></button>
         <button onclick="button_delete();"><?php echo translate("Löschen", "de", $GLOBALS["lang"]); ?></button>
     </div>
@@ -193,7 +193,7 @@ echo "</table>";
         const editMenuToggleElement = document.getElementById("edit-menu-toggle");
         const editMenuItemsElement = document.getElementById("edit-menu-items");
 
-        if (window.innerWidth <= 1400) {
+        if (window.innerWidth <= 1430) {
             if (!fileMenuToggleElement.contains(event.target) && !fileMenuItemsElement.contains(event.target)) {
                 fileMenuItemsElement.style.display = 'none';
             }
@@ -233,7 +233,7 @@ echo "</table>";
         const fileMenuItems = document.getElementById('file-menu-items');
         const EditMenuItems = document.getElementById('edit-menu-items');
 
-        if (window.innerWidth > 1400) {
+        if (window.innerWidth > 1430) {
             fileMenuItems.style.display = 'inline-block';
             EditMenuItems.style.display = 'inline-block';
         }

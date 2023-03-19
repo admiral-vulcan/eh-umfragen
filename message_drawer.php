@@ -304,8 +304,10 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
             }
         }
 /** TODO <a> not working*/
+/* Must be commented out, is in allmin.js
+*/
         document.addEventListener("keydown", function(event) {
-            if (event.code === "Enter" || event.code === "Space") {
+            if (hasVisibleAlert() && (event.code === "Enter" || event.code === "Return" || event.code === "Space" || event.keyCode == 13 || event.keyCode == 14 || event.keyCode == 32)) {
                 event.preventDefault();
                 var focusedElement = document.activeElement;
                 if (focusedElement.classList.contains("button")) {
@@ -315,6 +317,19 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                 }
             }
         });
+
+        function hasVisibleAlert() {
+            const alerts = document.getElementsByClassName("alert");
+            for (let i = 0; i < alerts.length; i++) {
+                const alertElement = alerts[i];
+                const displayStyle = window.getComputedStyle(alertElement).getPropertyValue("display");
+                if (displayStyle !== "none") {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
     </script>
 

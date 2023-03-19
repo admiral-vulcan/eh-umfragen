@@ -1,43 +1,43 @@
 <div id="builder">
     <!-- Title -->
-    <label for="title">Title of the survey:</label>
-    <input type="text" name="title" id="title">
+    <label for="title"><?php echo translate('Umfragetitel', 'de', $GLOBALS['lang']); ?></label>
+    <input type="text" name="title" id="title" placeholder="<?php echo translate('Ein prägnanter Titel, möglichst nur ein bis drei Wörter', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Description -->
-    <label for="description">Description of the survey:</label>
-    <input type="text"  name="description" id="description">
+    <label for="description"><?php echo translate('Umfragebeschreibung', 'de', $GLOBALS['lang']); ?></label>
+    <input type="text"  name="description" id="description" placeholder="<?php echo translate('Eine Beschreibung, die Sinn und Zweck der Umfrage erklärt', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Additional contributors -->
-    <label for="contributors">Additional contributors (separate by commas):</label>
-    <input type="text" name="contributors" id="contributors">
+    <label for="contributors"><?php echo translate('Weitere Mitwirkende (durch Kommata getrennt)', 'de', $GLOBALS['lang']); ?></label>
+    <input type="text" name="contributors" id="contributors" placeholder="<?php echo translate('Z.B. musterfrau1@studnet.eh-ludwigsburg.de, mustermann@studnet.eh-ludwigsburg.de', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Target group -->
-    <label for="target_group">Intended target group:</label>
+    <label for="target_group"><?php echo translate('Anvisierte Zielgruppe', 'de', $GLOBALS['lang']); ?></label>
     <select name="target_group" id="target_group">
-        <option value="students">Students</option>
-        <option value="lecturers">Lecturers</option>
-        <option value="no_restriction">No restriction</option>
-        <option value="other">Other</option>
+        <option value="students"><?php echo translate('Studierende der EH', 'de', $GLOBALS['lang']); ?></option>
+        <option value="lecturers"><?php echo translate('Dozierende und Mitarbeitende der EH', 'de', $GLOBALS['lang']); ?></option>
+        <option value="no_restriction"><?php echo translate('ohne Einschränkung', 'de', $GLOBALS['lang']); ?></option>
+        <option value="other"><?php echo translate('Andere Zielgruppe', 'de', $GLOBALS['lang']); ?></option>
     </select>
-    <input type="text" name="email_domain" id="email_domain" placeholder="Email domain" style="display: none;">
+    <label for="email_domain" id="email_domain_label" style="display: none;"><?php echo translate('E-Mail-Domains (durch Kommata getrennt)', 'de', $GLOBALS['lang']); ?></label><input type="text" name="email_domain" id="email_domain" placeholder="<?php echo translate('Z.B.', 'de', $GLOBALS['lang']); ?> @ph-ludwigsburg.de, @uni-stuttgart.de" style="display: none;">
 
     <!-- Questions container -->
     <div id="questions-container"></div>
 
     <!-- Question type dropdown -->
-    <label for="question_type">Add element:</label>
+    <label for="question_type"><?php echo translate('Neues Element:', 'de', $GLOBALS['lang']); ?></label>
     <select name="question_type" id="question_type">
-        <option value="">Select element type</option>
-        <option value="description">Description text</option>
-        <option value="free_text">Free text field</option>
-        <option value="picture">Picture</option>
-        <option value="multiple_choice">Multiple choice question</option>
-        <option value="single_choice">Single choice question</option>
-        <option value="dropdown">Dropdown question</option>
+        <option value=""><?php echo translate('Elementtyp', 'de', $GLOBALS['lang']); ?></option>
+        <option value="description"><?php echo translate('Beschreibender Text', 'de', $GLOBALS['lang']); ?></option>
+        <option value="free_text"><?php echo translate('Freie Texteingabe', 'de', $GLOBALS['lang']); ?></option>
+        <option value="picture"><?php echo translate('Bild', 'de', $GLOBALS['lang']); ?></option>
+        <option value="single_choice"><?php echo translate('Frage mit Einfachauswahl (nebeneinander)', 'de', $GLOBALS['lang']); ?></option>
+        <option value="multiple_choice"><?php echo translate('Frage mit Mehrfachauswahl (nebeneinander)', 'de', $GLOBALS['lang']); ?></option>
+        <option value="dropdown"><?php echo translate('Frage mit Mehrfachauswahl (untereinander in einem Menü)', 'de', $GLOBALS['lang']); ?></option>
     </select>
 
     <!-- Add question button -->
-    <button type="button" id="add-question">Add question</button>
+    <button type="button" id="add-question"><?php echo translate('Element hinzufügen', 'de', $GLOBALS['lang']); ?></button>
 
 </div>
 
@@ -48,6 +48,7 @@
         const questionsContainer = document.getElementById("questions-container");
         const targetGroupSelect = document.getElementById("target_group");
         const emailDomainInput = document.getElementById("email_domain");
+        const emailDomainLabel = document.getElementById("email_domain_label");
         const undoBtn = document.getElementById("button_undo");
         const redoBtn = document.getElementById("button_redo");
 
@@ -122,8 +123,10 @@
         targetGroupSelect.addEventListener("change", () => {
             if (targetGroupSelect.value === "other") {
                 emailDomainInput.style.display = "inline";
+                emailDomainLabel.style.display = "inline";
             } else {
                 emailDomainInput.style.display = "none";
+                emailDomainLabel.style.display = "none";
             }
         });
 
@@ -139,8 +142,11 @@
             questionWrapper.dataset.questionType = questionType;
 
             const questionLabel = document.createElement("label");
-            questionLabel.innerText = `Question ${questionCount}:`;
+            questionLabel.innerText = `<?php echo translate('Element', 'de', $GLOBALS['lang']); ?> ${questionCount}: ` + typeToReadableType(questionType);
+            questionLabel.className = questionType;
             questionWrapper.appendChild(questionLabel);
+            const lineBreak = document.createElement("br");
+            questionWrapper.appendChild(lineBreak);
 
             const followUpCheckbox = document.createElement("input");
             followUpCheckbox.type = "checkbox";
@@ -152,7 +158,7 @@
 
             const followUpLabel = document.createElement("label");
             followUpLabel.htmlFor = `question_${questionCount}_follow_up`;
-            followUpLabel.innerText = "Is follow-up question";
+            followUpLabel.innerText = "<?php echo translate('ist ein Follow-up-Element', 'de', $GLOBALS['lang']); ?>";
 
             followUpForm.appendChild(followUpCheckbox);
             followUpForm.appendChild(followUpLabel);
@@ -196,6 +202,7 @@
                     const choiceInput = document.createElement("input");
                     choiceInput.type = "text";
                     choiceInput.name = `question_${questionCount}_choice_${newChoiceCount}`;
+                    choiceInput.placeholder = "<?php echo translate('Eine kurze und prägnante Antwortmöglichkeit', 'de', $GLOBALS['lang']); ?>";
 
                     if (choiceContainer.tagName !== "SELECT") {
                         const choiceRadio = document.createElement("input");
@@ -207,7 +214,7 @@
                     // Insert the "Answers:" label only when the second choice is added
                     if (newChoiceCount === 2) {
                         const answersLabel = document.createElement("label");
-                        answersLabel.innerText = "Answers:";
+                        answersLabel.innerText = "<?php echo translate('Antwortmöglichkeiten:', 'de', $GLOBALS['lang']); ?>";
                         answersLabel.setAttribute("for", "answers");
                         choiceContainer.insertBefore(answersLabel, choiceContainer.children[2]);
                     }
@@ -221,6 +228,7 @@
                     const choiceInput = document.createElement("input");
                     choiceInput.type = "text";
                     choiceInput.name = `question_${questionCount}_choice_1`;
+                    choiceInput.placeholder = "<?php echo translate('Eine kurze und prägnante Frage', 'de', $GLOBALS['lang']); ?>";
 
                     if (questionType !== "dropdown") {
                         const choiceRadio = document.createElement("input");
@@ -233,13 +241,13 @@
                     questionWrapper.appendChild(choiceContainer);
 
                     const addButton = document.createElement("button");
-                    addButton.innerText = "Add answer";
+                    addButton.innerText = "<?php echo translate('Antwort hinzufügen', 'de', $GLOBALS['lang']); ?>";
                     addButton.type = "button";
                     addButton.addEventListener("click", () => addChoice(choiceContainer));
                     questionWrapper.appendChild(addButton);
 
                     const removeButton = document.createElement("button");
-                    removeButton.innerText = "Delete answer";
+                    removeButton.innerText = "<?php echo translate('Antwort löschen', 'de', $GLOBALS['lang']); ?>";
                     removeButton.type = "button";
                     removeButton.addEventListener("click", () => removeChoice(choiceContainer));
                     questionWrapper.appendChild(removeButton);
@@ -249,28 +257,22 @@
             questionWrapper.appendChild(followUpForm);
 
             const deleteButton = document.createElement("button");
-            deleteButton.innerText = "Delete";
+            deleteButton.innerText = "<?php echo translate('Element löschen', 'de', $GLOBALS['lang']); ?>";
             deleteButton.type = "button";
             deleteButton.addEventListener("click", () => deleteQuestion(questionWrapper));
             questionWrapper.appendChild(deleteButton);
 
             const moveUpButton = document.createElement("button");
-            moveUpButton.innerText = "Up";
+            moveUpButton.innerText = "<?php echo translate('Element nach oben bewegen', 'de', $GLOBALS['lang']); ?>";
             moveUpButton.type = "button";
             moveUpButton.addEventListener("click", () => moveQuestion(questionWrapper, "up"));
             questionWrapper.appendChild(moveUpButton);
 
             const moveDownButton = document.createElement("button");
-            moveDownButton.innerText = "Down";
+            moveDownButton.innerText = "<?php echo translate('Element nach unten bewegen', 'de', $GLOBALS['lang']); ?>";
             moveDownButton.type = "button";
             moveDownButton.addEventListener("click", () => moveQuestion(questionWrapper, "down"));
             questionWrapper.appendChild(moveDownButton);
-
-            const addAfterButton = document.createElement("button");
-            addAfterButton.innerText = "Add";
-            addAfterButton.type = "button";
-            addAfterButton.addEventListener("click", () => addQuestionAfter(questionWrapper));
-            questionWrapper.appendChild(addAfterButton);
 
             questionsContainer.appendChild(questionWrapper);
 
@@ -334,32 +336,13 @@
             }
         }
 
-
-        function deleteQuestion(questionWrapper) {
-            questionsContainer.removeChild(questionWrapper);
-        }
-
-        // Move question function
-        function moveQuestion(questionWrapper, direction) {
-            const command = new MoveQuestionCommand(questionWrapper, questionsContainer, direction);
-            command.execute();
-            updateQuestionNumbers();
-            undoStack.push(command);
-        }
-
-        function addQuestionAfter(questionWrapper) {
-            questionTypeSelect.value = "";
-            addQuestionBtn.click();
-            const newQuestionWrapper = questionsContainer.lastElementChild;
-            questionsContainer.insertBefore(newQuestionWrapper, questionWrapper.nextElementSibling);
-        }
-
 // Update question numbers function
         function updateQuestionNumbers() {
             const questionWrappers = questionsContainer.querySelectorAll(".question-wrapper");
             questionWrappers.forEach((wrapper, index) => {
                 const questionLabel = wrapper.querySelector("label");
-                questionLabel.innerText = `Question ${index + 1}:`;
+                const questionElementType = questionLabel.className;
+                questionLabel.innerText = `<?php echo translate('Element', 'de', $GLOBALS['lang']); ?> ${index + 1}: ` + typeToReadableType(questionElementType);
 
                 const inputs = wrapper.querySelectorAll("input, textarea, select");
                 inputs.forEach(input => {
@@ -371,4 +354,24 @@
         }
 
     });
+
+    //convert the machine readable types into human readable types
+    function typeToReadableType(value) {
+        switch (value) {
+            case "description":
+                return "<?php echo translate('Beschreibender Text', 'de', $GLOBALS['lang']); ?>";
+            case "free_text":
+                return "<?php echo translate('Freie Texteingabe', 'de', $GLOBALS['lang']); ?>";
+            case "picture":
+                return "<?php echo translate('Bild', 'de', $GLOBALS['lang']); ?>";
+            case "single_choice":
+                return "<?php echo translate('Frage mit Einfachauswahl (nebeneinander)', 'de', $GLOBALS['lang']); ?>";
+            case "multiple_choice":
+                return "<?php echo translate('Frage mit Mehrfachauswahl (nebeneinander)', 'de', $GLOBALS['lang']); ?>";
+            case "dropdown":
+                return "<?php echo translate('Frage mit Mehrfachauswahl (untereinander in einem Menü)', 'de', $GLOBALS['lang']); ?>";
+            default:
+                return "";
+        }
+    }
 </script>
