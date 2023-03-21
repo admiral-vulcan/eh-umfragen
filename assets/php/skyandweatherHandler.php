@@ -96,8 +96,7 @@ $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
 //echo $GLOBALS['weathericon'];
 
 ?>
-
-    <form>
+    <form style="display: none;">
         <input type="hidden" id="temperature" value="<?php echo $GLOBALS['temperature']; ?>">
         <input type="hidden" id="weathericon" value="<?php echo $GLOBALS['weathericon']; ?>">
     </form>

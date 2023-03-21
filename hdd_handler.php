@@ -22,6 +22,7 @@ function getProfilePic() {
 }
 
 function writeCSVFile(bool $final, string $name, string $cid, array $content) {
+    $requestUri = $_SERVER['REQUEST_URI'];
     // Set the directory based on the value of $final
     $dir = $final ? 'surveys' : 'surveys-test';
 
@@ -33,13 +34,15 @@ function writeCSVFile(bool $final, string $name, string $cid, array $content) {
     // Create the filename with the current date, cid, and name
     $date = date('Y-m-d');
     $filename = "{$date}-{$cid}-{$name}.csv";
-    $filepath = "{$dir}/{$filename}";
+    if (strpos($requestUri, 'assets/php'))
+        $filepath = "../../{$dir}/{$filename}";
+    else $filepath = "{$dir}/{$filename}";
 
     // Open the file in write mode
     $file = fopen($filepath, 'w');
 
     // Add UTF-8 BOM
-    fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+    //fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
     // Iterate through the content array and write each row to the file
     foreach ($content as $row) {
@@ -50,6 +53,7 @@ function writeCSVFile(bool $final, string $name, string $cid, array $content) {
             $line .= $cellValue . ';';
         }
         $line .= "\r\n";
+        $line = iconv("UTF-8", "WINDOWS-1252", $line);
         fputs($file, $line);
     }
 

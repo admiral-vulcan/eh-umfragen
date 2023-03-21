@@ -4,10 +4,16 @@ require_once ("convertTimeFormatInString.php");
 if (!isset($surveys)) $surveys = [];
 if (!isset($thisSurveyNumber)) $thisSurveyNumber = [];
 $target = "all"; //studs or empl or both or all
-if (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb")) $target = "both";
+if (
+    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb")) ||
+    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "lect"))
+) $target = "both";
 elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud")) $target = "studs";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb")) $target = "empl";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "all")) $target = "all";
+elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb") ||
+    str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "lect")) $target = "empl";
+elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "all") ||
+    str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "no_restr")) $target = "all";
+/** TODO special targets via @domain */
 
 if ($target === "studs") $targettext = "Studierende der EH-Ludwigsburg";
 elseif ($target === "mitarb") $targettext = "Mitarbeitende der EH-Ludwigsburg";

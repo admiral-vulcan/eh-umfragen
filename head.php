@@ -1,5 +1,4 @@
 <?php
-require_once ("geturl.php");
 if (!isset($title)) $title = "eh-umfragen.de - " . translate("Umfragen von und für Studierende der EH", "de", $GLOBALS["lang"]);
 if (!isset($abstract)) $abstract = translate("Hier findet Ihr relevante Umfragen für Euch!", "de", $GLOBALS["lang"]);
 if (!isset($description)) $description = translate("Hier findet Ihr Umfragen, die für Euch relevant sind! Ob sie Teil einer modultypischen Arbeit sind oder gerade nur ein Hirngespinst, hier werdet Ihr fündig!", "de", $GLOBALS["lang"]);

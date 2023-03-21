@@ -1,49 +1,5 @@
 <?php
-/* old version
-function getDefaultLanguage() {
-    $validLanguages = array("en", "de", "fr", "es", "it", "pt", "ru", "pl", "nl", "tr", "el", "sv", "da", "fi", "ro");
-    $language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-    if (isset($_GET["lang"])) $language = $_GET["lang"];
-    if (in_array($language, $validLanguages)) {
-        return $language;
-    } else {
-        return "en";
-    }
-}
-*/
-function getDefaultLanguage() {
-    $validLanguages = array("en", "de", "fr", "es", "it", "pt", "ru", "pl", "nl", "tr", "el", "sv", "da", "fi", "ro");
-    if (isset($_GET["lang"]) && in_array($_GET["lang"], $validLanguages)) {
-        setcookie('language', $_GET["lang"], time() + (86400 * 30 * 365), "/"); // 86400 = 1 day
-        return $_GET["lang"];
-    } elseif (isset($_COOKIE["language"]) && in_array($_COOKIE["language"], $validLanguages)) {
-        return $_COOKIE["language"];
-    } else {
-        $language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-        if (in_array($language, $validLanguages)) {
-            return $language;
-        } else {
-            return "en";
-        }
-    }
-}
-$GLOBALS["lang"] = getDefaultLanguage();
-//$GLOBALS["lang"] = "fr"; //override
-
-function verToInt($str) {
-    $pos = strpos($str,'.');
-    if ($pos !== false) {
-        $str = substr($str,0,$pos+1) . str_replace('.','',substr($str,$pos+1));
-    }
-    return floatval($str);
-}
-if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
-    $start = hrtime(true);
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    if (isset($_GET["warnings"]) && $_GET["warnings"] == "1") error_reporting(E_ALL);
-    else error_reporting(E_ERROR);
-}
+require_once ("assets/php/getVars.php");
 session_start();
 $ver_str = "0.9.6";                      //0.9.5
 $ver_float = verToInt($ver_str);     //0.95
@@ -53,13 +9,11 @@ $version = $ver_str;                    //legacy reasons, but it's nice to have
 require_once ("utf8Encode.php");
 require_once ("message_drawer.php");
 require_once ("translate.php");
-require_once ("geturl.php");
 require_once ("head.php");
 require_once ("hdd_handler.php");
 require_once ("zitate.php");
 require_once("gitignore/code.php");
 require_once ("sanitize.php");
-require_once ("get_ip.php");
 require_once ("sendmail.php");
 require_once ("database_com.php");
 require_once ("session_handler.php");
@@ -346,6 +300,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
 <script src="assets/js/all.min.js"></script>
 <script src="assets/js/weather_handler.js"></script>
 <script src="assets/js/replaceAvifHandler.js"></script>
+<script src="assets/js/creator.js"></script>
 </body>
 <?php
 if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {

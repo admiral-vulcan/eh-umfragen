@@ -2127,15 +2127,23 @@ form.search > input:first-child {
 	}
 }
 
+@media screen and (max-width: 815px) {
+	.creator-buttons {
+		top: 3.75em;
+		left: auto !important;
+	}
+}
+
 @media screen and (max-width: 735px) {
 	.creator-buttons {
-		top: 4em;
-		left: auto;
+		top: 3.25em;
+		left: auto !important;
 	}
 }
 
 .file-menu-items,
 .edit-menu-items {
+	opacity: 1;
 	display: inline-block;
 }
 
@@ -2147,6 +2155,7 @@ form.search > input:first-child {
 @media screen and (max-width: 1430px) {
 	.file-menu-items,
 	.edit-menu-items {
+		opacity: 0;
 		display: none;
 		flex-direction: column;
 		position: absolute;
@@ -2168,6 +2177,9 @@ label {
 }
 
 
+#builder {
+	display: none;
+}
 #builder label {
 	margin: 1em 0 0 0; /* changed for better readability*/
 }
@@ -2181,6 +2193,7 @@ textarea {
 }
 
 .my-surveys {
+	display: none;
 	top: -3px;
 }
 

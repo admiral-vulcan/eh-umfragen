@@ -1,11 +1,21 @@
 <div id="builder">
+    <h3><?php echo translate('Neue Umfrage', 'de', $GLOBALS['lang']); ?></h3>
+
     <!-- Title -->
     <label for="title"><?php echo translate('Umfragetitel', 'de', $GLOBALS['lang']); ?></label>
-    <input type="text" name="title" id="title" placeholder="<?php echo translate('prägnant, mögl. ein bis drei Wörter', 'de', $GLOBALS['lang']); ?>">
+    <input type="text" name="title" id="title" placeholder="<?php echo translate('mögl. ein bis zwei Wörter', 'de', $GLOBALS['lang']); ?>">
+
+    <!-- Subtitle -->
+    <label for="subtitle"><?php echo translate('Untertitel (empfohlen)', 'de', $GLOBALS['lang']); ?></label>
+    <input type="text" name="subtitle" id="subtitle" placeholder="<?php echo translate('prägnant, mögl. bis zu zehn Wörter', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Description -->
     <label for="description"><?php echo translate('Umfragebeschreibung', 'de', $GLOBALS['lang']); ?></label>
     <input type="text"  name="description" id="description" placeholder="<?php echo translate('Sinn und Zweck der Umfrage', 'de', $GLOBALS['lang']); ?>">
+
+    <!-- Further Description -->
+    <label for="further_description"><?php echo translate('Weiterführende Beschreibung (optional)', 'de', $GLOBALS['lang']); ?></label>
+    <input type="text"  name="further_description" id="further_description" placeholder="<?php echo translate('Falls eine zweite Zeile notwendig ist', 'de', $GLOBALS['lang']); ?>">
 
     <!-- Additional contributors -->
     <label for="contributors"><?php echo translate('Weitere Mitwirkende (durch Kommata getrennt)', 'de', $GLOBALS['lang']); ?></label>
@@ -14,8 +24,10 @@
     <!-- Target group -->
     <label for="target_group"><?php echo translate('Anvisierte Zielgruppe', 'de', $GLOBALS['lang']); ?></label>
     <select name="target_group" id="target_group">
+        <option value="" disabled><?php echo translate('Zielgruppe', 'de', $GLOBALS['lang']); ?></option>
         <option value="students"><?php echo translate('Studierende der EH', 'de', $GLOBALS['lang']); ?></option>
         <option value="lecturers"><?php echo translate('Dozierende und Mitarbeitende der EH', 'de', $GLOBALS['lang']); ?></option>
+        <option value="students&lecturers"><?php echo translate('Alle an der EH', 'de', $GLOBALS['lang']); ?></option>
         <option value="no_restriction"><?php echo translate('ohne Einschränkung', 'de', $GLOBALS['lang']); ?></option>
         <option value="other"><?php echo translate('Andere Zielgruppe', 'de', $GLOBALS['lang']); ?></option>
     </select>
@@ -27,7 +39,7 @@
     <!-- Question type dropdown -->
     <label for="question_type"><?php echo translate('Neues Element:', 'de', $GLOBALS['lang']); ?></label>
     <select name="question_type" id="question_type">
-        <option value=""><?php echo translate('Elementtyp', 'de', $GLOBALS['lang']); ?></option>
+        <option value="" disabled><?php echo translate('Elementtyp', 'de', $GLOBALS['lang']); ?></option>
         <option value="description"><?php echo translate('Beschreibender Text', 'de', $GLOBALS['lang']); ?></option>
         <option value="free_text"><?php echo translate('Freie Texteingabe', 'de', $GLOBALS['lang']); ?></option>
         <option value="picture"><?php echo translate('Bild', 'de', $GLOBALS['lang']); ?></option>
@@ -38,21 +50,24 @@
 
     <!-- Add question button -->
     <button type="button" id="add-question"><?php echo translate('Element hinzufügen', 'de', $GLOBALS['lang']); ?></button>
-
 </div>
 
 <script type="application/javascript">
-    document.addEventListener("DOMContentLoaded", () => {
-        const questionTypeSelect = document.getElementById("question_type");
-        const addQuestionBtn = document.getElementById("add-question");
-        const questionsContainer = document.getElementById("questions-container");
-        const targetGroupSelect = document.getElementById("target_group");
-        const emailDomainInput = document.getElementById("email_domain");
-        const emailDomainLabel = document.getElementById("email_domain_label");
-        const undoBtn = document.getElementById("button_undo");
-        const redoBtn = document.getElementById("button_redo");
+    const questionTypeSelect = document.getElementById("question_type");
+    const addQuestionBtn = document.getElementById("add-question");
+    const questionsContainer = document.getElementById("questions-container");
+    const targetGroupSelect = document.getElementById("target_group");
+    const emailDomainInput = document.getElementById("email_domain");
+    const emailDomainLabel = document.getElementById("email_domain_label");
+    const undoBtn = document.getElementById("button_undo");
+    const redoBtn = document.getElementById("button_redo");
+    let questionCount = 0;
 
-        let questionCount = 0;
+    // Undo/redo stacks
+    let undoStack = [];
+    let redoStack = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
         // Command class and specific command classes
         class Command {
             execute() { }
@@ -115,10 +130,6 @@
             }
         }
 
-        // Undo/redo stacks
-        let undoStack = [];
-        let redoStack = [];
-
         // Show email domain input if 'other' is selected in the target group dropdown
         targetGroupSelect.addEventListener("change", () => {
             if (targetGroupSelect.value === "other") {
@@ -166,7 +177,8 @@
 
             switch (questionType) {
                 case "description":
-                    const descriptionInput = document.createElement("textarea");
+                    const descriptionInput = document.createElement("input");
+                    descriptionInput.type = "text";
                     descriptionInput.name = `question_${questionCount}_description`;
                     questionWrapper.appendChild(descriptionInput);
                     break;
@@ -203,14 +215,14 @@
                     choiceInput.type = "text";
                     choiceInput.name = `question_${questionCount}_choice_${newChoiceCount}`;
                     choiceInput.placeholder = "<?php echo translate('Eine kurze und prägnante Antwortmöglichkeit', 'de', $GLOBALS['lang']); ?>";
-
+/*
                     if (choiceContainer.tagName !== "SELECT") {
                         const choiceRadio = document.createElement("input");
                         choiceRadio.type = choiceContainer.parentElement.dataset.questionType === "single_choice" ? "radio" : "checkbox";
                         choiceRadio.name = `question_${questionCount}_choice_${newChoiceCount}_value`;
                         choiceContainer.appendChild(choiceRadio);
                     }
-
+*/
                     // Insert the "Answers:" label only when the second choice is added
                     if (newChoiceCount === 2) {
                         const answersLabel = document.createElement("label");
@@ -374,4 +386,104 @@
                 return "";
         }
     }
+
+
+
+
+
+    function addImageUploadEventListener(element) {
+        if (element.hasAttribute("data-upload-listener")) {
+            return; // Skip if the event listener is already attached
+        }
+
+        element.setAttribute("data-upload-listener", "true");
+        element.addEventListener("change", function (event) {
+            handleImageUpload(event, this.name);
+        });
+    }
+
+    function collectData(isFinal) {
+        let dataArray = [];
+
+        dataArray[0] = [
+            document.documentElement.getAttribute("lang") + (isFinal ? "_final" : "_draft"),
+            document.getElementById("title").value,
+            document.getElementById("subtitle").value,
+            document.getElementById("description").value,
+            document.getElementById("further_description").value,
+            document.getElementById("contributors").value
+        ];
+
+        let targetGroup = document.getElementById("target_group").value;
+        let emailDomain = document.getElementById("email_domain").value;
+
+        dataArray[1] = [
+            targetGroup === "other" ? emailDomain : targetGroup
+        ];
+
+        let questionWrappers = document.querySelectorAll(".question-wrapper");
+
+        questionWrappers.forEach((wrapper, index) => {
+            let questionType = wrapper.getAttribute("data-question-type");
+            let checkBox = wrapper.querySelector("input[type='checkbox']");
+            let isFollowUp = checkBox.checked ? "is_follow_up" : "";
+            let inputs = wrapper.querySelectorAll("input[type='text']");
+            let inputValues = Array.from(inputs).map(input => input.value);
+
+            dataArray[index + 2] = [questionType, isFollowUp, ...inputValues];
+        });
+        const inputs = document.getElementsByTagName("input");
+        for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].type === "file" && inputs[i].name.match(/^question_\d+_picture$/)) {
+                addImageUploadEventListener(inputs[i]);
+            }
+        }
+
+        return dataArray;
+    }
+
+
+
+    function handleImageUpload(event, inputName) {
+        const file = event.target.files[0];
+        if (file.size > 30 * 1024 * 1024) {
+            alert("File is too large (over 30MB). Please choose a smaller file.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("image", file, inputName + getFileExtension(file.name, true));
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "assets/php/upload.php", true);
+        xhr.onload = function () {
+            if (this.status === 200) {
+                console.log("Image uploaded successfully.");
+            } else {
+                console.error("An error occurred during the image upload.");
+            }
+        };
+        xhr.send(formData);
+    }
+
+    function getFileExtension(filename, withDot = false) {
+        const extension = filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+        return withDot ? '.' + extension : extension;
+    }
+
+    function sendDataToServer(dataArray) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "assets/php/process_data.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.onload = function () {
+            if (this.status === 200) {
+                console.log("Data sent successfully.");
+            } else {
+                console.error("An error occurred while sending data.");
+            }
+        };
+        xhr.send(JSON.stringify(dataArray));
+    }
+
+
 </script>
