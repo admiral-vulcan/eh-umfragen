@@ -70,7 +70,7 @@ function translate($source_text, $source_lang = "de", $target_lang = "en") {
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     $result = curl_exec($ch);
-    if (curl_errno($ch) && $_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
+    if (curl_errno($ch) && $GLOBALS["testDomain"]) {
         echo 'Error:' . curl_error($ch);
     }
     curl_close($ch);
@@ -133,6 +133,7 @@ function stripHtmlTags($str): array|string|null {
 
 if (!strpos($requestUri, 'assets/php')) {
     $waitForTranslation = alert("Please wait", "Please wait for the language to load. If it's the first time the server handles this language's data, it could take a while...", "info", false);
+    $waitForUserLeave = alert("Datenverlust", "Bist Du sicher, dass Du die Sprache jetzt wechseln willst? Alle nicht gespeicherten Änderungen gehen dabei verloren.", "warning", false, "userLeaves();", "userStays();");
 }
 //echo numeralPreserve("3. Computerraum (A-Gebäude, 2. OG)", "EN")["num"];
 
@@ -160,21 +161,50 @@ echo $stuff["closingTags"];
 echo preg_replace("/\?lang=[a-zA-Z]{2}/", "$1?lang=de", "lol /?lang=fr lol /?lang=fr lol", 1);
 
 */
-?>
-<script type="application/javascript">
-    window.addEventListener("load", function() {
-        // Get the select element
-        const select = document.querySelector('.language_select');
 
-        // Listen for change event on the select element
-        select.addEventListener('change', function() {
-            // Get the selected value
-            const selectedValue = this.value;
+if (!strpos($requestUri, 'assets/php')) {
+    ?>
+    <script type="application/javascript">
+        var prevSelect = "de";
+        window.onload = function() {
+            prevSelect = document.querySelector('.language_select').value;
+        };
+        window.addEventListener("load", function() {
+            // Get the select element
+            const select = document.querySelector('.language_select');
 
+            // Listen for change event on the select element
+            select.addEventListener('change', function () {
+                // first we warn the user that there are unsaved elements
+                if (typeof undoStack !== 'undefined' && undoStack.length > 0) {
+                    window.onbeforeunload = null;
+                    showAlert(<?php echo $waitForUserLeave; ?>);
+                } else {
+                    // Get the selected value
+                    const selectedValue = this.value;
+                    proceedTranslation(selectedValue);
+                }
+            });
+        });
+
+        function userLeaves() {
+            proceedTranslation(document.querySelector('.language_select').value);
+            hideAlert(<?php echo $waitForUserLeave; ?>);
+        }
+
+        function userStays() {
+            document.querySelector('.language_select').value = prevSelect;
+            window.onbeforeunload = async function() {
+                return await translate("Bist Du sicher, dass Du die Seite verlassen willst? Alle nicht gespeicherten Änderungen gehen dabei verloren.", "de", userLang);
+            };
+            hideAlert(<?php echo $waitForUserLeave; ?>);
+        }
+
+        function proceedTranslation(selectedValue) {
             showAlert(<?php echo $waitForTranslation; ?>);
 
             // Wait 200ms before reloading the page
-            setTimeout(function() {
+            setTimeout(function () {
                 // Get the current URL
                 let currentUrl = window.location.href;
 
@@ -206,6 +236,35 @@ echo preg_replace("/\?lang=[a-zA-Z]{2}/", "$1?lang=de", "lol /?lang=fr lol /?lan
                 // Reload the page with the updated URL
                 window.location.href = currentUrl;
             }, 200);
-        });
-    });
-</script>
+        }
+
+        function translateViaServer(textArray) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "assets/php/translate_data.php", true);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.onload = function () {
+                    if (this.status === 200) {
+                        if (testDomain) console.log("Data sent successfully.");
+                        const response = JSON.parse(this.responseText);
+                        const translatedText = response.translatedText;
+                        resolve(translatedText);
+                    } else {
+                        console.error("An error occurred while sending data.");
+                        reject(new Error("An error occurred while sending data."));
+                    }
+                };
+                xhr.send(JSON.stringify(textArray));
+            });
+        }
+
+        async function translate(text, sourceLang, targetLang) {
+            if (sourceLang === targetLang) return text;
+            try {
+                return await translateViaServer([text, sourceLang, targetLang]);
+            } catch (error) {
+                return 'An error occurred while translating the text:' + error;
+            }
+        }
+    </script>
+<?php } ?>

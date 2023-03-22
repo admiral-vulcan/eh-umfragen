@@ -292,8 +292,6 @@ include ("survey-builder.php");
     }
 
     document.addEventListener('click', closeMenusOnClick);
-
-    window.addEventListener("resize", setMenuItemsPosition);
     window.addEventListener('resize', handleResize);
 
     function handleResize() {
@@ -398,7 +396,7 @@ include ("survey-builder.php");
         }
     }
 
-    function undoAll() {
+    async function undoAll() {
         while (undoStack.length > 0) { // loop until undo stack is empty
             const command = undoStack.pop(); // pop the last command
             command.unexecute(); // unexecute it
@@ -407,6 +405,7 @@ include ("survey-builder.php");
         emailDomainInput.style.display = "none";
         emailDomainLabel.style.display = "none";
         questionCount = 0;
+        await preventUserLeave();
     }
 
     function getWidth() {

@@ -52,7 +52,18 @@
     <button type="button" id="add-question"><?php echo translate('Element hinzufügen', 'de', $GLOBALS['lang']); ?></button>
 </div>
 
+<?php
+$followUpInfo = alert("Follow-Up-Element", "
+    Ein Follow-Up-Element ist ein Element, das in der Umfrage erst auftaucht, 
+    <br>wenn die vorherige Frage beantwortet wurde. Du kannst diese Funktion nutzen, 
+    <br>um die befragte Person durch eine neue Frage nicht zu beeinflussen,  
+    <br>oder falls eine weiterführende Frage nur dann sinnvoll ist, 
+    <br>wenn die vorherige auch wirklich beantwortet wurde. 
+    ", "info", false);
+?>
+
 <script type="application/javascript">
+    const followUpInfoID = <?php echo $followUpInfo; ?>;
     const questionTypeSelect = document.getElementById("question_type");
     const addQuestionBtn = document.getElementById("add-question");
     const questionsContainer = document.getElementById("questions-container");
@@ -67,329 +78,351 @@
     let undoStack = [];
     let redoStack = [];
 
-    document.addEventListener("DOMContentLoaded", () => {
-        // Command class and specific command classes
-        class Command {
-            execute() { }
-            unexecute() { }
-        }
-
-        class AddQuestionCommand extends Command {
-            constructor(questionWrapper, questionsContainer) {
-                super();
-                this.questionWrapper = questionWrapper;
-                this.questionsContainer = questionsContainer;
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            // Command class and specific command classes
+            class Command {
+                execute() { }
+                unexecute() { }
             }
 
-            execute() {
-                this.questionsContainer.appendChild(this.questionWrapper);
-            }
-
-            unexecute() {
-                this.questionsContainer.removeChild(this.questionWrapper);
-            }
-        }
-
-        class DeleteQuestionCommand extends Command {
-            constructor(questionWrapper, questionsContainer) {
-                super();
-                this.questionWrapper = questionWrapper;
-                this.questionsContainer = questionsContainer;
-            }
-
-            execute() {
-                this.questionsContainer.removeChild(this.questionWrapper);
-            }
-
-            unexecute() {
-                this.questionsContainer.insertBefore(this.questionWrapper, this.nextSibling);
-            }
-        }
-
-        class MoveQuestionCommand extends Command {
-            constructor(questionWrapper, questionsContainer, direction) {
-                super();
-                this.questionWrapper = questionWrapper;
-                this.questionsContainer = questionsContainer;
-                this.direction = direction;
-                this.sibling = direction === "up" ? questionWrapper.previousElementSibling : questionWrapper.nextElementSibling;
-            }
-
-            execute() {
-                if (this.sibling) {
-                    this.questionsContainer.insertBefore(this.questionWrapper, this.direction === "up" ? this.sibling : this.sibling.nextElementSibling);
-                }
-                updateQuestionNumbers();
-            }
-
-            unexecute() {
-                if (this.sibling) {
-                    this.questionsContainer.insertBefore(this.questionWrapper, this.direction === "up" ? this.sibling.nextElementSibling : this.sibling);
-                }
-                updateQuestionNumbers();
-            }
-        }
-
-        // Show email domain input if 'other' is selected in the target group dropdown
-        targetGroupSelect.addEventListener("change", () => {
-            if (targetGroupSelect.value === "other") {
-                emailDomainInput.style.display = "inline";
-                emailDomainLabel.style.display = "inline";
-            } else {
-                emailDomainInput.style.display = "none";
-                emailDomainLabel.style.display = "none";
-            }
-        });
-
-        // Add question based on question type
-        addQuestionBtn.addEventListener("click", () => {
-            const questionType = questionTypeSelect.value;
-            if (!questionType) return;
-
-            questionCount++;
-
-            const questionWrapper = document.createElement("div");
-            questionWrapper.className = "question-wrapper";
-            questionWrapper.dataset.questionType = questionType;
-
-            const questionLabel = document.createElement("label");
-            questionLabel.innerText = `<?php echo translate('Element', 'de', $GLOBALS['lang']); ?> ${questionCount}: ` + typeToReadableType(questionType);
-            questionLabel.className = questionType;
-            questionWrapper.appendChild(questionLabel);
-            const lineBreak = document.createElement("br");
-            questionWrapper.appendChild(lineBreak);
-
-            const followUpCheckbox = document.createElement("input");
-            followUpCheckbox.type = "checkbox";
-            followUpCheckbox.name = `question_${questionCount}_follow_up`;
-            followUpCheckbox.id = `question_${questionCount}_follow_up`;
-
-            const followUpForm = document.createElement("form");
-            followUpForm.className = "not-selectable";
-
-            const followUpLabel = document.createElement("label");
-            followUpLabel.htmlFor = `question_${questionCount}_follow_up`;
-            followUpLabel.innerText = "<?php echo translate('ist ein Follow-up-Element', 'de', $GLOBALS['lang']); ?>";
-
-            followUpForm.appendChild(followUpCheckbox);
-            followUpForm.appendChild(followUpLabel);
-
-
-            switch (questionType) {
-                case "description":
-                    const descriptionInput = document.createElement("input");
-                    descriptionInput.type = "text";
-                    descriptionInput.name = `question_${questionCount}_description`;
-                    questionWrapper.appendChild(descriptionInput);
-                    break;
-                case "free_text":
-                    const freeTextInput = document.createElement("input");
-                    freeTextInput.type = "text";
-                    freeTextInput.name = `question_${questionCount}_free_text`;
-                    questionWrapper.appendChild(freeTextInput);
-                    break;
-                case "picture":
-                    const fileInput = document.createElement("input");
-                    fileInput.type = "file";
-                    fileInput.accept = "image/*";
-                    fileInput.name = `question_${questionCount}_picture`;
-                    questionWrapper.appendChild(fileInput);
-                    break;
-                case "multiple_choice":
-                case "single_choice":
-                case "dropdown":
-                    const choiceType = questionType === "dropdown" ? "select" : "div";
-                    const choiceContainer = document.createElement("div");
-                    choiceContainer.className = "choice-container";
-                    choiceContainer.dataset.choiceCount = 1;
-
-                    const choiceWrapper = document.createElement(choiceType);
-                    choiceWrapper.name = `question_${questionCount}_choices`;
-
-                function addChoice(choiceContainer) {
-                    const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
-                    const newChoiceCount = choiceCount + 1;
-                    choiceContainer.dataset.choiceCount = newChoiceCount;
-
-                    const choiceInput = document.createElement("input");
-                    choiceInput.type = "text";
-                    choiceInput.name = `question_${questionCount}_choice_${newChoiceCount}`;
-                    choiceInput.placeholder = "<?php echo translate('Eine kurze und prägnante Antwortmöglichkeit', 'de', $GLOBALS['lang']); ?>";
-/*
-                    if (choiceContainer.tagName !== "SELECT") {
-                        const choiceRadio = document.createElement("input");
-                        choiceRadio.type = choiceContainer.parentElement.dataset.questionType === "single_choice" ? "radio" : "checkbox";
-                        choiceRadio.name = `question_${questionCount}_choice_${newChoiceCount}_value`;
-                        choiceContainer.appendChild(choiceRadio);
-                    }
-*/
-                    // Insert the "Answers:" label only when the second choice is added
-                    if (newChoiceCount === 2) {
-                        const answersLabel = document.createElement("label");
-                        answersLabel.innerText = "<?php echo translate('Antwortmöglichkeiten:', 'de', $GLOBALS['lang']); ?>";
-                        answersLabel.setAttribute("for", "answers");
-                        choiceContainer.insertBefore(answersLabel, choiceContainer.children[2]);
-                    }
-
-
-                    choiceContainer.appendChild(choiceInput);
+            class AddQuestionCommand extends Command {
+                constructor(questionWrapper, questionsContainer) {
+                    super();
+                    this.questionWrapper = questionWrapper;
+                    this.questionsContainer = questionsContainer;
                 }
 
+                execute() {
+                    this.questionsContainer.appendChild(this.questionWrapper);
+                }
+
+                unexecute() {
+                    this.questionsContainer.removeChild(this.questionWrapper);
+                }
+            }
+
+            class DeleteQuestionCommand extends Command {
+                constructor(questionWrapper, questionsContainer) {
+                    super();
+                    this.questionWrapper = questionWrapper;
+                    this.questionsContainer = questionsContainer;
+                    this.nextSibling = null;
+                }
+
+                execute() {
+                    this.nextSibling = this.questionWrapper.nextElementSibling;
+                    this.questionsContainer.removeChild(this.questionWrapper);
+                }
+
+                unexecute() {
+                    this.questionsContainer.insertBefore(this.questionWrapper, this.nextSibling);
+                }
+            }
 
 
-                    const choiceInput = document.createElement("input");
-                    choiceInput.type = "text";
-                    choiceInput.name = `question_${questionCount}_choice_1`;
-                    choiceInput.placeholder = "<?php echo translate('Eine kurze und prägnante Frage', 'de', $GLOBALS['lang']); ?>";
+            class MoveQuestionCommand extends Command {
+                constructor(questionWrapper, questionsContainer, direction) {
+                    super();
+                    this.questionWrapper = questionWrapper;
+                    this.questionsContainer = questionsContainer;
+                    this.direction = direction;
+                    this.sibling = direction === "up" ? questionWrapper.previousElementSibling : questionWrapper.nextElementSibling;
+                }
 
-                    if (questionType !== "dropdown") {
-                        const choiceRadio = document.createElement("input");
-                        choiceRadio.type = questionType === "single_choice" ? "radio" : "checkbox";
-                        choiceRadio.name = `question_${questionCount}_choice_1_value`;
-                        choiceContainer.appendChild(choiceRadio);
+                execute() {
+                    if (this.sibling) {
+                        this.questionsContainer.insertBefore(this.questionWrapper, this.direction === "up" ? this.sibling : this.sibling.nextElementSibling);
+                    }
+                    updateQuestionNumbers();
+                }
+
+                unexecute() {
+                    if (this.sibling) {
+                        this.questionsContainer.insertBefore(this.questionWrapper, this.direction === "up" ? this.sibling.nextElementSibling : this.sibling);
+                    }
+                    updateQuestionNumbers();
+                }
+            }
+
+            // Show email domain input if 'other' is selected in the target group dropdown
+            targetGroupSelect.addEventListener("change", () => {
+                if (targetGroupSelect.value === "other") {
+                    emailDomainInput.style.display = "inline";
+                    emailDomainLabel.style.display = "inline";
+                } else {
+                    emailDomainInput.style.display = "none";
+                    emailDomainLabel.style.display = "none";
+                }
+            });
+
+            function clearRedoStack() {
+                redoStack = [];
+            }
+
+            // Add question based on question type
+            addQuestionBtn.addEventListener("click", async () => {
+                const questionType = questionTypeSelect.value;
+                if (!questionType) return;
+
+                questionCount++;
+
+                const questionWrapper = document.createElement("div");
+                questionWrapper.className = "question-wrapper";
+                questionWrapper.dataset.questionType = questionType;
+
+                const questionLabel = document.createElement("label");
+                questionLabel.innerText = await translate("Element", "de", userLang) + ` ${questionCount}: ` + await typeToReadableType(questionType);
+                questionLabel.className = questionType;
+                questionWrapper.appendChild(questionLabel);
+                const lineBreak = document.createElement("br");
+                questionWrapper.appendChild(lineBreak);
+
+                const followUpCheckbox = document.createElement("input");
+                followUpCheckbox.type = "checkbox";
+                followUpCheckbox.name = `question_${questionCount}_follow_up`;
+                followUpCheckbox.id = `question_${questionCount}_follow_up`;
+
+                const followUpForm = document.createElement("form");
+                followUpForm.className = "not-selectable";
+
+                const followUpLabel = document.createElement("label");
+                followUpLabel.htmlFor = `question_${questionCount}_follow_up`;
+                followUpLabel.innerText = await translate(`Element ${questionCount} ist ein Follow-up-Element`, "de", userLang);
+
+                const followUpAnchor = document.createElement("a");
+                followUpAnchor.style.cursor = "pointer";
+                followUpAnchor.style.verticalAlign = "middle";
+                followUpAnchor.style.marginTop = "10em";
+                followUpAnchor.setAttribute("onclick", "showAlert(followUpInfoID)");
+                followUpAnchor.innerText = await translate("Was ist ein Follow-up-Element?", "de", userLang);
+
+                if (questionCount < 2) {
+                    followUpCheckbox.style.display = "none";
+                    followUpForm.style.display = "none";
+                    followUpLabel.style.display = "none";
+                    followUpAnchor.style.display = "none";
+                }
+
+                followUpForm.appendChild(followUpCheckbox);
+                followUpForm.appendChild(followUpLabel);
+                followUpForm.appendChild(lineBreak);
+                followUpForm.appendChild(followUpAnchor);
+
+                switch (questionType) {
+                    case "description":
+                        const descriptionInput = document.createElement("input");
+                        descriptionInput.type = "text";
+                        descriptionInput.name = `question_${questionCount}_description`;
+                        questionWrapper.appendChild(descriptionInput);
+                        break;
+                    case "free_text":
+                        const freeTextInput = document.createElement("input");
+                        freeTextInput.type = "text";
+                        freeTextInput.name = `question_${questionCount}_free_text`;
+                        questionWrapper.appendChild(freeTextInput);
+                        break;
+                    case "picture":
+                        const fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.accept = "image/*";
+                        fileInput.name = `question_${questionCount}_picture`;
+                        questionWrapper.appendChild(fileInput);
+                        break;
+                    case "multiple_choice":
+                    case "single_choice":
+                    case "dropdown":
+                        const choiceType = questionType === "dropdown" ? "select" : "div";
+                        const choiceContainer = document.createElement("div");
+                        choiceContainer.className = "choice-container";
+                        choiceContainer.dataset.choiceCount = 1;
+
+                        const choiceWrapper = document.createElement(choiceType);
+                        choiceWrapper.name = `question_${questionCount}_choices`;
+
+                    async function addChoice(choiceContainer) {
+                        const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
+                        const newChoiceCount = choiceCount + 1;
+                        choiceContainer.dataset.choiceCount = newChoiceCount;
+
+                        const choiceInput = document.createElement("input");
+                        choiceInput.type = "text";
+                        choiceInput.name = `question_${questionCount}_choice_${newChoiceCount}`;
+                        choiceInput.placeholder = await translate("Eine kurze und prägnante Antwortmöglichkeit", "de", userLang);
+
+                        // Insert the "Answers:" label only when the second choice is added
+                        if (newChoiceCount === 2) {
+                            const answersLabel = document.createElement("label");
+                            answersLabel.innerText = await translate("Antwortmöglichkeiten:", "de", userLang);
+                            answersLabel.setAttribute("for", "answers");
+                            choiceContainer.insertBefore(answersLabel, choiceContainer.children[2]);
+                        }
+                        choiceContainer.appendChild(choiceInput);
                     }
 
-                    choiceContainer.appendChild(choiceInput);
-                    questionWrapper.appendChild(choiceContainer);
+                        const choiceInput = document.createElement("input");
+                        choiceInput.type = "text";
+                        choiceInput.name = `question_${questionCount}_choice_1`;
+                        choiceInput.placeholder = await translate("Eine kurze und prägnante Frage", "de", userLang);
 
-                    const addButton = document.createElement("button");
-                    addButton.innerText = "<?php echo translate('Antwort hinzufügen', 'de', $GLOBALS['lang']); ?>";
-                    addButton.type = "button";
-                    addButton.addEventListener("click", () => addChoice(choiceContainer));
-                    questionWrapper.appendChild(addButton);
+                        if (questionType !== "dropdown") {
+                            const choiceRadio = document.createElement("input");
+                            choiceRadio.type = questionType === "single_choice" ? "radio" : "checkbox";
+                            choiceRadio.name = `question_${questionCount}_choice_1_value`;
+                            choiceContainer.appendChild(choiceRadio);
+                        }
 
-                    const removeButton = document.createElement("button");
-                    removeButton.innerText = "<?php echo translate('Antwort löschen', 'de', $GLOBALS['lang']); ?>";
-                    removeButton.type = "button";
-                    removeButton.addEventListener("click", () => removeChoice(choiceContainer));
-                    questionWrapper.appendChild(removeButton);
-                    break;
-            }
+                        choiceContainer.appendChild(choiceInput);
+                        questionWrapper.appendChild(choiceContainer);
 
-            questionWrapper.appendChild(followUpForm);
+                        const addButton = document.createElement("button");
+                        addButton.innerText = await translate("Antwort hinzufügen", "de", userLang);
+                        addButton.type = "button";
+                        addButton.addEventListener("click", () => addChoice(choiceContainer));
+                        questionWrapper.appendChild(addButton);
 
-            const deleteButton = document.createElement("button");
-            deleteButton.innerText = "<?php echo translate('Element löschen', 'de', $GLOBALS['lang']); ?>";
-            deleteButton.type = "button";
-            deleteButton.addEventListener("click", () => deleteQuestion(questionWrapper));
-            questionWrapper.appendChild(deleteButton);
+                        const removeButton = document.createElement("button");
+                        removeButton.innerText = await translate("Antwort löschen", "de", userLang);
+                        removeButton.type = "button";
+                        removeButton.addEventListener("click", () => removeChoice(choiceContainer));
+                        questionWrapper.appendChild(removeButton);
+                        break;
+                }
 
-            const moveUpButton = document.createElement("button");
-            moveUpButton.innerText = "<?php echo translate('Element nach oben bewegen', 'de', $GLOBALS['lang']); ?>";
-            moveUpButton.type = "button";
-            moveUpButton.addEventListener("click", () => moveQuestion(questionWrapper, "up"));
-            questionWrapper.appendChild(moveUpButton);
+                questionWrapper.appendChild(followUpForm);
 
-            const moveDownButton = document.createElement("button");
-            moveDownButton.innerText = "<?php echo translate('Element nach unten bewegen', 'de', $GLOBALS['lang']); ?>";
-            moveDownButton.type = "button";
-            moveDownButton.addEventListener("click", () => moveQuestion(questionWrapper, "down"));
-            questionWrapper.appendChild(moveDownButton);
+                const deleteButton = document.createElement("button");
+                deleteButton.innerText = await translate("Element löschen", "de", userLang);
+                deleteButton.type = "button";
+                deleteButton.addEventListener("click", () => deleteQuestion(questionWrapper));
+                questionWrapper.appendChild(deleteButton);
 
-            questionsContainer.appendChild(questionWrapper);
+                const moveUpButton = document.createElement("button");
+                moveUpButton.innerText = await translate("Element nach oben bewegen", "de", userLang);
+                moveUpButton.type = "button";
+                moveUpButton.addEventListener("click", () => moveQuestion(questionWrapper, "up"));
+                questionWrapper.appendChild(moveUpButton);
 
-            const command = new AddQuestionCommand(questionWrapper, questionsContainer);
-            command.execute();
-            undoStack.push(command);
-        });
+                const moveDownButton = document.createElement("button");
+                moveDownButton.innerText = await translate("Element nach unten bewegen", "de", userLang);
+                moveDownButton.type = "button";
+                moveDownButton.addEventListener("click", () => moveQuestion(questionWrapper, "down"));
+                questionWrapper.appendChild(moveDownButton);
 
-        // Delete question function
-        function deleteQuestion(questionWrapper) {
-            const command = new DeleteQuestionCommand(questionWrapper, questionsContainer);
-            command.nextSibling = questionWrapper.nextElementSibling;
-            command.execute();
-            undoStack.push(command);
-        }
+                questionsContainer.appendChild(questionWrapper);
 
-        // Move question function
-        function moveQuestion(questionWrapper, direction) {
-            const command = new MoveQuestionCommand(questionWrapper, questionsContainer, direction);
-            command.execute();
-            undoStack.push(command);
-        }
-
-        // Undo event listener
-        undoBtn.addEventListener("click", () => {
-            if (undoStack.length > 0) {
-                const command = undoStack.pop();
-                command.unexecute();
-                redoStack.push(command);
-            }
-        });
-
-        // Redo event listener
-        redoBtn.addEventListener("click", () => {
-            if (redoStack.length > 0) {
-                const command = redoStack.pop();
+                const command = new AddQuestionCommand(questionWrapper, questionsContainer);
                 command.execute();
                 undoStack.push(command);
+                await preventUserLeave();
+                clearRedoStack(); // Clear the redo stack
+            });
+
+            // Delete question function
+            async function deleteQuestion(questionWrapper) {
+                const command = new DeleteQuestionCommand(questionWrapper, questionsContainer);
+                command.nextSibling = questionWrapper.nextElementSibling;
+                command.execute();
+                undoStack.push(command);
+                await preventUserLeave();
+                clearRedoStack(); // Clear the redo stack
             }
-        });
 
-        function removeChoice(choiceContainer) {
-            const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
-            if (choiceCount === 1) return;
-
-            const lastChoiceInput = choiceContainer.lastElementChild;
-            if (choiceContainer.tagName !== "SELECT") {
-                const lastChoiceRadio = choiceContainer.children[choiceContainer.children.length - 2];
-                choiceContainer.removeChild(lastChoiceRadio);
+            // Move question function
+            async function moveQuestion(questionWrapper, direction) {
+                const command = new MoveQuestionCommand(questionWrapper, questionsContainer, direction);
+                command.execute();
+                undoStack.push(command);
+                await preventUserLeave();
+                clearRedoStack(); // Clear the redo stack
             }
 
-            choiceContainer.removeChild(lastChoiceInput);
-            choiceContainer.dataset.choiceCount = choiceCount - 1;
+            // Undo event listener
+            undoBtn.addEventListener("click", async () => {
+                if (undoStack.length > 0) {
+                    const command = undoStack.pop();
+                    command.unexecute();
+                    redoStack.push(command);
+                    await preventUserLeave();
+                }
+            });
 
-            // Remove the "Answers:" label when only one choice remains
-            if (choiceCount === 2) {
-                const answersLabel = choiceContainer.querySelector('label[for="answers"]');
-                if (answersLabel) {
-                    choiceContainer.removeChild(answersLabel);
+            // Redo event listener
+            redoBtn.addEventListener("click", async () => {
+                if (redoStack.length > 0) {
+                    const command = redoStack.pop();
+                    command.execute();
+                    undoStack.push(command);
+                    await preventUserLeave();
+                }
+            });
+
+            function removeChoice(choiceContainer) {
+                const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
+                if (choiceCount === 1) return;
+
+                const lastChoiceInput = choiceContainer.lastElementChild;
+                if (choiceContainer.tagName !== "SELECT") {
+                    const lastChoiceRadio = choiceContainer.children[choiceContainer.children.length - 2];
+                    choiceContainer.removeChild(lastChoiceRadio);
+                }
+
+                choiceContainer.removeChild(lastChoiceInput);
+                choiceContainer.dataset.choiceCount = choiceCount - 1;
+
+                // Remove the "Answers:" label when only one choice remains
+                if (choiceCount === 2) {
+                    const answersLabel = choiceContainer.querySelector('label[for="answers"]');
+                    if (answersLabel) {
+                        choiceContainer.removeChild(answersLabel);
+                    }
                 }
             }
+
+            // Update question numbers function
+            async function updateQuestionNumbers() {
+                const questionWrappers = questionsContainer.querySelectorAll(".question-wrapper");
+                for (const [index, wrapper] of questionWrappers.entries()) {
+                    const questionLabel = wrapper.querySelector("label");
+                    const questionElementType = questionLabel.className;
+                    questionLabel.innerText = await translate("Element", "de", userLang) + `${index + 1}: ` + await typeToReadableType(questionElementType);
+
+                    const inputs = wrapper.querySelectorAll("input, textarea, select");
+                    inputs.forEach(input => {
+                        const nameParts = input.name.split("_");
+                        nameParts[1] = index + 1;
+                        input.name = nameParts.join("_");
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
         }
-
-// Update question numbers function
-        function updateQuestionNumbers() {
-            const questionWrappers = questionsContainer.querySelectorAll(".question-wrapper");
-            questionWrappers.forEach((wrapper, index) => {
-                const questionLabel = wrapper.querySelector("label");
-                const questionElementType = questionLabel.className;
-                questionLabel.innerText = `<?php echo translate('Element', 'de', $GLOBALS['lang']); ?> ${index + 1}: ` + typeToReadableType(questionElementType);
-
-                const inputs = wrapper.querySelectorAll("input, textarea, select");
-                inputs.forEach(input => {
-                    const nameParts = input.name.split("_");
-                    nameParts[1] = index + 1;
-                    input.name = nameParts.join("_");
-                });
-            });
-        }
-
     });
 
     //convert the machine readable types into human readable types
-    function typeToReadableType(value) {
-        switch (value) {
-            case "description":
-                return "<?php echo translate('Beschreibender Text', 'de', $GLOBALS['lang']); ?>";
-            case "free_text":
-                return "<?php echo translate('Freie Texteingabe', 'de', $GLOBALS['lang']); ?>";
-            case "picture":
-                return "<?php echo translate('Bild', 'de', $GLOBALS['lang']); ?>";
-            case "single_choice":
-                return "<?php echo translate('Frage mit Einfachauswahl (nebeneinander)', 'de', $GLOBALS['lang']); ?>";
-            case "multiple_choice":
-                return "<?php echo translate('Frage mit Mehrfachauswahl (nebeneinander)', 'de', $GLOBALS['lang']); ?>";
-            case "dropdown":
-                return "<?php echo translate('Frage mit Mehrfachauswahl (untereinander in einem Menü)', 'de', $GLOBALS['lang']); ?>";
-            default:
-                return "";
+    async function typeToReadableType(value) {
+        try {
+            switch (value) {
+                case "description":
+                    return await translate("Beschreibender Text", "de", userLang);
+                case "free_text":
+                    return await translate("Freie Texteingabe", "de", userLang);
+                case "picture":
+                    return await translate("Bild", "de", userLang);
+                case "single_choice":
+                    return await translate("Frage mit Einfachauswahl (nebeneinander)", "de", userLang);
+                case "multiple_choice":
+                    return await translate("Frage mit Mehrfachauswahl (nebeneinander)", "de", userLang);
+                case "dropdown":
+                    return await translate("Frage mit Mehrfachauswahl (untereinander in einem Menü)", "de", userLang);
+                default:
+                    return "";
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
         }
     }
-
-
-
-
 
     function addImageUploadEventListener(element) {
         if (element.hasAttribute("data-upload-listener")) {
@@ -442,8 +475,6 @@
         return dataArray;
     }
 
-
-
     function handleImageUpload(event, inputName) {
         const file = event.target.files[0];
         if (file.size > 30 * 1024 * 1024) {
@@ -458,7 +489,7 @@
         xhr.open("POST", "assets/php/upload.php", true);
         xhr.onload = function () {
             if (this.status === 200) {
-                console.log("Image uploaded successfully.");
+                if (testDomain) console.log("Image uploaded successfully.");
             } else {
                 console.error("An error occurred during the image upload.");
             }
@@ -477,7 +508,7 @@
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.onload = function () {
             if (this.status === 200) {
-                console.log("Data sent successfully.");
+                if (testDomain) console.log("Data sent successfully.");
             } else {
                 console.error("An error occurred while sending data.");
             }
@@ -485,5 +516,14 @@
         xhr.send(JSON.stringify(dataArray));
     }
 
+    async function preventUserLeave() {
+        if (undoStack.length > 0) {
+            window.onbeforeunload = async function() {
+                return await translate("Bist Du sicher, dass Du die Seite verlassen willst? Alle nicht gespeicherten Änderungen gehen dabei verloren.", "de", userLang);
+            };
+        } else {
+            window.onbeforeunload = null;
+        }
+    }
 
 </script>

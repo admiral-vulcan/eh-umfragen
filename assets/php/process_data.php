@@ -3,6 +3,21 @@
 
 include_once ("../../hdd_handler.php");
 include_once ("../../translate.php");
+
+
+// Set a time limit for the script execution (in seconds)
+set_time_limit(60); // 1 minute
+
+// Check the Content-Length header to limit the input size
+$contentLength = (int) $_SERVER['CONTENT_LENGTH'];
+$maxContentLength = 30 * 1024 * 1024; // 30 MB
+
+if ($contentLength > $maxContentLength) {
+    http_response_code(413); // Payload Too Large
+    echo json_encode(array('error' => 'Input size exceeds the allowed limit (30 MB)'));
+    exit;
+}
+
 $dataArray = json_decode(file_get_contents("php://input"), true);
 
 // Extract user language and isFinal flag from dataArray[0][0]
@@ -51,7 +66,7 @@ for ($i = 2, $n = count($dataArray); $i < $n; $i++) {
 
     // Update the keyword with the follow-up count
     if ($followUpCount > 0)
-    $newKeyword .= $followUpCount;
+        $newKeyword .= $followUpCount;
 
     // Create a new array for the transformed question data
     $newQuestionData = [$newKeyword];

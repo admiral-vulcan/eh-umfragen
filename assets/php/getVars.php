@@ -1,6 +1,7 @@
 <?php
 $url =  "https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 $this_uri = htmlspecialchars( $url, ENT_QUOTES, 'UTF-8' );
+$GLOBALS["testDomain"] = $_SERVER['HTTP_HOST'] === "test.eh-umfragen.de";
 function getDefaultLanguage() {
     $validLanguages = array("en", "de", "fr", "es", "it", "pt", "ru", "pl", "nl", "tr", "el", "sv", "da", "fi", "ro");
     if (isset($_GET["lang"]) && in_array($_GET["lang"], $validLanguages)) {
@@ -25,7 +26,7 @@ function verToInt($str) {
     }
     return floatval($str);
 }
-if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
+if ($GLOBALS["testDomain"]) {
     $start = hrtime(true);
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
@@ -86,4 +87,21 @@ function getLanguage($lang_code) {
             return "Unbekannte Sprache"; // if $lang_code does not match any case, return "Unknown"
     }
 }
+$GLOBALS["color_scheme"] = "auto";
+$GLOBALS["prefers_color_scheme"] = "light";
+if ($_COOKIE["color_scheme"]) $GLOBALS["color_scheme"] = $_COOKIE["color_scheme"];
+if ($_COOKIE["prefers_color_scheme"]) $GLOBALS["prefers_color_scheme"] = $_COOKIE["prefers_color_scheme"];
+
+if ($GLOBALS["color_scheme"] === "light") $GLOBALS["luminosity"] = "light";
+elseif ($GLOBALS["color_scheme"] === "dark" ) $GLOBALS["luminosity"] = "dark";
+elseif ($GLOBALS["prefers_color_scheme"] === "dark") $GLOBALS["luminosity"] = "dark";
+else $GLOBALS["luminosity"] = "light";
+
+$GLOBALS["luminosity"];
 ?>
+
+<script type="application/javascript">
+    const testDomain = "<?php echo $GLOBALS["testDomain"]; ?>";
+    const userLang = "<?php echo $GLOBALS['lang']; ?>";
+    const userIP = "<?php echo get_ip(); ?>";
+</script>
