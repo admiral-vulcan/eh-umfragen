@@ -26,3 +26,10 @@
 p, i, a {
     font-weight: bold !important;
 }
+
+.light-mode {
+    display: block;
+}
+.dark-mode {
+    display: none;
+}

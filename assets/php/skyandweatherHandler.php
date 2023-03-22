@@ -102,105 +102,107 @@ $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
     </form>
 <?php
     ?>
-    <div id='skyandweather-container' class="printmenot">
-        <div class="clouds">
-            <?php
-            if (
-                $GLOBALS['weathericon'] ==  "2" || //Sonne, leicht bewölkt
-                $GLOBALS['weathericon'] ==  "7" || //leichter Regen
-                $GLOBALS['weathericon'] == "10" || //leichter Regen, rutschgefahr
-                $GLOBALS['weathericon'] == "12" || //Regen, vereinzelt Schneefall
-                $GLOBALS['weathericon'] == "14"    //leichter Schneefall
-            ) {
-                ?>
-                }
-                <div class="clouds-1"></div>
-                <div class="clouds-2"></div> //wenige Wolken (nur 3)
+    <div id='skyandweather-wrapper' class="printmenot">
+        <div id='skyandweather-container' class="printmenot">
+            <div class="clouds">
                 <?php
-            }
-            elseif (
-                $GLOBALS['weathericon'] ==  "3" || //Sonne, bewölkt
-                $GLOBALS['weathericon'] ==  "4" || //Wolken
-                $GLOBALS['weathericon'] ==  "8" || //Regen
-                $GLOBALS['weathericon'] ==  "9" || //starker Regen
-                $GLOBALS['weathericon'] == "11" || //starker Regen, rutschgefahr
-                $GLOBALS['weathericon'] == "13" || //Regen, vermehrt Schneefall
-                $GLOBALS['weathericon'] == "15" || //Schneefall
-                $GLOBALS['weathericon'] == "16" || //starker Schneefall
-                $GLOBALS['weathericon'] == "17" || //Wolken, (Hagel)
-                $GLOBALS['weathericon'] == "26" || //Gewitter
-                $GLOBALS['weathericon'] == "27" || //Gewitter, Regen
-                $GLOBALS['weathericon'] == "28" || //Gewitter, starker Regen
-                $GLOBALS['weathericon'] == "29" || //Gewitter, (Hagel)
-                $GLOBALS['weathericon'] == "30"    //Gewitter, (starker Hagel)
-            ) {
-                ?>
-                }
-                <div class="clouds-1"></div> //viele Wolken (1 und 3; 2 sind nur Schatten)
-                <div class="clouds-2"></div>
-                <div class="clouds-3"></div>
-                <?php
-            }
-            ?>
-        </div>
-        <div id='sky'>
-            <div id='weatherCutter'>
-                <?php
-                include ("assets/php/stars.php");
                 if (
+                    $GLOBALS['weathericon'] ==  "2" || //Sonne, leicht bewölkt
                     $GLOBALS['weathericon'] ==  "7" || //leichter Regen
                     $GLOBALS['weathericon'] == "10" || //leichter Regen, rutschgefahr
-                    $GLOBALS['weathericon'] == "18"    //Sonne, leichter Regen
-                ) include ("assets/php/weatherRainLight.php");
-                elseif (
-                    $GLOBALS['weathericon'] ==  "8" || //Regen
                     $GLOBALS['weathericon'] == "12" || //Regen, vereinzelt Schneefall
-                    $GLOBALS['weathericon'] == "17" || //Wolken, (Hagel)
-                    $GLOBALS['weathericon'] == "24" || //Sonne, (Hagel)
-                    $GLOBALS['weathericon'] == "27" || //Gewitter, Regen
-                    $GLOBALS['weathericon'] == "29"    //Gewitter, (Hagel)
-                ) include ("assets/php/weatherRainMedium.php");
+                    $GLOBALS['weathericon'] == "14"    //leichter Schneefall
+                ) {
+                    ?>
+                    }
+                    <div class="clouds-1"></div>
+                    <div class="clouds-2"></div> //wenige Wolken (nur 3)
+                    <?php
+                }
                 elseif (
+                    $GLOBALS['weathericon'] ==  "3" || //Sonne, bewölkt
+                    $GLOBALS['weathericon'] ==  "4" || //Wolken
+                    $GLOBALS['weathericon'] ==  "8" || //Regen
                     $GLOBALS['weathericon'] ==  "9" || //starker Regen
                     $GLOBALS['weathericon'] == "11" || //starker Regen, rutschgefahr
-                    $GLOBALS['weathericon'] == "19" || //Sonne, starker Regen
-                    $GLOBALS['weathericon'] == "25" || //Sonne, (staker Hagel)
-                    $GLOBALS['weathericon'] == "28" || //Gewitter, starker Regen
-                    $GLOBALS['weathericon'] == "30"    //Gewitter, (starker Hagel)
-                ) include ("assets/php/weatherRainHeavy.php");
-                elseif (
-                    $GLOBALS['weathericon'] == "14" || //leichter Schneefall
+                    $GLOBALS['weathericon'] == "13" || //Regen, vermehrt Schneefall
                     $GLOBALS['weathericon'] == "15" || //Schneefall
                     $GLOBALS['weathericon'] == "16" || //starker Schneefall
-                    $GLOBALS['weathericon'] == "22" || //Sonne, vereinzelter Schneefall
-                    $GLOBALS['weathericon'] == "23"    //Sonne, vermehrter Schneefall
-                ) include ("assets/php/weatherSnow.php");
-                elseif (
-                    $GLOBALS['weathericon'] == "12" || //Regen, vereinzelt Schneefall
-                    $GLOBALS['weathericon'] == "13" || //Regen, vermehrt Schneefall
-                    $GLOBALS['weathericon'] == "20" || //Sonne, Regen, vereinzelter Schneefall
-                    $GLOBALS['weathericon'] == "21"    //Sonne, Regen, vermehrter Schneefall
+                    $GLOBALS['weathericon'] == "17" || //Wolken, (Hagel)
+                    $GLOBALS['weathericon'] == "26" || //Gewitter
+                    $GLOBALS['weathericon'] == "27" || //Gewitter, Regen
+                    $GLOBALS['weathericon'] == "28" || //Gewitter, starker Regen
+                    $GLOBALS['weathericon'] == "29" || //Gewitter, (Hagel)
+                    $GLOBALS['weathericon'] == "30"    //Gewitter, (starker Hagel)
                 ) {
-                    include ("assets/php/weatherRainLight.php");
-                    include ("assets/php/weatherSnow.php");
+                    ?>
+                    }
+                    <div class="clouds-1"></div> //viele Wolken (1 und 3; 2 sind nur Schatten)
+                    <div class="clouds-2"></div>
+                    <div class="clouds-3"></div>
+                    <?php
                 }
                 ?>
             </div>
-            <p class="weatherText"><?php /*echo . $GLOBALS['weathertext'] . " bei " . $GLOBALS['temperature']*/ //$stationName?></p>
-            <div id='sun'>
-            </div>
-            <div id="moon">
-                <div class="light hemisphere"></div>
-                <div class="dark hemisphere"></div>
-                <div class="divider"></div>
-            </div>
+            <div id='sky'>
+                <div id='weatherCutter'>
+                    <?php
+                    include ("assets/php/stars.php");
+                    if (
+                        $GLOBALS['weathericon'] ==  "7" || //leichter Regen
+                        $GLOBALS['weathericon'] == "10" || //leichter Regen, rutschgefahr
+                        $GLOBALS['weathericon'] == "18"    //Sonne, leichter Regen
+                    ) include ("assets/php/weatherRainLight.php");
+                    elseif (
+                        $GLOBALS['weathericon'] ==  "8" || //Regen
+                        $GLOBALS['weathericon'] == "12" || //Regen, vereinzelt Schneefall
+                        $GLOBALS['weathericon'] == "17" || //Wolken, (Hagel)
+                        $GLOBALS['weathericon'] == "24" || //Sonne, (Hagel)
+                        $GLOBALS['weathericon'] == "27" || //Gewitter, Regen
+                        $GLOBALS['weathericon'] == "29"    //Gewitter, (Hagel)
+                    ) include ("assets/php/weatherRainMedium.php");
+                    elseif (
+                        $GLOBALS['weathericon'] ==  "9" || //starker Regen
+                        $GLOBALS['weathericon'] == "11" || //starker Regen, rutschgefahr
+                        $GLOBALS['weathericon'] == "19" || //Sonne, starker Regen
+                        $GLOBALS['weathericon'] == "25" || //Sonne, (staker Hagel)
+                        $GLOBALS['weathericon'] == "28" || //Gewitter, starker Regen
+                        $GLOBALS['weathericon'] == "30"    //Gewitter, (starker Hagel)
+                    ) include ("assets/php/weatherRainHeavy.php");
+                    elseif (
+                        $GLOBALS['weathericon'] == "14" || //leichter Schneefall
+                        $GLOBALS['weathericon'] == "15" || //Schneefall
+                        $GLOBALS['weathericon'] == "16" || //starker Schneefall
+                        $GLOBALS['weathericon'] == "22" || //Sonne, vereinzelter Schneefall
+                        $GLOBALS['weathericon'] == "23"    //Sonne, vermehrter Schneefall
+                    ) include ("assets/php/weatherSnow.php");
+                    elseif (
+                        $GLOBALS['weathericon'] == "12" || //Regen, vereinzelt Schneefall
+                        $GLOBALS['weathericon'] == "13" || //Regen, vermehrt Schneefall
+                        $GLOBALS['weathericon'] == "20" || //Sonne, Regen, vereinzelter Schneefall
+                        $GLOBALS['weathericon'] == "21"    //Sonne, Regen, vermehrter Schneefall
+                    ) {
+                        include ("assets/php/weatherRainLight.php");
+                        include ("assets/php/weatherSnow.php");
+                    }
+                    ?>
+                </div>
+                <p class="weatherText"><?php /*echo . $GLOBALS['weathertext'] . " bei " . $GLOBALS['temperature']*/ //$stationName?></p>
+                <div id='sun'>
+                </div>
+                <div id="moon">
+                    <div class="light hemisphere"></div>
+                    <div class="dark hemisphere"></div>
+                    <div class="divider"></div>
+                </div>
 
-            <div class="circle"></div>
+                <div class="circle"></div>
 
+            </div>
         </div>
     </div>
 
-    <?php
+<?php
 function iconToText($icon) {
     $icons = array(
         1 => 'klarer Himmel',

@@ -45,6 +45,8 @@ else $locale = strtolower($GLOBALS["lang"]) . "_" . strtoupper($GLOBALS["lang"])
     <meta name="msapplication-TileColor" content="#eed4c8">
     <meta name="theme-color" content="#eed4c8">
     <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/<?php echo $GLOBALS["color_scheme"]; ?>.css" id="theme-css" />
+
 </head>
 <script type="application/ld+json">
     {

@@ -1,5 +1,5 @@
 @import url(fontawesome-all.min.css);
-@import "colors.css";
+@import "auto.css";
 
 @font-face {
 	font-family: 'Source Sans Pro';
@@ -4376,7 +4376,6 @@ img {
 }
 
 .color_scheme, .weather_scheme, .weather_temperature {
-
 	font-size: 0.8em !important;
 	font-weight: 700 !important;
 }

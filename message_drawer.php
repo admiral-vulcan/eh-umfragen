@@ -303,9 +303,7 @@ function alert($title, $msg, $type = 'info', $visible = true, $yesORoklinkORdump
                 }
             }
         }
-/** TODO <a> not working*/
-/* Must be commented out, is in allmin.js
-*/
+
         document.addEventListener("keydown", function(event) {
             if (hasVisibleAlert() && (event.code === "Enter" || event.code === "Return" || event.code === "Space" || event.keyCode == 13 || event.keyCode == 14 || event.keyCode == 32)) {
                 event.preventDefault();

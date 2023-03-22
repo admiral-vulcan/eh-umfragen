@@ -8,6 +8,143 @@ error_reporting(E_ALL);
 require_once ("assets/php/imageSmoothArc.php");
 require_once ("assets/php/imageFilledSmoothArc.php");
 
+$GLOBALS["colorsvibrant"] = array(
+    array(140,81,10),
+    array(216,179,101),
+    array(246,232,195),
+    array(199,234,229),
+    array(90,180,172),
+    array(1,102,94),
+
+    array(215,48,39),
+    array(252,141,89),
+    array(254,224,144),
+    array(224,243,248),
+    array(145,191,219),
+    array(69,117,180),
+
+    /* colors above are color-blind approved */
+    array(31,120,180),
+    array(178,223,138),
+    array(51,160,44),
+    array(251,154,153),
+    array(227,26,28),
+    array(253,191,111),
+    array(255,127,0),
+    array(202,178,214),
+    array(106,61,154),
+    array(255,255,153),
+    array(177,89,40),
+
+    array(255,255,179),
+    array(190,186,218),
+    array(251,128,114),
+    array(128,177,211),
+    array(253,180,98),
+    array(179,222,105),
+    array(252,205,229),
+    array(217,217,217),
+    array(188,128,189),
+    array(204,235,197),
+    array(255,237,111),
+
+    "scheme" => "dark"
+);
+
+$GLOBALS["colorspastel"] = array(
+    array(215,48,39),
+    array(252,141,89),
+    array(254,224,144),
+    array(224,243,248),
+    array(145,191,219),
+    array(69,117,180),
+    /* colors above are color-blind approved */
+
+    array(140,81,10),
+    array(216,179,101),
+    array(246,232,195),
+    array(199,234,229),
+    array(90,180,172),
+    array(1,102,94),
+
+    array(255,255,179),
+    array(190,186,218),
+    array(251,128,114),
+    array(128,177,211),
+    array(253,180,98),
+    array(179,222,105),
+    array(252,205,229),
+    array(217,217,217),
+    array(188,128,189),
+    array(204,235,197),
+    array(255,237,111),
+
+    array(31,120,180),
+    array(178,223,138),
+    array(51,160,44),
+    array(251,154,153),
+    array(227,26,28),
+    array(253,191,111),
+    array(255,127,0),
+    array(202,178,214),
+    array(106,61,154),
+    array(255,255,153),
+    array(177,89,40),
+
+    "scheme" => "light"
+);
+
+
+function setColors($mode) {
+    if ($mode === "dark") {
+        $GLOBALS["backgroundColorRed"] = 47;
+        $GLOBALS["backgroundColorGreen"] = 20;
+        $GLOBALS["backgroundColorBlue"] = 27;
+
+        $GLOBALS["textColorRed"] = 201;
+        $GLOBALS["textColorGreen"] = 198;
+        $GLOBALS["textColorBlue"] = 198;
+
+        $GLOBALS["colors"] = $GLOBALS["colorsvibrant"];
+    } else {
+        $GLOBALS["backgroundColorRed"] = 238;
+        $GLOBALS["backgroundColorGreen"] = 212;
+        $GLOBALS["backgroundColorBlue"] = 200;
+
+        $GLOBALS["textColorRed"] = 60;
+        $GLOBALS["textColorGreen"] = 59;
+        $GLOBALS["textColorBlue"] = 59;
+
+        $GLOBALS["colors"] = $GLOBALS["colorspastel"];
+    }
+}
+setColors($GLOBALS["luminosity"]);
+function drawCircleLight($werte): bool|string {
+    setColors("light");
+    return drawCircle($werte);
+}
+function drawRectangleLight($werte): bool|string {
+    setColors("light");
+    return drawRectangle($werte);
+}
+function drawLegendLight($werte): bool|string {
+    setColors("light");
+    return drawLegend($werte);
+}
+
+function drawCircleDark($werte): bool|string {
+    setColors("dark");
+    return drawCircle($werte);
+}
+function drawRectangleDark($werte): bool|string {
+    setColors("dark");
+    return drawRectangle($werte);
+}
+function drawLegendDark($werte): bool|string {
+    setColors("dark");
+    return drawLegend($werte);
+}
+
 function drawCircle($werte): bool|string {
 
     $anzahl = sizeof($werte);

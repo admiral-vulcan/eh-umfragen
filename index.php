@@ -22,7 +22,6 @@ require_once ("loadresults.php");
 if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
 else  $draft = "";
 if (!isset($surveys)) $surveys = [];
-if (!isset($color_scheme)) $color_scheme = "auto";
 if ( isset($_GET["survey"]) ) {
 
     $thisSurveyNumber = -1;
@@ -35,17 +34,15 @@ if ( isset($_GET["survey"]) ) {
     $description1 = $surveys[$thisSurveyNumber][0][2];
     $description1 = translate($surveys[$thisSurveyNumber][0][2], "de", $GLOBALS["lang"]);
 }
-require_once ("color_scheme_handler.php");
 require_once ("graphdrawer.php");
 require_once("assets/php/skyandweatherHandler.php");
-
 
 function secondsToTime($seconds) {
     $dtF = new \DateTime('@0');
     $dtT = new \DateTime("@$seconds");
     return $dtF->diff($dtT)->format('%a Tage und %h Stunden'); // und %i Minuten %s Sekunden
 }
-if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
+if ($GLOBALS["testDomain"]) {
     $testInfo = alert("Potentiell fehlerhaltige Testversion", "
     Du befindest Dich auf der Test-Domain test.eh-umfragen.de. 
     <br>Hier wird laufend neuer Code ausprobiert, der unter Umständen nicht richtig oder gar nicht funktioniert. 
@@ -104,15 +101,15 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
             <div class="color_scheme_container">
                 <label for="color_scheme" class="color_scheme"><?php echo translate("Design", "de", $GLOBALS["lang"]); ?><!-- &emsp;&emsp; --></label>
                 <select tabindex="3" aria-label="<?php echo translate("Designauswahl", "de", $GLOBALS["lang"]); ?>" name="color_scheme" class="color_scheme_select" id="color_scheme">
-                    <option value="1" id="auto" <?php if ($color_scheme === "auto") echo "selected"; ?>>Auto</option>
-                    <option value="2" id="light" <?php if ($color_scheme === "light") echo "selected"; ?>><?php echo translate("Hell", "de", $GLOBALS["lang"]); ?></option>
-                    <option value="3" id="dark" <?php if ($color_scheme === "dark") echo "selected"; ?>><?php echo translate("Dunkel", "de", $GLOBALS["lang"]); ?></option>
-                    <option value="4" id="contrast" <?php if ($color_scheme === "contrast") echo "selected"; ?>><?php echo translate("Hochkontrast", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="auto" id="auto" <?php if ($GLOBALS["color_scheme"] === "auto") echo "selected"; ?>>Auto</option>
+                    <option value="light" id="light" <?php if ($GLOBALS["color_scheme"] === "light") echo "selected"; ?>><?php echo translate("Hell", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="dark" id="dark" <?php if ($GLOBALS["color_scheme"] === "dark") echo "selected"; ?>><?php echo translate("Dunkel", "de", $GLOBALS["lang"]); ?></option>
+                    <option value="contrast" id="contrast" <?php if ($GLOBALS["color_scheme"] === "contrast") echo "selected"; ?>><?php echo translate("Hochkontrast", "de", $GLOBALS["lang"]); ?></option>
                 </select>
             </div>
         </nav>
         <nav class="main">
-            <?php if ($color_scheme !== "contrast") { ?>
+            <div id="weather-button">
                 <div id="weather_temperature" class="weather_temperature"><?php echo /*. $GLOBALS['weathertext'] . " bei " .*/ $GLOBALS['temperature'] //$stationName?></div>
                 <ul>
                     <li>
@@ -124,7 +121,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
                         </form>
                     </li>
                 </ul>
-            <?php } ?>
+            </div>
         </nav>
         <form class="not-selectable">
         </form>
@@ -181,7 +178,7 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
             <h3><?php echo translate("Creator-Bereich", "de", $GLOBALS["lang"]); ?></h3>
             <?php
             if (!isset($_SESSION['cid'])) {
-                if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
+                if ($GLOBALS["testDomain"]) {
                     ?>
                     <a href='?creator=challenge'>
                         <p><?php echo translate("Login", "de", $GLOBALS["lang"]); ?></p>
@@ -303,14 +300,15 @@ if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
 <script src="assets/js/creator.js"></script>
 </body>
 <?php
-if ($_SERVER['HTTP_HOST'] === "test.eh-umfragen.de") {
+require_once ("color_scheme_handler.php");
+if ($GLOBALS["testDomain"]) {
     /*
     echo "<br> " . $GLOBALS['weathertext'] . " bei ";
     echo $GLOBALS['temperature'] . "<br>";
     */
     $end = hrtime(true);
     $elapsed = intval(($end - $start)/1000000);
-    echo "<br> Serverseitige Seitenladezeit: $elapsed ms.<br><br><br>";
+    echo "<br> Serverseitige Seitenladezeit: $elapsed ms.<br><br><br><br><br><br>";
 }
 echo "</html>";
 ?>

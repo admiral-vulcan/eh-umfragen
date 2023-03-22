@@ -31,3 +31,10 @@
     /*background-color: rgb(104, 154, 168);*/
     z-index: -1;
 }
+
+.light-mode {
+    display: block;
+}
+.dark-mode {
+    display: none;
+}
