@@ -367,6 +367,7 @@ function get_creator_data($cid) {
         $_SESSION['gmail'] = $row['gmail'];
         $_SESSION['firstname'] = $row['firstname'];
         $_SESSION['familyname'] = $row['familyname'];
+        $_SESSION['fullname'] = $row['firstname'] . " " . $row['familyname'];
         $_SESSION['owns'] = $row['owns'];
         $_SESSION['friends'] = $row['friends'];
         $_SESSION['du'] = $row['du'];
@@ -415,7 +416,7 @@ function create_creator($gid, $email, $gmail, $firstname, $familyname, $password
     $since = time();
     $du = 0;
     $du = 1;
-    $cid = checkCreatorUniqid(uniqid('', true));
+    $cid = checkCreatorUniqid(str_replace('.', '', uniqid('', true)));
 
     if ($agb !== "checked") return "Bitte stimme unseren AGB zu.";
 
@@ -519,7 +520,7 @@ function checkCreatorUniqid($id) {
     $statement->execute();
     $pdo = null;
     while($row = $statement->fetch()) {
-        if ($id == $row['cid']) return checkCreatorUniqid(uniqid('', true));
+        if ($id == $row['cid']) return checkCreatorUniqid(str_replace('.', '', uniqid('', true)));
     }
     return $id;
 }
@@ -743,5 +744,5 @@ if (isset($_GET["storeresults"]) && intval($_GET["storeresults"]) > 0) echo read
 
 //echo get_type(1, 2);
 
-//echo checkCreatorUniqid(uniqid('', true));
+//echo checkCreatorUniqid(str_replace('.', '', uniqid('', true)));
 ?>
