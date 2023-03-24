@@ -36,7 +36,7 @@
             themeLink.parentNode.removeChild(themeLink);
         }
         var weatherButton = document.getElementById("weather-button");
-        var skyandweatherWrapper = document.getElementById("skyandweather-wrapper");
+        var skyandweatherWrapper = document.getElementById("skyandweather-container");
 
         if (theme === 'contrast') {
             weatherButton.style.display = "none";

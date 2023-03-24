@@ -68,12 +68,12 @@
     <br>
     <h2><?php echo translate("Login", "en", $GLOBALS["lang"]); ?></h2>
     <form method="POST" id="anmelden" style="max-width: 20em">
-        <input type="email" id="email" name="email" placeholder="<?php echo translate("Hochschul-E-Mail-Adresse", "de", $GLOBALS["lang"]); ?>" autocomplete="email" oninput="checkEmail()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('email'); ?>" required>
+        <label for="email"></label><input type="email" id="email" name="email" placeholder="<?php echo translate("Hochschul-E-Mail-Adresse", "de", $GLOBALS["lang"]); ?>" autocomplete="email" oninput="checkEmail()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('email'); ?>" required>
         <input type="hidden" id="firstname" name="firstname" value="<?php echo postValifnN('firstname'); ?>">
         <input type="hidden" id="familyname" name="familyname" value="<?php echo postValifnN('familyname'); ?>">
         <input type="hidden" id="gmail" name="gmail" value="<?php echo postValifnN('gmail'); ?>">
         <input type="hidden" id="gPic" name="gPic" value="<?php echo postValifnN('gPic'); ?>">
-        <input type="password" id="password" name="password" placeholder="<?php echo translate("Passwort", "de", $GLOBALS["lang"]); ?>" autocomplete="password" value="<?php echo postValifnN('password'); ?>" required>
+        <label for="password"></label><input type="password" id="password" name="password" placeholder="<?php echo translate("Passwort", "de", $GLOBALS["lang"]); ?>" autocomplete="password" value="<?php echo postValifnN('password'); ?>" required>
         <span id="passwordEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
         <input type="hidden" id="gid" name="gid" value="<?php echo postValifnN('gid'); ?>">
         <input type="submit" value="<?php echo translate("Anmelden", "de", $GLOBALS["lang"]); ?>"><div class="button" onclick="setPwdInfo();" ><?php echo translate("Passwort zurücksetzen", "de", $GLOBALS["lang"]); ?></div>
@@ -82,9 +82,17 @@
 
     <!-- p>Anmeldung via Apple zulassen. | ON | OFF </p> -->
     <p><?php echo translate("Registrierung und Anmeldung via Google zulassen?", "de", $GLOBALS["lang"]); ?><br> <a style="cursor: pointer;" onclick='loadGoogleWarningbyUser();'>(<?php echo translate("Warnung anzeigen und Cookies löschen", "de", $GLOBALS["lang"]); ?>)</a></p>
+    <br>
     <div id="slider">
-        <div aria-label="Google-verwenden-Button" style="cursor: grab;" id="slider-thumb" class="not-selectable" tabindex="0"></div><p style="margin-top: 11px; margin-left: 4px; cursor: pointer; font-size: 11px; block-size: 22px;" class="not-selectable" id="slider-text"><b><?php echo translate("Nein", "de", $GLOBALS["lang"]); ?>&emsp;&emsp;&emsp;&emsp;<?php echo translate("Ja", "de", $GLOBALS["lang"]); ?></b></p>
+        <div aria-label="Google-verwenden-Button" style="" id="slider-thumb" class="not-selectable" tabindex="0"></div>
+        <div class="not-selectable slider-text-container" id="slider-text">
+            <p class="slider-text-no-yes">
+                <span class="slider-text-no"><?php echo translate("Nein", "de", $GLOBALS["lang"]); ?></span>
+                <span class="slider-text-yes"><?php echo translate("Ja", "de", $GLOBALS["lang"]); ?></span>
+            </p>
+        </div>
     </div>
+    <br>
     <div id="g_id_onload"
          data-client_id="<?php echo $GLOBALS["gcred"]; ?>"
          data-callback="handleCredentialResponse">
@@ -95,15 +103,15 @@
     <h2><?php echo translate("Registrierung", "de", $GLOBALS["lang"]); ?></h2>
     <p id="gRegInfo" style="display: none"><?php echo translate("Um die Registrierung mit Google abzuschließen, brauchen wir noch Deine Hochschul-E-Mail-Adresse und Deinen Namen.", "de", $GLOBALS["lang"]); ?></p>
     <form method="POST" id="registrieren" style="max-width: 20em">
-        <input type="text" id="firstnamereg" name="firstnamereg" placeholder="<?php echo translate("Vorname", "de", $GLOBALS["lang"]); ?>" autocomplete="given-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('firstnamereg'); ?>" required>
-        <input type="text" id="familynamereg" name="familynamereg" placeholder="<?php echo translate("Nachname", "de", $GLOBALS["lang"]); ?>" autocomplete="family-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('familynamereg'); ?>" required>
+        <label for="firstnamereg"></label><input type="text" id="firstnamereg" name="firstnamereg" placeholder="<?php echo translate("Vorname", "de", $GLOBALS["lang"]); ?>" autocomplete="given-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('firstnamereg'); ?>" required>
+        <label for="familynamereg"></label><input type="text" id="familynamereg" name="familynamereg" placeholder="<?php echo translate("Nachname", "de", $GLOBALS["lang"]); ?>" autocomplete="family-name" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern="[A-Z][A-Za-z]{2,}" minlength="3" value="<?php echo postValifnN('familynamereg'); ?>" required>
 
-        <input type="email" id="emailreg" name="emailreg" placeholder="<?php echo translate("Hochschul-E-Mail-Adresse", "de", $GLOBALS["lang"]); ?>" autocomplete="email" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('emailreg'); ?>" required>
-        <input type="password" id="password1reg" name="password1reg" placeholder="<?php echo translate("Passwort", "de", $GLOBALS["lang"]); ?>" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password1reg'); ?>" required>
+        <label for="emailreg"></label><input type="email" id="emailreg" name="emailreg" placeholder="<?php echo translate("Hochschul-E-Mail-Adresse", "de", $GLOBALS["lang"]); ?>" autocomplete="email" oninput="checkFirstNameReg(); checkFamilyNameReg(); checkEmailReg()" pattern=".+@studnet\.eh-ludwigsburg\.de$" value="<?php echo postValifnN('emailreg'); ?>" required>
+        <label for="password1reg"></label><input type="password" id="password1reg" name="password1reg" placeholder="<?php echo translate("Passwort", "de", $GLOBALS["lang"]); ?>" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password1reg'); ?>" required>
 
         <span id="password1regEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 
-        <input type="password" id="password2reg" name="password2reg" placeholder="<?php echo translate("Passwort wiederholen", "de", $GLOBALS["lang"]); ?>" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password2reg'); ?>" required>
+        <label for="password2reg"></label><input type="password" id="password2reg" name="password2reg" placeholder="<?php echo translate("Passwort wiederholen", "de", $GLOBALS["lang"]); ?>" autocomplete="new-password" pattern="(?=.{8,})((?=.*\d)(?=.*[a-z])(?=.*[A-Z])|(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_])|(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_])).*" minlength="8" oninput="checkPasswordreg();" value="<?php echo postValifnN('password2reg'); ?>" required>
 
         <span id="password2regEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 
@@ -160,17 +168,21 @@
     <?php
     if (isset($createMsg) && $createMsg != "OK") $regError = alert("Registrierungsfehler", $createMsg, "error", true);
     ?>
+    <!-- TODO create new error message
     <div  class="error" id="registerError" style="display: none">
         <ul class="actions stacked">
             <li>
-                <p>
                 <h3>Fehler</h3>
-                <b><?php echo $createMsg; ?>
-                </b></p>
+                <p>
+                <b>
+                    <?php //echo $createMsg; ?>
+                </b>
+                </p>
                 <a class='button large fit' onclick='hideRegisterError();'>OK</a>
             </li>
         </ul>
     </div>
+    -->
     <script type="application/javascript">
         const email = document.getElementById("email");
         const firstname = document.getElementById("firstname");
@@ -451,10 +463,10 @@
             var ca = decodedCookie.split(';');
             for(var i = 0; i <ca.length; i++) {
                 var c = ca[i];
-                while (c.charAt(0) == ' ') {
+                while (c.charAt(0) === ' ') {
                     c = c.substring(1);
                 }
-                if (c.indexOf(name) == 0) {
+                if (c.indexOf(name) === 0) {
                     return c.substring(name.length, c.length);
                 }
             }
@@ -575,7 +587,8 @@
 
         function decodeJwtResponse(jwt) {
             // Split the JWT into three parts: the header, the payload, and the signature
-            const [header, payload, signature] = jwt.split(".");
+            //const [header, payload, signature] = jwt.split(".");
+            const [, payload] = jwt.split(".");
 
             // Decode the payload from base64 to a JSON object
             const payloadJSON = atob(payload);

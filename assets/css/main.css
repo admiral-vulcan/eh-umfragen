@@ -4306,7 +4306,6 @@ input[type="radio"]:hover + label:before {
 
 }
 #slider {
-	top: -1em;
 	width: 120px;
 	height: 50px;
 	background: var(--input-back);
@@ -4324,8 +4323,9 @@ input[type="radio"]:hover + label:before {
 	border: solid 1px var(--input-border);
 	left: 3px;
 	transition: left 0.2s;
-	border-radius: 20px;
+	border-radius: 22px;
 	position: absolute;
+	cursor: grab;
 }
 
 #slider.on #slider-thumb {
@@ -4333,6 +4333,30 @@ input[type="radio"]:hover + label:before {
 }
 #slider-thumb.dragging {
 	box-shadow: 0 0 5px #333;
+}
+
+.slider-text-container {
+	cursor: pointer !important;
+	font-size: 14px !important;
+	block-size: 22px !important;
+	height: 35px !important;
+	letter-spacing: -0.25px !important;
+}
+
+.slider-text-no-yes {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 100%;
+	font-weight: bold;
+}
+
+.slider-text-no {
+	text-align: left;
+}
+
+.slider-text-yes {
+	text-align: right;
 }
 
 a:active,

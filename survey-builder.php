@@ -712,11 +712,16 @@ $followUpInfo = alert("Follow-Up-Element", "
                     resetSelects();
                     mySurveys.style.display = "none";
                     builder.style.display = "block";
-                    const openedSid = openDeconstructArray[0][0].split("_")[0]; /** TODO these 5 have to be implemented... */
+
+                    /** TODO these 5 have to be implemented...
+                     *
+                    const openedSid = openDeconstructArray[0][0].split("_")[0];
                     const openedFilename = openDeconstructArray[0][0].split("_")[1];
                     const openedCreator = openDeconstructArray[0][0].split("_")[2];
                     const openedLang = openDeconstructArray[0][0].split("_")[3];
                     const openedFinal = openDeconstructArray[0][0].split("_")[4] === "final";
+                    */
+
                     const openedTitle = openDeconstructArray[0][1];
                     const openedSubtitle = openDeconstructArray[0][2];
                     const openedDescription = openDeconstructArray[0][3];
@@ -739,13 +744,14 @@ $followUpInfo = alert("Follow-Up-Element", "
                         document.getElementById('email_domain_label').style.display = 'block';
                         document.getElementById('email_domain').style.display = 'block';
                     }
-                    const toBeApplied = [];
-                    toBeApplied["answers"] = [];
+                    let toBeApplied = [];
                     for (let i = 2; i < openDeconstructArray.length; i++) {
+                        toBeApplied.answers = [];
                         toBeApplied.questionType = openDeconstructArray[i][0];
                         toBeApplied.followUp = openDeconstructArray[i][1] === "is_follow_up";
                         toBeApplied.question = openDeconstructArray[i][2];
                         for (let j = 3; j < openDeconstructArray[i].length; j++) {
+                            if (openDeconstructArray[i][j] !== "")
                             toBeApplied.answers[j-3] = openDeconstructArray[i][j];
                         }
                         await applyPreset(toBeApplied);
