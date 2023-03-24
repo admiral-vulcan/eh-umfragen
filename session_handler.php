@@ -23,3 +23,6 @@ function logout(): void {
     session_destroy();
 }
 ?>
+<script type="application/javascript">
+    const userCID = "<?php echo $_SESSION['cid'] ?? ""; ?>";
+</script>

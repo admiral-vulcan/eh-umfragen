@@ -10,9 +10,10 @@ require_once ("utf8Encode.php");
 require_once ("message_drawer.php");
 require_once ("translate.php");
 require_once ("head.php");
+require_once ("assets/php/deconstruct_data.php");
 require_once ("hdd_handler.php");
 require_once ("zitate.php");
-require_once("gitignore/code.php");
+require_once ("gitignore/code.php");
 require_once ("sanitize.php");
 require_once ("sendmail.php");
 require_once ("database_com.php");
@@ -67,7 +68,7 @@ if ($GLOBALS["testDomain"]) {
                 <li class="menu">
                     <a class="fa-bars" id="mainmenu" href="#menu" tabindex="2" aria-label="<?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>"><?php echo translate("Menü", "de", $GLOBALS["lang"]); ?></a
                 </li>
-            </>
+            </ul>
         </nav>
         <nav class="main">
             <ul>
@@ -109,29 +110,28 @@ if ($GLOBALS["testDomain"]) {
             </div>
         </nav>
         <nav class="main">
-            <div id="weather-button">
-                <div id="weather_temperature" class="weather_temperature"><?php echo /*. $GLOBALS['weathertext'] . " bei " .*/ $GLOBALS['temperature'] //$stationName?></div>
-                <ul>
-                    <li>
-                        <form class="not-selectable">&emsp;
-                            <input  aria-label="<?php echo translate("E.H. Wetter anzeigen", "de", $GLOBALS["lang"]); ?>" type="checkbox" name="weather_checkbox" id="weather_checkbox">
-                            <label class="weather_scheme" for="weather_checkbox">
-                                <?php echo translate("EH-Wetter", "de", $GLOBALS["lang"]); ?>
-                            </label>
-                        </form>
-                    </li>
-                </ul>
-            </div>
+            <ul>
+                <li>
+                </li>
+            </ul>
         </nav>
+        <div id="weather-button">
+            <div id="weather_temperature" class="weather_temperature">
+                <?php echo /*. $GLOBALS['weathertext'] . " bei " .*/ $GLOBALS['temperature'] //$stationName?>
+            </div>
+            <form class="not-selectable">&emsp;
+                <input  aria-label="<?php echo translate("E.H. Wetter anzeigen", "de", $GLOBALS["lang"]); ?>" type="checkbox" name="weather_checkbox" id="weather_checkbox">
+                <label class="weather_scheme" for="weather_checkbox">
+                    <?php echo translate("EH-Wetter", "de", $GLOBALS["lang"]); ?>
+                </label>
+            </form>
+        </div>
         <form class="not-selectable">
         </form>
         <nav class="links">
             <ul>
-                <?php /*
-                for ($i = 0; $i < sizeof($surveys); $i++) {
-                    echo "<li><a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . "' rel='nofollow'>" .
-                        $surveys[$i][0][1] . "</a></li>";
-                }*/ ?>
+                <li>
+                </li>
             </ul>
         </nav>
     </header>
@@ -253,7 +253,8 @@ if ($GLOBALS["testDomain"]) {
                     <li><a href="https://github.com/admiral-vulcan/eh-umfragen/" class="icon brands fa-github" target="_blank" rel="nofollow"><span class="label">Github</span></a></li>
                     <li><a href="mailto:kontakt@eh-umfragen.de" class="icon solid fa-envelope"><span class="label">E-Mail</span></a></li>
                 </ul>
-                <p class="copyright">eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de"><?php echo translate("Kontakt", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=impressum" target="_blank"><?php echo translate("Impressum", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=agb" target="_blank"><?php echo translate("AGB", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=cookies" target="_blank"><?php echo translate("Cookies", "en", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank"><?php echo translate("Datenschutz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=lizenz" target="_blank"><?php echo translate("Lizenz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank"><?php echo translate("Übertragung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank"><?php echo translate("Passwortspeicherung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank"><?php echo translate("Mailnutzung", "de", $GLOBALS["lang"]); ?></a><br><br><br>
+                <div class="copyright">
+                <p>eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de"><?php echo translate("Kontakt", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=impressum" target="_blank"><?php echo translate("Impressum", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=agb" target="_blank"><?php echo translate("AGB", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=cookies" target="_blank"><?php echo translate("Cookies", "en", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank"><?php echo translate("Datenschutz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=lizenz" target="_blank"><?php echo translate("Lizenz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank"><?php echo translate("Übertragung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank"><?php echo translate("Passwortspeicherung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank"><?php echo translate("Mailnutzung", "de", $GLOBALS["lang"]); ?></a><br><br><br>
                     <?php echo translate('Quellen:', 'de', $GLOBALS['lang']); ?>
                     <br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
                     <br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,
@@ -280,7 +281,7 @@ if ($GLOBALS["testDomain"]) {
                         )
                     ) echo "<br><br><br><br><br><br>";
                     ?>
-                </p>
+                </p></div>
             </section>
         </div>
     </div>
@@ -310,5 +311,6 @@ if ($GLOBALS["testDomain"]) {
     $elapsed = intval(($end - $start)/1000000);
     echo "<br> Serverseitige Seitenladezeit: $elapsed ms.<br><br><br><br><br><br>";
 }
-echo "</html>";
+if (isset($_GET["tabclose"]) && $_GET["tabclose"] == "1") echo "<br><br><br><br><br><br>";
+    echo "</html>";
 ?>

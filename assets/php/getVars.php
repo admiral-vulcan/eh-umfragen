@@ -99,7 +99,6 @@ else $GLOBALS["luminosity"] = "light";
 
 $GLOBALS["luminosity"];
 ?>
-
 <script type="application/javascript">
     const testDomain = "<?php echo $GLOBALS["testDomain"]; ?>";
     const userLang = "<?php echo $GLOBALS['lang']; ?>";

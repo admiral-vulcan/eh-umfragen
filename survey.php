@@ -3,6 +3,7 @@ require_once ("convertTimeFormatInString.php");
 
 if (!isset($surveys)) $surveys = [];
 if (!isset($thisSurveyNumber)) $thisSurveyNumber = [];
+if (!isset($globalsurveys)) $globalsurveys = [];
 $target = "all"; //studs or empl or both or all
 if (
     (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb")) ||
@@ -30,7 +31,7 @@ for ($i = 0; $i < sizeof($surveys); $i++) {
 
 $thisid = utf8Encode($surveys[$thisSurveyNumber][0][0]);
 $inactivesince = get_inactivesince($thisid);
-$inactivesince = date("d. ", $inactivesince) . translate(date("F", $inactivesince), "en", "de") . date(" Y", $inactivesince) . " um " . date("H:i", $inactivesince) . " Uhr.";
+$inactivesincetext = date("d. ", $inactivesince) . translate(date("F", $inactivesince), "en", "de") . date(" Y", $inactivesince) . " um " . date("H:i", $inactivesince) . " Uhr.";
 if (strtolower($GLOBALS["lang"]) == "en") $inactivesince = convertTimeFormatInString($inactivesince);
 $since = get_since($thisid);
 $since = date("d. ", $since) . translate(date("F", $since), "en", "de") . date(" Y", $since) . " um " . date("H:i", $since) . " Uhr.";
@@ -48,10 +49,6 @@ if (isset($_GET["backview"]) && $_GET["backview"] == 1) {
 echo "<h1>eh-umfragen.de - " . translate("Eure Umfragen", "de", $GLOBALS["lang"]) . "</h1>";
 echo zitat("lebenswirklichkeit");
 
-?>
-
-
-<?php
 $title = translate($surveys[$thisSurveyNumber][0][1], "de", $GLOBALS["lang"]);
 $titleDE = $surveys[$thisSurveyNumber][0][1];
 $description1 = translate($surveys[$thisSurveyNumber][0][2], "de", $GLOBALS["lang"]);
@@ -87,18 +84,32 @@ if ($description3 != "") {
     if ($description4 != "") {
         echo $description4 . "<br>";
     }
-    echo "";
+}
+echo "<br>";
+echo "<div id='choose_anchor'></div>";
+
+$targettext = "<p>" . translate("Zielgruppe: " . $targettext, "de", $GLOBALS["lang"]) . "</p>";
+if (!isset($_GET["draft"]) || $_GET["draft"] !== "1") {
+    $sincetext = "<p>" . translate("Geöffnet seit dem " . $since, "de", $GLOBALS["lang"]) . "";
+    $inactivesincetext = "<p>" . translate("Geschlossen seit dem " . $inactivesincetext, "de", $GLOBALS["lang"]) . "</p>";
+    $hasresultstext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&backview=1'>" . translate("Geschlossene Umfrage nochmals anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='" . $results["file"] . "'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
+    $backviewtext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
+}
+else {
+    $sincetext = "<p>" . translate("In der Umfrage wird hier stehen, seit wann sie <b>geöffnet</b> worden sein wird.", "de", $GLOBALS["lang"]) . "</p>";
+    $inactivesincetext = "<p>" . translate("Sobald die Umfrage <b>geschlossen</b> sein wird, steht hier seit wann.", "de", $GLOBALS["lang"]) . "</p>";
+    $hasresultstext = "<p>" . translate("Sobald die Umfrage <b>ausgewertet</b> sein wird, findet man unten alle Statistiken. ", "de", $GLOBALS["lang"]) . "</p>";
+    $backviewtext = "<p>" . translate("An dieser Stelle wird man die <b>Rohdaten für Excel herunterladen</b>, die Ergebnisse inkl. Grafiken <b>drucken</b> können und hier erscheint ein Link zur <b>ursprünglichen Umfrage</b>, damit man sie nochmals ansehen kann.", "de", $GLOBALS["lang"]) . "</p>";
 }
 
-echo translate("Zielgruppe: " . $targettext, "de", $GLOBALS["lang"]) . "<br>";
-echo translate("Geöffnet seit dem " . $since, "de", $GLOBALS["lang"]) . "<div id='choose_anchor'></div>";
-if ($inactivesince > 0) echo translate("Geschlossen seit dem " . $inactivesince, "de", $GLOBALS["lang"]) . "<br>";
-if ($hasresults == 1) echo "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&backview=1'>" . translate("Geschlossene Umfrage nochmals anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='" . $results["file"] . "'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
-if ($backview) echo "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
+echo $targettext;
+echo $sincetext;
+if ($inactivesince > 0 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivesincetext;
+if ($hasresults == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $hasresultstext;
+if ($backview || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $backviewtext;
 echo "<br>";
-?>
 
-<?php
+
 $label_id = 0;
 $denum = 0;
 
@@ -218,11 +229,10 @@ if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_acti
         $id = -1;
         $id_file = intval(utf8Encode($surveys[$i][0][0]));
         $id_db = get_survey_id($surveys[$i][0][1]);
-
         if ($id_file === $id_db) $id = $id_file;
 
         else {
-            if ($id_file < 1 || $id_db < 1) $id = set_survey_id($surveys[$i][0][1]);
+            if ($id_file < 1 || $id_db < 1) $id = set_survey_id($surveys[$i][0][1], $globalsurveys[$i]['filename']);
             else $id = $id_db;
             $surveys[$i][0][0] = $id;
             $files = glob("surveys/*.csv");
@@ -869,7 +879,4 @@ function extractNumber($string) {
             }
         }
     }
-
-
-
 </script>

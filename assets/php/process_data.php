@@ -21,15 +21,25 @@ if ($contentLength > $maxContentLength) {
 $dataArray = json_decode(file_get_contents("php://input"), true);
 
 // Extract user language and isFinal flag from dataArray[0][0]
-list($userLang, $isFinalString) = explode('_', $dataArray[0][0]);
+list($originalSid, $originalFilename, $userCID, $userLang, $isFinalString) = explode('_', $dataArray[0][0]);
 $isFinal = $isFinalString === "final";
+$originalYear = "";
+$originalMonth = "";
+$originalDay = "";
+$originalName = "";
+
+if ($originalFilename != "0") {
+    //looks like this: 2023-03-23-EinSchoenerTitel-63bc9077d16ef104631330.csv
+    list($originalYear, $originalMonth, $originalDay, $originalName, $userCID) = explode('-', $originalFilename); //overwrite cid, because it should be the creators, not the contributors!
+    $userCID = str_replace('.csv', '', $userCID);
+}
 
 // Create a new array to hold the transformed data
 $surveyData = [];
 
 // Copy the top-level information
 $surveyData[0] = [
-    "0",
+    $originalSid,
     $dataArray[0][1],
     $dataArray[0][2],
     $dataArray[0][3],
@@ -91,6 +101,6 @@ if ($userLang !== "de") {
         }
     }
 }
-/** TODO get and pass cid */
-writeCSVFile($isFinal, $surveyData[0][1], "id", $surveyData);
+
+writeCSVFile($isFinal, $surveyData[0][1], $userCID, $originalFilename, $surveyData);
 ?>

@@ -77,10 +77,15 @@ section, summary, time, mark, audio, video {
 
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
-	display: block;}
+	display: block;
+}
 
 body {
 	line-height: 1;
+}
+
+p {
+	line-height: 1.25;
 }
 
 ol, ul {
@@ -1951,6 +1956,7 @@ button,
 	text-decoration: none;
 	text-transform: uppercase;
 	white-space: nowrap;
+	user-select: none;
 }
 
 input[type="submit"]:hover,
@@ -2110,7 +2116,7 @@ form.search > input:first-child {
 }
 	@media screen and (min-width: 1430px) and (max-width: 1680px) {
 	.creator-buttons {
-		top: 0.125em;
+		/*top: 0.125em;*/
 		left: 450px;
 		/*font-size: calc(1vw + 1px);*/
 		margin: 0;
@@ -2121,13 +2127,13 @@ form.search > input:first-child {
 	}
 }
 
-@media screen and (max-width: 1430px) {
+@media screen and (max-width: 1850px) {
 	.creator-buttons {
 		left: 450px;
 	}
 }
 
-@media screen and (max-width: 815px) {
+@media screen and (max-width: 900px) {
 	.creator-buttons {
 		top: 3.75em;
 		left: auto !important;
@@ -2142,19 +2148,33 @@ form.search > input:first-child {
 }
 
 .file-menu-items,
-.edit-menu-items {
+.edit-menu-items,
+.survey-menu-items {
 	opacity: 1;
 	display: inline-block;
+	user-select: none;
 }
 
 #file-menu-toggle,
-#edit-menu-toggle {
+#edit-menu-toggle,
+#survey-menu-toggle {
 	display: none;
+	user-select: none;
 }
 
-@media screen and (max-width: 1430px) {
+#preset-buttons {
+	display: none;
+	opacity: 0;
+	flex-direction: column;
+	background: var(--body-back);
+	position: fixed;
+	user-select: none;
+}
+
+@media screen and (max-width: 1850px) {
 	.file-menu-items,
-	.edit-menu-items {
+	.edit-menu-items,
+	.survey-menu-items {
 		opacity: 0;
 		display: none;
 		flex-direction: column;
@@ -2163,9 +2183,18 @@ form.search > input:first-child {
 	}
 
 	#file-menu-toggle,
-	#edit-menu-toggle {
+	#edit-menu-toggle,
+	#survey-menu-toggle {
 		display: inline-block;
 	}
+}
+
+.creator-buttons button,
+#preset-buttons button {
+	font-weight: normal;
+	padding-left:  1.5em;
+	padding-right: 1.5em;
+	letter-spacing: 0.2em;
 }
 
 label {
@@ -2193,7 +2222,7 @@ textarea {
 }
 
 .my-surveys {
-	display: none;
+	/*display: none;*/
 	top: -3px;
 }
 
@@ -3188,13 +3217,21 @@ section.special, article.special {
 }
 
 header p {
+	/*font-family: "Raleway", Helvetica, sans-serif;*/
+	/*font-weight: 400;*/
+	/*letter-spacing: 0.25em;*/
+	line-height: 1;
+	margin: 5px;
+	/*margin-top: -1em;
+    text-transform: uppercase;*/
+}
+
+.quote, .quote * {
 	font-family: "Raleway", Helvetica, sans-serif;
-	font-size: 0.7em;
+	/*font-size: 1em;*/
 	font-weight: 400;
 	letter-spacing: 0.25em;
-	line-height: 2.5;
-	/*margin-top: -1em;
-	text-transform: uppercase;*/
+	line-height: 2;
 }
 
 /* Table */
@@ -3268,14 +3305,20 @@ table.alt tfoot {
 
 
 /*Setting the table width is important!*/
-table.creator {
+table.creator  {
 	table-layout: fixed;
-	width: 52em;
+	width: 600em;
+	/*padding-top: 2.5em;*/
+	padding: unset;
+}
+table.creator * {
+	vertical-align: middle;
 }
 /*Hide text outside the cell.*/
 table.creator td,
 table.creator th {
-	overflow: hidden;
+	/*overflow: hidden;*/
+	hyphens: auto;
 }
 
 /*Setting the width of column 1.*/
@@ -3296,12 +3339,12 @@ table.creator th:nth-of-type(3) {
 /*Setting the width of column 4.*/
 table.creator td:nth-of-type(4),
 table.creator th:nth-of-type(4) {
-	width: 5em;
+	width: 8em;
 }
 /*Setting the width of column 5.*/
 table.creator td:nth-of-type(5),
 table.creator th:nth-of-type(5) {
-	width: 5em;
+	width: 8em;
 }
 /*Setting the width of column 6.*/
 table.creator td:nth-of-type(6),
@@ -3311,7 +3354,7 @@ table.creator th:nth-of-type(6) {
 /*Setting the width of column 7.*/
 table.creator td:nth-of-type(7),
 table.creator th:nth-of-type(7) {
-	width: 5em;
+	width: 6em;
 }
 /*Setting the width of column 8.*/
 table.creator td:nth-of-type(8),
@@ -3321,27 +3364,34 @@ table.creator th:nth-of-type(8) {
 /*Setting the width of column 9.*/
 table.creator td:nth-of-type(9),
 table.creator th:nth-of-type(9) {
-	width: 6em;
+	width: 7em;
 }
 
 @media only screen and (max-width: 1024px) {
 	table.creator {
 		table-layout: auto;
-		font-size: calc(1vw + 5px);
+		width: 100%;
+		/*font-size: calc(1vw + 1px) !important;*/
+	}
+	.hide-on-tablet {
+		display: none;
 	}
 }
 
 @media only screen and (max-width: 736px) {
 	table.creator {
-		table-layout: auto;
-		font-size: calc(1vw + 4px);
+		/*table-layout: auto;
+		font-size: calc(1vw + 1px) !important;*/
+	}
+	.hide-on-mobile {
+		display: none;
 	}
 }
 
 @media only screen and (max-width: 545px) {
 	table.creator {
-		table-layout: auto;
-		font-size: calc(1vw + 3px);
+		/*table-layout: auto;
+		font-size: calc(1vw + 1px) !important;*/
 	}
 }
 
@@ -3369,6 +3419,7 @@ body {
 	top: 0;
 	width: 100%;
 	z-index: 1000;
+	user-select: none;
 }
 
 #topBar a {
@@ -3682,8 +3733,8 @@ body.single #wrapper {
 	font-weight: 900;*/
 }
 
-#intro header p {
-	font-size: 0.8em;
+#intro header p, p {
+	font-size: 1.175em;
 }
 
 @media screen and (max-width: 1280px) {
@@ -3697,8 +3748,8 @@ body.single #wrapper {
 		/*font-size: 2em;*/
 	}
 
-	#intro header p {
-		font-size: 0.7em;
+	#intro header p, p {
+		font-size: 1em;
 	}
 
 }
@@ -3734,10 +3785,11 @@ body.single #wrapper {
 	color: var(--footer-color);
 }
 
-#footer .copyright {
+#footer .copyright p {
+	max-width: 77em;
 	color: var(--footer-color);
 	font-family: "Raleway", Helvetica, sans-serif;
-	font-size: 0.5em;
+	font-size: 0.6em;
 	font-weight: 400;
 	letter-spacing: 0.33em;
 	line-height: 2em;
@@ -4197,6 +4249,19 @@ input:hover, input:-webkit-autofill:hover, #slider:hover,
 	transform: scaleX(0.98);
 }
 
+input[type=text],
+input[type=text]:active,
+input[type=email],
+input[type=email]:active,
+input[type=password],
+input[type=password]:active,
+input[type="radio"]:disabled, /** TODO this doesnt work for disabled radios/checkboxes, fix it! */
+input[type="radio"]:disabled:active,
+input[type="checkbox"]:disabled,
+input[type="checkbox"]:disabled:active {
+	transform: none;
+}
+
 input[type="text"]:-webkit-autofill:hover,
 input[type="email"]:-webkit-autofill:hover,
 input[type="password"]:-webkit-autofill:hover {
@@ -4379,13 +4444,21 @@ img {
 	font-size: 0.8em !important;
 	font-weight: 700 !important;
 }
+
+
 @media screen and (max-width: 1680px) {
 	#color_scheme {
 		top: 5px;
 	}
+	.color_scheme {
+		top: 2px;
+	}
 }
 @media screen and (max-width: 736px) {
 	#color_scheme {
+		top: 0;
+	}
+	.color_scheme {
 		top: 0;
 	}
 }

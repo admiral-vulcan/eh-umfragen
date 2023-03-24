@@ -78,6 +78,16 @@ $followUpInfo = alert("Follow-Up-Element", "
     let undoStack = [];
     let redoStack = [];
 
+    function clearRedoStack() {
+        redoStack = [];
+        document.getElementById("button_redo").setAttribute("disabled", true);
+    }
+
+    function clearUndoStack() {
+        undoStack = [];
+        document.getElementById("button_undo").setAttribute("disabled", true);
+    }
+
     document.addEventListener("DOMContentLoaded", async () => {
         try {
             // Command class and specific command classes
@@ -145,8 +155,207 @@ $followUpInfo = alert("Follow-Up-Element", "
                 }
             }
 
+            class AddChoiceCommand {
+                constructor(choiceContainer, choiceInput) {
+                    this.choiceContainer = choiceContainer;
+                    this.choiceInput = choiceInput;
+                }
+
+                async execute() {
+                    this.choiceContainer.appendChild(this.choiceInput);
+                    await preventUserLeave();
+                }
+
+                async unexecute() {
+                    this.choiceContainer.removeChild(this.choiceInput);
+                    await preventUserLeave();
+                }
+            }
+
+
+            class RemoveChoiceCommand {
+                constructor(choiceContainer, lastChoiceInput) {
+                    this.choiceContainer = choiceContainer;
+                    this.lastChoiceInput = lastChoiceInput;
+                }
+
+                execute() {
+                    this.choiceContainer.removeChild(this.lastChoiceInput);
+                }
+
+                unexecute() {
+                    this.choiceContainer.appendChild(this.lastChoiceInput);
+                }
+            }
+
+            class ToggleFollowUpCheckboxCommand extends Command {
+                constructor(followUpCheckbox) {
+                    super();
+                    this.followUpCheckbox = followUpCheckbox;
+                }
+
+                execute() {
+                    this.followUpCheckbox.checked = !this.followUpCheckbox.checked;
+                }
+
+                unexecute() {
+                    this.followUpCheckbox.checked = !this.followUpCheckbox.checked;
+                }
+            }
+
+            class TextInputChangeCommand extends Command {
+                constructor(inputElement, oldValue, newValue) {
+                    super();
+                    this.inputElement = inputElement;
+                    this.oldValue = oldValue;
+                    this.newValue = newValue;
+                }
+
+                execute() {
+                    this.inputElement.value = this.newValue;
+                }
+
+                unexecute() {
+                    this.inputElement.value = this.oldValue;
+                }
+            }
+
+            class TextInputUndoHandler {
+                constructor(inputElement) {
+                    this.inputElement = inputElement;
+                    this.textChangeTimeout = null;
+                    this.cachedOldValue = undefined;
+                    this.cachedNewValue = undefined;
+                    this.attachListener();
+                }
+
+                attachListener() {
+                    this.inputElement.addEventListener("input", (event) => {
+                        const inputElement = event.target;
+
+                        // Initialize the cache if it's empty
+                        if (this.cachedOldValue === undefined) {
+                            this.cachedOldValue = inputElement.getAttribute("data-prev-value") || "";
+                        }
+
+                        this.cachedNewValue = inputElement.value;
+
+                        // Clear the existing timeout if any
+                        clearTimeout(this.textChangeTimeout);
+
+                        const pushTextChangeCommand = () => {
+                            const command = new TextInputChangeCommand(inputElement, this.cachedOldValue, this.cachedNewValue);
+                            undoStack.push(command);
+                            clearRedoStack();
+
+                            // Update the data-prev-value attribute with the current value
+                            inputElement.setAttribute("data-prev-value", this.cachedNewValue);
+
+                            // Reset the cache and timeout
+                            this.cachedOldValue = undefined;
+                            this.cachedNewValue = undefined;
+                            this.textChangeTimeout = null;
+                        };
+
+                        // Check if the last character is a non-alphanumeric character
+                        if (event.data && /\W/.test(event.data)) {
+                            pushTextChangeCommand();
+                        } else {
+                            // Set a timeout to push the command if the user hasn't typed for 2 seconds
+                            this.textChangeTimeout = setTimeout(pushTextChangeCommand, 500);
+                        }
+                    });
+                }
+            }
+
+            class ValueInputUndoHandler {
+                constructor(inputElement) {
+                    this.inputElement = inputElement;
+                    this.attachListener();
+                }
+
+                attachListener() {
+                    this.inputElement.addEventListener("change", (event) => {
+                        const inputElement = event.target;
+                        const oldValue = inputElement.getAttribute("data-prev-value") || "";
+                        const newValue = inputElement.value;
+
+                        const pushValueChangeCommand = () => {
+                            const command = new TextInputChangeCommand(inputElement, oldValue, newValue);
+                            undoStack.push(command);
+                            clearRedoStack();
+
+                            // Update the data-prev-value attribute with the current value
+                            inputElement.setAttribute("data-prev-value", newValue);
+                        };
+
+                        pushValueChangeCommand();
+                    });
+                }
+            }
+
+            async function addChoice(choiceContainer) {
+                const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
+                const newChoiceCount = choiceCount + 1;
+                choiceContainer.dataset.choiceCount = newChoiceCount;
+
+                const choiceInput = document.createElement("input");
+                choiceInput.type = "text";
+                choiceInput.name = `question_${questionCount}_choice_${newChoiceCount}`;
+                choiceInput.placeholder = await translate("Eine kurze und prägnante Antwortmöglichkeit", "de", userLang);
+
+                if (newChoiceCount === 2) {
+                    const answersLabel = document.createElement("label");
+                    answersLabel.innerText = await translate("Antwortmöglichkeiten:", "de", userLang);
+                    answersLabel.setAttribute("for", "answers");
+                    choiceContainer.insertBefore(answersLabel, choiceContainer.children[2]);
+                }
+
+                const command = new AddChoiceCommand(choiceContainer, choiceInput);
+                command.execute();
+                undoStack.push(command);
+                await preventUserLeave();
+                clearRedoStack();
+                new TextInputUndoHandler(choiceInput);
+            }
+
+            async function removeChoice(choiceContainer) {
+                const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
+                if (choiceCount === 1) return;
+
+                const lastChoiceInput = choiceContainer.lastElementChild;
+
+                const command = new RemoveChoiceCommand(choiceContainer, lastChoiceInput);
+                command.execute();
+                undoStack.push(command);
+                await preventUserLeave();
+                clearRedoStack();
+
+                choiceContainer.dataset.choiceCount = choiceCount - 1;
+
+                // Remove the "Answers:" label when only one choice remains
+                if (choiceCount === 2) {
+                    const answersLabel = choiceContainer.querySelector('label[for="answers"]');
+                    if (answersLabel) {
+                        choiceContainer.removeChild(answersLabel);
+                    }
+                }
+
+                // Update input names
+                const inputs = choiceContainer.querySelectorAll('input[type="text"]');
+                inputs.forEach((input, index) => {
+                    const nameParts = input.name.split("_");
+                    const questionIndex = nameParts[1];
+                    input.name = `question_${questionIndex}_choice_${index + 1}`;
+                });
+            }
+
             // Show email domain input if 'other' is selected in the target group dropdown
             targetGroupSelect.addEventListener("change", () => {
+                toggleTargetGroupSelect();
+            });
+
+            function toggleTargetGroupSelect() {
                 if (targetGroupSelect.value === "other") {
                     emailDomainInput.style.display = "inline";
                     emailDomainLabel.style.display = "inline";
@@ -154,10 +363,6 @@ $followUpInfo = alert("Follow-Up-Element", "
                     emailDomainInput.style.display = "none";
                     emailDomainLabel.style.display = "none";
                 }
-            });
-
-            function clearRedoStack() {
-                redoStack = [];
             }
 
             // Add question based on question type
@@ -209,18 +414,27 @@ $followUpInfo = alert("Follow-Up-Element", "
                 followUpForm.appendChild(lineBreak);
                 followUpForm.appendChild(followUpAnchor);
 
+                followUpCheckbox.addEventListener("change", async () => {
+                    const command = new ToggleFollowUpCheckboxCommand(followUpCheckbox);
+                    undoStack.push(command);
+                    await preventUserLeave();
+                    clearRedoStack();
+                });
+
                 switch (questionType) {
                     case "description":
                         const descriptionInput = document.createElement("input");
                         descriptionInput.type = "text";
                         descriptionInput.name = `question_${questionCount}_description`;
                         questionWrapper.appendChild(descriptionInput);
+                        new TextInputUndoHandler(descriptionInput);
                         break;
                     case "free_text":
                         const freeTextInput = document.createElement("input");
                         freeTextInput.type = "text";
                         freeTextInput.name = `question_${questionCount}_free_text`;
                         questionWrapper.appendChild(freeTextInput);
+                        new TextInputUndoHandler(freeTextInput);
                         break;
                     case "picture":
                         const fileInput = document.createElement("input");
@@ -240,26 +454,6 @@ $followUpInfo = alert("Follow-Up-Element", "
                         const choiceWrapper = document.createElement(choiceType);
                         choiceWrapper.name = `question_${questionCount}_choices`;
 
-                    async function addChoice(choiceContainer) {
-                        const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
-                        const newChoiceCount = choiceCount + 1;
-                        choiceContainer.dataset.choiceCount = newChoiceCount;
-
-                        const choiceInput = document.createElement("input");
-                        choiceInput.type = "text";
-                        choiceInput.name = `question_${questionCount}_choice_${newChoiceCount}`;
-                        choiceInput.placeholder = await translate("Eine kurze und prägnante Antwortmöglichkeit", "de", userLang);
-
-                        // Insert the "Answers:" label only when the second choice is added
-                        if (newChoiceCount === 2) {
-                            const answersLabel = document.createElement("label");
-                            answersLabel.innerText = await translate("Antwortmöglichkeiten:", "de", userLang);
-                            answersLabel.setAttribute("for", "answers");
-                            choiceContainer.insertBefore(answersLabel, choiceContainer.children[2]);
-                        }
-                        choiceContainer.appendChild(choiceInput);
-                    }
-
                         const choiceInput = document.createElement("input");
                         choiceInput.type = "text";
                         choiceInput.name = `question_${questionCount}_choice_1`;
@@ -273,18 +467,25 @@ $followUpInfo = alert("Follow-Up-Element", "
                         }
 
                         choiceContainer.appendChild(choiceInput);
+                        new TextInputUndoHandler(choiceInput);
                         questionWrapper.appendChild(choiceContainer);
 
                         const addButton = document.createElement("button");
                         addButton.innerText = await translate("Antwort hinzufügen", "de", userLang);
                         addButton.type = "button";
-                        addButton.addEventListener("click", () => addChoice(choiceContainer));
+                        addButton.addEventListener("click", async () => {
+                            await addChoice(choiceContainer);
+                        });
+
                         questionWrapper.appendChild(addButton);
 
                         const removeButton = document.createElement("button");
                         removeButton.innerText = await translate("Antwort löschen", "de", userLang);
                         removeButton.type = "button";
-                        removeButton.addEventListener("click", () => removeChoice(choiceContainer));
+                        removeButton.addEventListener("click", async () => {
+                            await removeChoice(choiceContainer);
+                        });
+
                         questionWrapper.appendChild(removeButton);
                         break;
                 }
@@ -344,7 +545,13 @@ $followUpInfo = alert("Follow-Up-Element", "
                     command.unexecute();
                     redoStack.push(command);
                     await preventUserLeave();
+                    toggleTargetGroupSelect();
                 }
+
+                if (checkUndo()) document.getElementById("button_undo").removeAttribute("disabled");
+                else document.getElementById("button_undo").setAttribute("disabled", true);
+                if (checkRedo()) document.getElementById("button_redo").removeAttribute("disabled");
+                else document.getElementById("button_redo").setAttribute("disabled", true);
             });
 
             // Redo event listener
@@ -354,30 +561,13 @@ $followUpInfo = alert("Follow-Up-Element", "
                     command.execute();
                     undoStack.push(command);
                     await preventUserLeave();
+                    toggleTargetGroupSelect();
                 }
+                if (checkUndo()) document.getElementById("button_undo").removeAttribute("disabled");
+                else document.getElementById("button_undo").setAttribute("disabled", true);
+                if (checkRedo()) document.getElementById("button_redo").removeAttribute("disabled");
+                else document.getElementById("button_redo").setAttribute("disabled", true);
             });
-
-            function removeChoice(choiceContainer) {
-                const choiceCount = parseInt(choiceContainer.dataset.choiceCount, 10);
-                if (choiceCount === 1) return;
-
-                const lastChoiceInput = choiceContainer.lastElementChild;
-                if (choiceContainer.tagName !== "SELECT") {
-                    const lastChoiceRadio = choiceContainer.children[choiceContainer.children.length - 2];
-                    choiceContainer.removeChild(lastChoiceRadio);
-                }
-
-                choiceContainer.removeChild(lastChoiceInput);
-                choiceContainer.dataset.choiceCount = choiceCount - 1;
-
-                // Remove the "Answers:" label when only one choice remains
-                if (choiceCount === 2) {
-                    const answersLabel = choiceContainer.querySelector('label[for="answers"]');
-                    if (answersLabel) {
-                        choiceContainer.removeChild(answersLabel);
-                    }
-                }
-            }
 
             // Update question numbers function
             async function updateQuestionNumbers() {
@@ -395,6 +585,205 @@ $followUpInfo = alert("Follow-Up-Element", "
                     });
                 }
             }
+
+
+            const title = document.getElementById("title");
+            const subtitle = document.getElementById("subtitle");
+            const description = document.getElementById("description");
+            const further_description = document.getElementById("further_description");
+            const contributors = document.getElementById("contributors");
+            const target_group = document.getElementById("target_group");
+            const email_domain = document.getElementById("email_domain");
+
+            new TextInputUndoHandler(title);
+            new TextInputUndoHandler(subtitle);
+            new TextInputUndoHandler(description);
+            new TextInputUndoHandler(further_description);
+            new TextInputUndoHandler(contributors);
+            new ValueInputUndoHandler(target_group);
+            new TextInputUndoHandler(email_domain);
+
+            // here we handle presets
+            let presets = [];
+            presets[0] = {
+                buttonText: "Was ist Deine Lieblingsfarbe?",
+                questionType: "multiple_choice",
+                question: "Was ist Deine Lieblingsfarbe?",
+                answers: ["Rot", "Grün", "Blau", "Lila"],
+                followUp: false
+            };
+
+            presets[1] = {
+                buttonText: "Tiere",
+                questionType: "single_choice",
+                question: "Was ist Dein Lieblingstier",
+                answers: ["Hund", "Katze", "Maus"],
+                followUp: false
+            };
+            //add more presets
+
+            //translate presets:
+            for (var i = 0; i < presets.length; i++) {
+                presets[i]["buttonText"] = await translate(presets[i]["buttonText"], "de", userLang);
+                presets[i]["question"] = await translate(presets[i]["question"], "de", userLang);
+                for (var j = 0; j < presets[i]["answers"].length; j++) {
+                    presets[i]["answers"][j] = await translate(presets[i]["answers"][j], "de", userLang);
+                }
+            }
+
+            function waitForQuestionAdded() {
+                return new Promise((resolve) => {
+                    const observer = new MutationObserver(() => {
+                        observer.disconnect();
+                        resolve();
+                    });
+
+                    observer.observe(questionsContainer, { childList: true });
+                });
+            }
+
+            function waitForChoiceAdded(choiceContainer) {
+                return new Promise((resolve) => {
+                    const observer = new MutationObserver(() => {
+                        observer.disconnect();
+                        resolve();
+                    });
+
+                    observer.observe(choiceContainer, { childList: true });
+                });
+            }
+
+            async function applyPreset(preset) {
+                //first, jump to where the preset gets added
+                jump("add-question", -200);
+
+                // Set the question type in the select element
+                questionTypeSelect.value = preset.questionType;
+
+                // Trigger a click event on the addQuestionBtn
+                addQuestionBtn.click();
+
+                // Wait for the question to be added
+                await waitForQuestionAdded();
+
+                // Get the last added question
+                const questionWrapper = questionsContainer.lastElementChild;
+
+                // Set the question text
+                let questionInput = questionWrapper.querySelector("input[type='text']");
+                setInputValueWithUndoRedo(questionInput, preset.question);
+
+                // Add answer options
+                const choiceContainer = questionWrapper.querySelector(".choice-container");
+                const addButton = questionWrapper.querySelector("button");
+                for (var i = 0; i < preset.answers.length; i++) {
+                    const answer = preset.answers[i];
+                    addButton.click();
+                    await waitForChoiceAdded(choiceContainer);
+                    const choiceInputs = questionWrapper.querySelectorAll("input[type='text']");
+                    const choiceInput = choiceInputs[i + 1];
+                    setInputValueWithUndoRedo(choiceInput, answer);
+                }
+
+                // Set the follow-up checkbox state
+                    const followUpCheckbox = questionWrapper.querySelector("input[type='checkbox']");
+                    if (followUpCheckbox.checked !== preset.followUp) {
+                        followUpCheckbox.click();
+                    }
+
+                if (checkUndo()) document.getElementById("button_undo").removeAttribute("disabled");
+                else document.getElementById("button_undo").setAttribute("disabled", true);
+                if (checkRedo()) document.getElementById("button_redo").removeAttribute("disabled");
+                else document.getElementById("button_redo").setAttribute("disabled", true);
+            }
+            await applyCsv();
+            async function applyCsv() {
+                if (typeof openDeconstructJson !== "undefined") {
+                    const openDeconstructArray = JSON.parse(openDeconstructJson);
+                    document.getElementById("button_save").removeAttribute("disabled");
+                    document.getElementById("button_close").removeAttribute("disabled");
+                    document.getElementById("button_delete").removeAttribute("disabled");
+                    document.getElementById("button_draft").removeAttribute("disabled");
+                    document.getElementById("button_final").removeAttribute("disabled");
+                    document.getElementById("button_evaluate").removeAttribute("disabled");
+                    document.getElementById("button_presets").removeAttribute("disabled");
+                    await undoAll();
+                    clearTexts();
+                    resetSelects();
+                    mySurveys.style.display = "none";
+                    builder.style.display = "block";
+                    const openedSid = openDeconstructArray[0][0].split("_")[0]; /** TODO these 5 have to be implemented... */
+                    const openedFilename = openDeconstructArray[0][0].split("_")[1];
+                    const openedCreator = openDeconstructArray[0][0].split("_")[2];
+                    const openedLang = openDeconstructArray[0][0].split("_")[3];
+                    const openedFinal = openDeconstructArray[0][0].split("_")[4] === "final";
+                    const openedTitle = openDeconstructArray[0][1];
+                    const openedSubtitle = openDeconstructArray[0][2];
+                    const openedDescription = openDeconstructArray[0][3];
+                    const openedFurtherDescription = openDeconstructArray[0][4];
+                    const openedContributors = openDeconstructArray[0][5];
+                    const openedTargetGroup = openDeconstructArray[1][0];
+                    let openedEmailDomain = "";
+                    if(!["students", "lecturers", "students&lecturers", "no_restriction"].includes(openedTargetGroup)) openedEmailDomain = openedTargetGroup;
+                    document.getElementById('title').value = openedTitle;
+                    document.getElementById('subtitle').value = openedSubtitle;
+                    document.getElementById('description').value = openedDescription;
+                    document.getElementById('further_description').value = openedFurtherDescription;
+                    document.getElementById('contributors').value = openedContributors;
+
+                    if (openedEmailDomain === "") {
+                        document.getElementById('target_group').value = openedTargetGroup;
+                    } else {
+                        document.getElementById('target_group').value = "other";
+                        document.getElementById('email_domain').value = openedEmailDomain;
+                        document.getElementById('email_domain_label').style.display = 'block';
+                        document.getElementById('email_domain').style.display = 'block';
+                    }
+                    const toBeApplied = [];
+                    toBeApplied["answers"] = [];
+                    for (let i = 2; i < openDeconstructArray.length; i++) {
+                        toBeApplied.questionType = openDeconstructArray[i][0];
+                        toBeApplied.followUp = openDeconstructArray[i][1] === "is_follow_up";
+                        toBeApplied.question = openDeconstructArray[i][2];
+                        for (let j = 3; j < openDeconstructArray[i].length; j++) {
+                            toBeApplied.answers[j-3] = openDeconstructArray[i][j];
+                        }
+                        await applyPreset(toBeApplied);
+                    }
+                }
+
+
+
+
+                //if (typeof openDeconstructJson !== "undefined")  {
+                //openDeconstructJson;
+                //}
+            }
+
+            function setInputValueWithUndoRedo(inputElement, newValue) {
+                const oldValue = inputElement.value;
+                const command = new TextInputChangeCommand(inputElement, oldValue, newValue);
+                command.execute();
+                undoStack.push(command);
+                clearRedoStack();
+            }
+
+                const presetsContainer = document.getElementById("preset-buttons");
+
+                for (let i = 0; i < presets.length; i++) {
+                    const presetButton = document.createElement("button");
+                    presetButton.className = "button-preset";
+                    presetButton.type = "button";
+                    presetButton.id = `preset-button-${i}`;
+                    presetButton.innerText = presets[i].buttonText;
+
+                    presetButton.addEventListener("click", async () => {
+                        await applyPreset(presets[i]);
+                    });
+
+                    presetsContainer.appendChild(presetButton);
+                }
+            setMenuItemsPosition();
         } catch (error) {
             console.error("An error occurred:", error);
         }
@@ -439,7 +828,7 @@ $followUpInfo = alert("Follow-Up-Element", "
         let dataArray = [];
 
         dataArray[0] = [
-            document.documentElement.getAttribute("lang") + (isFinal ? "_final" : "_draft"),
+            originalSid + "_" + originalFilename + "_" + userCID + "_" + document.documentElement.getAttribute("lang") + (isFinal ? "_final" : "_draft"),
             document.getElementById("title").value,
             document.getElementById("subtitle").value,
             document.getElementById("description").value,
@@ -471,7 +860,6 @@ $followUpInfo = alert("Follow-Up-Element", "
                 addImageUploadEventListener(inputs[i]);
             }
         }
-
         return dataArray;
     }
 
@@ -503,17 +891,21 @@ $followUpInfo = alert("Follow-Up-Element", "
     }
 
     function sendDataToServer(dataArray) {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "assets/php/process_data.php", true);
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhr.onload = function () {
-            if (this.status === 200) {
-                if (testDomain) console.log("Data sent successfully.");
-            } else {
-                console.error("An error occurred while sending data.");
-            }
-        };
-        xhr.send(JSON.stringify(dataArray));
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "assets/php/process_data.php", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                if (this.status === 200) {
+                    if (testDomain) console.log("Data sent successfully.");
+                    resolve(this.responseText);
+                } else {
+                    console.error("An error occurred while sending data.");
+                    reject(new Error("An error occurred while sending data."));
+                }
+            };
+            xhr.send(JSON.stringify(dataArray));
+        });
     }
 
     async function preventUserLeave() {
@@ -525,5 +917,66 @@ $followUpInfo = alert("Follow-Up-Element", "
             window.onbeforeunload = null;
         }
     }
+
+    async function undo() {
+        if (undoStack.length === 0) return;
+
+        const command = undoStack.pop();
+        await command.unexecute();
+        redoStack.push(command);
+        await preventUserLeave();
+
+        if (checkUndo()) document.getElementById("button_undo").removeAttribute("disabled");
+        else document.getElementById("button_undo").setAttribute("disabled", true);
+        if (checkRedo()) document.getElementById("button_redo").removeAttribute("disabled");
+        else document.getElementById("button_redo").setAttribute("disabled", true);
+    }
+
+    async function redo() {
+        if (redoStack.length === 0) return;
+
+        const command = redoStack.pop();
+        await command.execute();
+        undoStack.push(command);
+        await preventUserLeave();
+
+        if (checkUndo()) document.getElementById("button_undo").removeAttribute("disabled");
+        else document.getElementById("button_undo").setAttribute("disabled", true);
+        if (checkRedo()) document.getElementById("button_redo").removeAttribute("disabled");
+        else document.getElementById("button_redo").setAttribute("disabled", true);
+    }
+
+    async function preventUserLeaveEvent() {
+        await preventUserLeave();
+    }
+
+    // Listen for click events
+    document.addEventListener("click", preventUserLeaveEvent);
+
+    // Listen for touch events
+    document.addEventListener("touchstart", preventUserLeaveEvent);
+
+    // Listen for key press events
+    document.addEventListener("keypress", preventUserLeaveEvent);
+
+    //CTRL-Z CTRL-Y
+    document.addEventListener("keydown", async (event) => {
+        if (event.ctrlKey && event.key === "z") {
+            event.preventDefault(); // Prevent the browser's default undo behavior
+            await undo();
+        } else if (event.ctrlKey && event.key === "y") {
+            event.preventDefault(); // Prevent the browser's default redo behavior
+            await redo();
+        }
+    });
+
+    function checkUndo() {
+        return undoStack.length > 0;
+    }
+
+    function checkRedo() {
+        return redoStack.length > 0;
+    }
+
 
 </script>

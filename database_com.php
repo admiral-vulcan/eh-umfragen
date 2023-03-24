@@ -151,6 +151,19 @@ function get_survey_contributors_names($sid) {
     $pdo = null;
     return $name;
 }
+function get_survey_filename($sid) {
+    $filename = -1;
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM surveys WHERE id = ? LIMIT 1");
+    $statement->execute(array(sanitize($sid)));
+    while($row = $statement->fetch()) {
+        $filename = $row['filename'];
+        break;
+    }
+
+    $pdo = null;
+    return $filename;
+}
 
 function get_survey_id($name) {
     $id = -1;
@@ -164,7 +177,8 @@ function get_survey_id($name) {
     return intval($id);
 }
 
-function set_survey_id($name) {
+function set_survey_id($name, $filename = "YYYY-MM-DD-title-cid.csv") {
+    $creator = str_replace('.csv', '', explode("-", $filename)[4]);
     $id = 1;
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
     $statement = $pdo->prepare("SELECT id FROM surveys ORDER BY id DESC LIMIT 1");
@@ -173,8 +187,8 @@ function set_survey_id($name) {
         $id = $row['id'] + 1;
     }
     try {
-        $statement = $pdo->prepare("INSERT INTO surveys (id, isactive, hasresults, name, since) VALUES (?,?,?,?,?)");
-        $statement->execute([$id, 1, 0, sanitize($name), time()]);
+        $statement = $pdo->prepare("INSERT INTO surveys (id, creator, isactive, hasresults, name, since, filename) VALUES (?,?,?,?,?,?,?)");
+        $statement->execute([$id, $creator, 1, 0, sanitize($name), time(), $filename]);
     }
 
     catch (Exception $e) {
@@ -378,6 +392,7 @@ function get_creator_data($cid) {
     $statement = $pdo->prepare("SELECT * FROM surveys WHERE creator = ?");
     $statement->execute([$cid]);
     $i=0;
+    $_SESSION['my_creations'] = [];
     while($row = $statement->fetch()) {
         $_SESSION['my_creations'][$i] = $row['id'];
         $i++;
@@ -386,10 +401,12 @@ function get_creator_data($cid) {
     $statement = $pdo->prepare("SELECT * FROM surveys WHERE contributors LIKE ?");
     $statement->execute(["%$cid%"]);
     $i=0;
+    $_SESSION['my_contributions'] = [];
     while($row = $statement->fetch()) {
         $_SESSION['my_contributions'][$i] = $row['id'];
         $i++;
     }
+    $pdo = null;
 }
 
 function get_creator_cid($email) {

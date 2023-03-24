@@ -57,3 +57,15 @@ else $locale = strtolower($GLOBALS["lang"]) . "_" . strtoupper($GLOBALS["lang"])
         "logo": "https://www.eh-umfragen.de/images/logo.png"
     }
 </script>
+<?php
+if (isset($_GET["tabclose"]) && $_GET["tabclose"] == "1") {
+    ?>
+    <section>
+        <div  style="width: 100%; position: fixed; left: 0; bottom: 0; background: var(--generic-body-back); opacity: .8;">
+            <ul class="actions stacked">
+                <li><a href="JavaScript:window.close()" class="button large fit"><?php echo translate('Tab schließen', 'de', $GLOBALS['lang']); ?></a></li>
+            </ul></div>
+    </section>
+    <?php
+}
+?>
