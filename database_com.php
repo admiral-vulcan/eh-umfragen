@@ -456,9 +456,9 @@ function create_creator($gid, $email, $gmail, $firstname, $familyname, $password
 
     $pdo = null;
 
-    sendCreatorConfirmation($cid, $email);
+    return "mail sent: ".sendCreatorConfirmation($cid, $email); //returns OK or ERROR or exception message
 
-    return "OK";
+    //return "OK";
 }
 
 function saveCreatorPicture($cid, $picURL) {

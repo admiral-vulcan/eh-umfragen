@@ -22,7 +22,18 @@ function sendmail($content, $subject, $to) {
 	$mail->Subject = $subject; 
 	$mail->Body = $content; 
 	$mail->AltBody = 'Bitte öffne die Mail in einem HTML-fähigen Mail-Programm.';
-    $mail->send();
+
+    try {
+        $result = $mail->send();
+        if ($result) {
+            echo "OK";
+        } else {
+            echo "ERROR";
+        }
+    } catch (Exception $e) {
+        // Handle exceptions here, if necessary
+        return $e;
+    }
 
 /*
 	if(!) {
@@ -48,7 +59,7 @@ function sendconfirmation($uid, $uemail, $target) {
     $link1 = "https://www.eh-umfragen.de?content=validate&uid=".encodeString($uid);
     $mail_content = $mail1.$link1.$mail2;
     //echo $uemail . $mail_content;
-    sendmail($mail_content, "Vielen Dank, nur noch ein Klick!", $uemail);
+    return sendmail($mail_content, "Vielen Dank, nur noch ein Klick!", $uemail);
 }
 
 function sendCreatorConfirmation($cid, $uemail) { //, $target
@@ -57,7 +68,7 @@ function sendCreatorConfirmation($cid, $uemail) { //, $target
     $link1 = "https://www.eh-umfragen.de?content=validate&cid=".encodeString($cid);
     $mail_content = $mail1.$link1.$mail2;
     //echo $uemail . $mail_content;
-    sendmail($mail_content, "Hey Creator, nur noch ein Klick!", $uemail);
+    return sendmail($mail_content, "Hey Creator, nur noch ein Klick!", $uemail);
 }
 
 function sendCreatorNewPassword($email) {
@@ -66,7 +77,7 @@ function sendCreatorNewPassword($email) {
     $link1 = 'https://' . $_SERVER['HTTP_HOST'] . '?content=newpass&psetstr='.genPwdMailKey($email);
     $mail_content = $mail1.$link1.$mail2;
     //echo $uemail . $mail_content;
-    sendmail($mail_content, "Passwort zurücksetzen", $email);
+    return sendmail($mail_content, "Passwort zurücksetzen", $email);
 }
 /*
 sendconfirmation("6e854g6d5g65b4","rau1@studnet.eh-ludwigsburg.de", "studs");

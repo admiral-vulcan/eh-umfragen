@@ -8,6 +8,7 @@
         $tmpkey = 0;
         $countkey = 0;
         $answers[][] = 0;
+        $sent = "";
         //print_r($_POST);
 
         foreach ($_POST as $key => $value) {
@@ -70,7 +71,7 @@
                 if (fill_survey($_POST["sid"], $uid, $answers) === 0) { //answers is two-dim-array [answer-nums][answers-per-num]
 
                     if (mail_is_validated($uid) === 0) {
-                        sendconfirmation($uid, $email, $target);
+                        $sent = sendconfirmation($uid, $email, $target);
                         echo "<h3>Vielen Dank!</h3>";
                         echo "<p>Danke für die Abgabe, " . $nice[rand(0, 3)] . " :) <br>Deine E-Mail-Adresse ist noch nicht validiert. Ein Link dazu wird Dir zugesandt. Erfahre <a href='https://www.eh-umfragen.de?content=mailinfo' target='_blank'>hier</a>, warum wir das brauchen und wie das funktioniert.</p>";
                         echo "<p>".$share."</p>";
@@ -89,7 +90,7 @@
                     }
                 } else { //user has already submitted
                     if (!mail_is_validated($uid)) {
-                        sendconfirmation($uid, $email, $target);
+                        $sent = sendconfirmation($uid, $email, $target);
                         echo "<h3>Du hast bereits teilgenommen.</h3>";
                         echo "<p>Eine zweite Abgabe kann leider nicht gewertet werden. Deine ursprüngliche Abgabe wird allerdings erst gewertet, wenn Du Deine E-Mail-Adresse validierst. Ein Link dazu wird Dir zugesandt. Erfahre <a href='https://www.eh-umfragen.de/mailinfo' target='_blank'>hier</a>, warum wir das brauchen und wie das funktioniert.</p>";
                         echo "<p>".$share."</p>";
@@ -126,7 +127,7 @@
                 if (fill_survey($_POST["sid"], $uid, $answers) === 0) { //answers is two-dim-array [answer-nums][answers-per-num]
 
                     if (mail_is_validated($uid) === 0) {
-                        sendconfirmation($uid, $email, $target);
+                        $sent = sendconfirmation($uid, $email, $target);
                         echo "<h3>Vielen Dank!</h3>";
                         echo "<p>Danke für die Abgabe, " . $nice[rand(0, 3)] . " :) <br>Ihre E-Mail-Adresse ist noch nicht validiert. Ein Link dazu wird Ihnen zugesandt. Erfahren Sie <a href='https://www.eh-umfragen.de/mailinfo' target='_blank'>hier</a>, warum wir das brauchen und wie das funktioniert.<br>Schauen Sie bitte auch in Ihrem Spam-Ordner nach, falls Sie unsere Mail nicht gleich finden.</p>";
                         echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
@@ -137,7 +138,7 @@
                     }
                 } else { //user has already submitted
                     if (!mail_is_validated($uid)) {
-                        sendconfirmation($uid, $email, $target);
+                        $sent = sendconfirmation($uid, $email, $target);
                         echo "<h3>Sie haben bereits teilgenommen.</h3>";
                         echo "<p>Eine zweite Abgabe kann leider nicht gewertet werden. Ihre ursprüngliche Abgabe wird allerdings erst gewertet, wenn Sie Ihre E-Mail-Adresse validiert haben. Ein Link dazu wird Ihnen zugesandt. Erfahren Sie <a href='https://www.eh-umfragen.de/mailinfo' target='_blank'>hier</a>, warum wir das brauchen und wie das funktioniert.</p>";
                         echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
@@ -173,7 +174,16 @@
 
 
 
-
+/**
+ * TODO
+ * do something with $sent
+ * it can be
+ * "" no mail has been tried to sent
+ * "OK" mail has been sent
+ * "ERROR" mail could not be sent (serverside error like certificate bs)
+ * php exception message
+ *
+ */
 
 
 

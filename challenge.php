@@ -46,8 +46,20 @@
         if (!isset($_POST['gidreg'])) $_POST['gidreg'] = "";
         if (!isset($_POST['gmailreg'])) $_POST['gmailreg'] = "";
         $createMsg = create_creator($_POST['gidreg'], $_POST['emailreg'], $_POST['gmailreg'], $_POST['firstnamereg'], $_POST['familynamereg'], $_POST['password1reg'], $_POST['password2reg'], postCheckifnN('AGB'), postCheckifnN('gPicAgree'), postValifnN('gPicreg'));
-        if ($createMsg === "OK") { //everything worked
+        if ($createMsg === "mail sent: OK") { //everything worked
             alert("Vielen Dank!", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
+        }
+        elseif (str_contains("mail sent: ")) {
+/**
+ * TODO do something with mail errormessage
+ * it starts with "mail sent: "
+ * followed by
+ * "" no mail has been tried to sent
+ * "OK" mail has been sent (already checked)
+ * "ERROR" mail could not be sent (serverside error like certificate bs)
+ * php exception message
+ *
+ */
         }
         else alert("Passwort nicht akzeptiert.", $createMsg, "warning");
     }
