@@ -1,19 +1,20 @@
 <section id="intro">
     <?php
     require_once "gitignore/gcred.php";
-    /**TODO:
-     *
-     *
-     *
-     *
-     *
-     * BUGFIX Bei der Anmeldung (zumindest wenn GID vorhanden, wird behauptet die Freischaltung wäre ausstehend
-     *
-     *
-     *
+
+    /**
+     * TODO
+     * do something with $sent
+     * it can be
+     * "" no mail has been tried to sent
+     * "OK" mail has been sent
+     * "ERROR" mail could not be sent (serverside error like certificate bs)
+     * php exception message
      *
      */
 
+
+    $sent = "";
     if (isset($_POST['gid']) && $_POST['gid'] != "") {
         //login google
         $cid = get_cid($_POST['gid'], "gid");
@@ -25,7 +26,7 @@
             echo '<meta http-equiv="refresh" content="0; URL=/?creator=creator">';
         }
         else {
-            echo sendCreatorConfirmation($cid, $mail);
+            $sent = sendCreatorConfirmation($cid, $mail);
             alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
         }
     }
@@ -33,24 +34,24 @@
     elseif (isset($_POST['email']) && $_POST['email'] != "") {
         //login mail & pwd
         if (creator_has_entry($_POST['email'])) {
-        $cid = get_cid($_POST['email'], "email");
-        if (creator_is_validated($_POST['email'], "email")){
-            if (verifyPassword($cid, $_POST['password'])) {
+            $cid = get_cid($_POST['email'], "email");
+            if (creator_is_validated($_POST['email'], "email")){
+                if (verifyPassword($cid, $_POST['password'])) {
 
-                //login!
-                get_creator_data($cid);
-                my_session_start($cid);
-                echo '<meta http-equiv="refresh" content="0; URL=/?creator=creator">';
+                    //login!
+                    get_creator_data($cid);
+                    my_session_start($cid);
+                    echo '<meta http-equiv="refresh" content="0; URL=/?creator=creator">';
+                }
+                else alert("Falsches Passwort", "Das Passwort ist falsch. Bitte versuche es noch einmal");
             }
-            else alert("Falsches Passwort", "Das Passwort ist falsch. Bitte versuche es noch einmal");
+            else {
+                $sent = sendCreatorConfirmation($cid, $_POST['email']);
+                alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
+            }
         }
-        else {
-            echo sendCreatorConfirmation($cid, $_POST['email']);
-            alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
-        }
-    }
         else alert("Noch nicht registriert", "Du bist noch nicht registriert.");
-}
+    }
     elseif (isset($_POST['emailreg'])) {
         if (!isset($_POST['gidreg'])) $_POST['gidreg'] = "";
         if (!isset($_POST['gmailreg'])) $_POST['gmailreg'] = "";

@@ -68,7 +68,7 @@ function creator_is_validated($id, $type = 'cid') {
 function creator_has_entry($email) {
     $found = 0;
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT isvalid FROM creators WHERE email = ?");
+    $statement = $pdo->prepare("SELECT * FROM creators WHERE email = ?");
         $statement->execute([$email]);
         while($row = $statement->fetch()) {
             $found = $row['email'];
