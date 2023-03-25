@@ -3,7 +3,7 @@ const sun = document.getElementById("sun");
 const moon = document.getElementById("moon");
 //const now = new Date("2023-02-05T02:00:00+01:00");
 //const now = new Date("2023-02-05T12:00:00+01:00");
-const now = new Date();
+let now = new Date();
 const latitude = 48.894051; //Ludwigsburg lat
 const longitude = 9.195517; //Ludwigsburg long
 const starfield = document.getElementById("starfield");
@@ -11,7 +11,7 @@ const skyandweathercontainer = document.getElementById("skyandweather-container"
 const weathertemperature = document.getElementById("weather_temperature");
 const times = SunCalc.getTimes(now, latitude, longitude);
 const moonPhaseFrac = SunCalc.getMoonIllumination(now).phase;
-const moonPositionAlt = SunCalc.getMoonPosition(now, latitude, longitude).altitude;
+let moonPositionAlt = SunCalc.getMoonPosition(now, latitude, longitude).altitude;
 const currentTime = now.getHours() * 60 + now.getMinutes();
 const sunset = times.sunset.getHours() * 60 + times.sunset.getMinutes();
 const sunrise = times.sunrise.getHours() * 60 + times.sunrise.getMinutes();
@@ -35,18 +35,52 @@ var moonphase = (moonPhaseFrac * 360).toFixed();
 var script = document.createElement('script');
 script.src = 'assets/js/src/js.cookie.min.js';
 document.head.appendChild(script);
-/*
-currentTime = 440;
-setInterval(function (){
-    currentTime += 10;
-    moonphase += 1;
-    moonPositionAlt += 1;
-    if (currentTime > 1100) currentTime = 300;
-    if (moonphase > 360) moonphase = 0;
-    if (moonPositionAlt > 90) moonPositionAlt = 0;
-}, 100);
-*/
 
+/*
+//mega testing block
+const simulationSpeed = 1800000; // 30 minutes per 100ms
+const daysToSubtract = 2;
+
+// Subtract the specified number of days from the current time
+now = new Date(new Date().getTime() - daysToSubtract * 24 * 3600000);
+
+// Create the date and time display element
+const dateTimeDisplay = document.createElement('div');
+dateTimeDisplay.style.position = 'fixed';
+dateTimeDisplay.style.top = '10px';
+dateTimeDisplay.style.left = '50%';
+dateTimeDisplay.style.transform = 'translateX(-50%)';
+dateTimeDisplay.style.fontSize = '24px';
+dateTimeDisplay.style.zIndex = '1000';
+document.body.appendChild(dateTimeDisplay);
+
+setInterval(function (){
+    // Add 30 minutes to the current time for each 100ms that passes
+    now = new Date(now.getTime() + simulationSpeed);
+    //now = new Date(Date.UTC(2023, 2, 24, 21, 0, 0));
+
+    // Update the date and time display
+    dateTimeDisplay.textContent = now.toLocaleString();
+
+    // Update the Moon's position
+    const moonPosition = SunCalc.getMoonPosition(now, latitude, longitude);
+    moonPositionAlt = moonPosition.altitude;
+
+    // Calculate the parallactic angle
+    const parallacticAngleValue = parallacticAngle(latitude, longitude, now);
+
+    // Apply the parallactic angle rotation
+    moon.style.transform = `rotate(${parallacticAngleValue}deg)`;
+
+    // Update the moon phase
+    moonphase = (SunCalc.getMoonIllumination(now).phase * 360).toFixed();
+    setMoonPhase(moonphase);
+
+    // Set Moon position
+    setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt);
+}, 100); // Update every 100ms
+//mega testing block END
+*/
 
 function interpolateColors(color1, color2, ratio) {
     if (ratio > 1) ratio = 1;
@@ -98,8 +132,8 @@ function calculateMinSunHeight() {
 function calculateMinMoonHeight() {
     let minMoonHeight;
     const screenWidth = window.innerWidth;
-    const absoluteMinMin = 0.75;
-    const absoluteMinMax = 0.5;
+    const absoluteMinMin = 0.7;
+    const absoluteMinMax = 0.2;
     const minScreenWidth = 940; //in px
     const maxScreenWidth = 5000; //in px
     if (screenWidth <= minScreenWidth) {
@@ -285,7 +319,7 @@ function setMoon(minMoonHeight, maxMoonHeight, moonAltitude) {
 }
 
 
-function setMoonPhase(deg) {
+function setMoonPhase(deg, parallacticAngle) {
     deg = deg*-1+180;
     if (deg < 0) deg = 360 + deg;
 
@@ -320,7 +354,25 @@ function setMoonPhase(deg) {
         divider[0].style.backgroundColor = '#F4F6F0';
 
     }
+    // Apply the parallactic angle rotation
+    moon.style.transform = `rotate(${parallacticAngle}deg)`;
+
 }
+
+//set crescent moon rotation as seen from earth
+function parallacticAngle(observerLat, observerLon, date) {
+    const moonPosition = SunCalc.getMoonPosition(date, observerLat, observerLon);
+    const parallacticAngleRadians = moonPosition.parallacticAngle;
+
+    // Convert parallactic angle from radians to degrees
+    const parallacticAngleDegrees = parallacticAngleRadians * (180 / Math.PI);
+
+    return parallacticAngleDegrees;
+}
+
+
+
+
 
 // Get the checkbox element
 var weatherCheckbox = document.getElementById('weather_checkbox');
@@ -330,14 +382,17 @@ if (color !== "rgb(0, 0, 0)" && background !== "rgb(255, 255, 255)") {
     sun.style.display = "block";
     moon.style.display = "flex";
 
+    const moonPosition = SunCalc.getMoonPosition(now, latitude, longitude); //these two get rotation
+    const moonParallacticAngle = parallacticAngle(latitude, longitude, now);
+
     setInterval(function (){
         setSun(currentTime, calculateMinSunHeight(), 0.87, 1440, nauticalDawn, nauticalDusk);
-        setMoonPhase(moonphase);
+        setMoonPhase(moonphase, moonParallacticAngle);
         setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt)
     }, 1000*60);  //100 for testing
 
     setSun(currentTime, calculateMinSunHeight(), 0.87, 1440, nauticalDawn, nauticalDusk);
-    setMoonPhase(moonphase);
+    setMoonPhase(moonphase, moonParallacticAngle);
     setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt)
     if (weatherCheckbox.checked) showWeather();
 }
@@ -409,24 +464,6 @@ function printWithoutWeather() {
         setTimeout(showWeather, 1000);
     }
 }
-
-function replaceAvif() {
-    // Check if AVIF is supported
-    if (!isAvifSupported()) {
-        // Replace AVIF images with PNG images
-        var avifElements = document.querySelectorAll('.clouds-1, .clouds-2, .clouds-3');
-        avifElements.forEach(function(el) {
-            el.style.backgroundImage = el.style.backgroundImage.replace('.avif', '.png');
-        });
-    }
-}
-/* better version in all.min.js
-function isAvifSupported() {
-    var avif = new Image();
-    avif.src = "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=";
-    return avif.width > 0;
-}
-*/
 
 // Run the function when the site is loaded
 window.addEventListener('load', checkUserWeatherState);

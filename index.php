@@ -1,7 +1,7 @@
 <?php
 require_once ("assets/php/getVars.php");
 session_start();
-$ver_str = "0.9.6";                      //0.9.5
+$ver_str = "0.9.7";                      //0.9.5
 $ver_float = verToInt($ver_str);     //0.95
 $ver_int = intval($ver_float);     //0
 $version = $ver_str;                    //legacy reasons, but it's nice to have

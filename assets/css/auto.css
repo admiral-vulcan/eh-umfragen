@@ -12,7 +12,7 @@
     --generic-grey-opacity-0075: rgba(160, 160, 160, 0.125);
     --generic-grey-opacity-005: rgba(46, 186, 174, 0.05);
     --error-opacity: 0.8;
-    --rain: #293854;
+    --rain: #779bdc;
 }
 .light-mode {
     display: block;
@@ -79,7 +79,7 @@
         --generic-grey-opacity-0075: rgba(75, 75, 75, 0.125);
         --generic-grey-opacity-005: rgba(53, 213, 201, 0.05);
         --error-opacity: 0.8;
-        --rain: #779bdc;
+        --rain: #293854;
     }
     .light-mode {
         display: none;
@@ -120,7 +120,7 @@
         --generic-grey-opacity-0075: rgba(75, 75, 75, 0.25);
         --generic-grey-opacity-005: rgba(53, 213, 201, 0.05);
         --error-opacity: 0.8;
-        --rain: #779bdc;
+        --rain: #293854;
     }
     .light-mode {
         display: none;

@@ -62,7 +62,6 @@ function getWeatherData($stationId) {
         // Save the data to the file
         file_put_contents($filePath, json_encode($data));
     }
-
     // Return the weather data
     return $data;
 }
@@ -90,6 +89,7 @@ for ($i = 0; $i < sizeof($data->{$stationId}->forecast1->icon); $i++) {
         break;
     }
 }
+$iconRAW = 9;
 if (!isset($iconRAW)) $iconRAW = $data->{$stationId}->days[0]->icon;
 $GLOBALS['weathericon'] = $iconRAW;
 $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
@@ -195,12 +195,9 @@ $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
                 <div class="dark hemisphere"></div>
                 <div class="divider"></div>
             </div>
-
-            <div class="circle"></div>
-
         </div>
+        <div class="circle"></div>
     </div>
-
     <?php
 function iconToText($icon) {
     $icons = array(
