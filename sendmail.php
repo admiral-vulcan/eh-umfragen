@@ -26,9 +26,9 @@ function sendmail($content, $subject, $to) {
     try {
         $result = $mail->send();
         if ($result) {
-            echo "OK";
+            return "OK";
         } else {
-            echo "ERROR";
+            return "ERROR";
         }
     } catch (Exception $e) {
         // Handle exceptions here, if necessary
