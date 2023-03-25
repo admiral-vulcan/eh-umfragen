@@ -16,20 +16,25 @@
 
     if (isset($_POST['gid']) && $_POST['gid'] != "") {
         //login google
+        $cid = get_cid($_POST['gid'], "gid");
+        $mail = get_creator_mail($cid);
         if (creator_is_validated($_POST['gid'], "gid")){
-            $cid = get_cid($_POST['gid'], "gid");
 
             //login!
             my_session_start($cid);
             echo '<meta http-equiv="refresh" content="0; URL=/?creator=creator">';
         }
-        else alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
+        else {
+            echo sendCreatorConfirmation($cid, $mail);
+            alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
+        }
     }
 
     elseif (isset($_POST['email']) && $_POST['email'] != "") {
         //login mail & pwd
+        if (creator_has_entry($_POST['email'])) {
+        $cid = get_cid($_POST['email'], "email");
         if (creator_is_validated($_POST['email'], "email")){
-            $cid = get_cid($_POST['email'], "email");
             if (verifyPassword($cid, $_POST['password'])) {
 
                 //login!
@@ -39,9 +44,13 @@
             }
             else alert("Falsches Passwort", "Das Passwort ist falsch. Bitte versuche es noch einmal");
         }
-        else alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
+        else {
+            echo sendCreatorConfirmation($cid, $_POST['email']);
+            alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
+        }
     }
-
+        else alert("Noch nicht registriert", "Du bist noch nicht registriert.");
+}
     elseif (isset($_POST['emailreg'])) {
         if (!isset($_POST['gidreg'])) $_POST['gidreg'] = "";
         if (!isset($_POST['gmailreg'])) $_POST['gmailreg'] = "";

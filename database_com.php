@@ -47,7 +47,7 @@ function mail_is_validated($uid) {
 }
 
 function creator_is_validated($id, $type = 'cid') {
-        $validated = 0;
+    $validated = 0;
     if ($type !== "cid" && $type !== "gid" && $type !== "email") return -1;
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
     $statement = $pdo->prepare("SELECT isvalid FROM creators WHERE " . $type . " = ?");
@@ -65,6 +65,18 @@ function creator_is_validated($id, $type = 'cid') {
     return $validated;
 }
 
+function creator_has_entry($email) {
+    $found = 0;
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT isvalid FROM creators WHERE email = ?");
+        $statement->execute([$email]);
+        while($row = $statement->fetch()) {
+            $found = $row['email'];
+        }
+    $pdo = null;
+    return $found === $email;
+}
+
 function get_cid($id, $type = "email") {
     if ($type !== "email" && $type !== "gid") return -1;
     $cid = -1;
@@ -77,6 +89,19 @@ function get_cid($id, $type = "email") {
 
     $pdo = null;
     return $cid;
+}
+
+function get_creator_mail($cid) {
+    $email = -1;
+    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
+    $statement = $pdo->prepare("SELECT * FROM creators WHERE email = ?");
+    $statement->execute([$cid]);
+    while($row = $statement->fetch()) {
+        $email = $row['email'];
+    }
+
+    $pdo = null;
+    return $email;
 }
 
 function get_email_id($mailhash) {
