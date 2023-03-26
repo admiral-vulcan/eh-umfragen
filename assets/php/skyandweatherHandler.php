@@ -89,7 +89,6 @@ for ($i = 0; $i < sizeof($data->{$stationId}->forecast1->icon); $i++) {
         break;
     }
 }
-$iconRAW = 9;
 if (!isset($iconRAW)) $iconRAW = $data->{$stationId}->days[0]->icon;
 $GLOBALS['weathericon'] = $iconRAW;
 $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
@@ -104,7 +103,7 @@ $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
 <?php
     ?>
     <div id='skyandweather-container' class="printmenot">
-        <div class="clouds">
+        <div class="clouds" id="clouds">
             <?php
             if (
                 $GLOBALS['weathericon'] ==  "2" || //Sonne, leicht bewölkt
@@ -114,9 +113,8 @@ $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
                 $GLOBALS['weathericon'] == "14"    //leichter Schneefall
             ) {
                 ?>
-                }
-                <div class="clouds-1"></div>
-                <div class="clouds-2"></div> <!--wenige Wolken (nur 3)-->
+                <div class="clouds-1" id="clouds-1"></div>
+                <div class="clouds-2" id="clouds-2"></div> <!--wenige Wolken (nur 3)-->
                 <?php
             }
             elseif (
@@ -136,10 +134,9 @@ $GLOBALS['weathertext'] = iconToText($GLOBALS['weathericon']);
                 $GLOBALS['weathericon'] == "30"    //Gewitter, (starker Hagel)
             ) {
                 ?>
-                }
-                <div class="clouds-1"></div> <!--viele Wolken (1 und 3; 2 sind nur Schatten)-->
-                <div class="clouds-2"></div>
-                <div class="clouds-3"></div>
+                <div class="clouds-1" id="clouds-1"></div> <!--viele Wolken (1 und 3; 2 sind nur Schatten)-->
+                <div class="clouds-2" id="clouds-2"></div>
+                <div class="clouds-3" id="clouds-3"></div>
                 <?php
             }
             ?>

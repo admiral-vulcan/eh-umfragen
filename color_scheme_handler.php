@@ -1,13 +1,5 @@
 <script src="assets/js/src/js.cookie.min.js"></script>
 <script type="text/javascript">
-    var color_scheme = "";
-    var prefers_color_scheme = get_color_scheme();
-    if (Cookies.get("color_scheme")) {
-        color_scheme = Cookies.get("color_scheme");
-        setTheme(color_scheme);
-    }
-    else setTheme(prefers_color_scheme);
-
     window.addEventListener("load", function() {
         var selectMenu = document.getElementById('color_scheme');
         selectMenu.onchange = function() {
@@ -15,6 +7,11 @@
             setTheme(selectedValue);
         }
     });
+    window.addEventListener("DOMContentLoaded", function (){
+        var selectMenu = document.getElementById('color_scheme');
+        var selectedValue = selectMenu.value;
+        setTheme(selectedValue);
+    })
 
     function setTheme(theme) {
         update_color_scheme();
@@ -36,14 +33,42 @@
             themeLink.parentNode.removeChild(themeLink);
         }
         var weatherButton = document.getElementById("weather-button");
-        var skyandweatherWrapper = document.getElementById("skyandweather-container");
+        var skyandweathercontainer = document.getElementById("skyandweather-container");
+        var starfield = document.getElementById("starfield");
+        var sun = document.getElementById("sun");
+        var moon = document.getElementById("moon");
+        var sky = document.getElementById("sky");
+        var clouds = document.getElementById("clouds");
+        var clouds1 = document.getElementById("clouds-1");
+        var clouds2 = document.getElementById("clouds-2");
+        var clouds3 = document.getElementById("clouds-3");
+
+        setEverythingWeather();
 
         if (theme === 'contrast') {
             weatherButton.style.display = "none";
-            skyandweatherWrapper.style.display = "none";
+            sky.style.display = "none";
+            skyandweathercontainer.style.display = "none";
+            skyandweathercontainer.style.opacity = "0";
+            starfield.style.display = "none";
+            sun.style.opacity = "0";
+            moon.style.opacity = "0";
+            clouds.style.opacity = "0";
+            clouds1.style.opacity = "0";
+            clouds2.style.opacity = "0";
+            clouds3.style.opacity = "0";
         } else {
             weatherButton.style.display = "block";
-            skyandweatherWrapper.style.display = "block";
+            sky.style.display = "block";
+            skyandweathercontainer.style.display = "block";
+            skyandweathercontainer.style.opacity = "0.5";
+            starfield.style.display = "block";
+            sun.style.opacity = "1";
+            moon.style.opacity = "1";
+            clouds.style.opacity = "1";
+            clouds1.style.opacity = "0.5";
+            clouds2.style.opacity = "1";
+            clouds3.style.opacity = "1";
         }
 
         if (newHref) {
@@ -65,4 +90,5 @@
     function update_color_scheme() {
         Cookies.set("prefers_color_scheme", get_color_scheme());
     }
+
 </script>

@@ -24,6 +24,8 @@ const computedStyle = window.getComputedStyle(topDiv);
 const color = computedStyle.getPropertyValue("color");
 const background = computedStyle.getPropertyValue("background-color");
 
+var weatherCheckbox = document.getElementById('weather_checkbox');
+
 const maxScreenWidth = 2935;
 const minScreenWidth = 500;
 const minSunHeight = 0.35;
@@ -370,34 +372,6 @@ function parallacticAngle(observerLat, observerLon, date) {
     return parallacticAngleDegrees;
 }
 
-
-
-
-
-// Get the checkbox element
-var weatherCheckbox = document.getElementById('weather_checkbox');
-
-if (color !== "rgb(0, 0, 0)" && background !== "rgb(255, 255, 255)") {
-    sky.style.display = "block";
-    sun.style.display = "block";
-    moon.style.display = "flex";
-
-    const moonPosition = SunCalc.getMoonPosition(now, latitude, longitude); //these two get rotation
-    const moonParallacticAngle = parallacticAngle(latitude, longitude, now);
-
-    setInterval(function (){
-        setSun(currentTime, calculateMinSunHeight(), 0.87, 1440, nauticalDawn, nauticalDusk);
-        setMoonPhase(moonphase, moonParallacticAngle);
-        setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt)
-    }, 1000*60);  //100 for testing
-
-    setSun(currentTime, calculateMinSunHeight(), 0.87, 1440, nauticalDawn, nauticalDusk);
-    setMoonPhase(moonphase, moonParallacticAngle);
-    setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt)
-    if (weatherCheckbox.checked) showWeather();
-}
-else hideWeather();
-
 function checkUserWeatherState() {
 
     // Check if the "weather" cookie exists
@@ -452,10 +426,11 @@ function showWeather() {
 // This function hides the weather
 function hideWeather() {
     // Hide the weather here
+    /*
     skyandweathercontainer.style.opacity = "0";
     skyandweathercontainer.style.display = "none";
     weathertemperature.style.opacity = "0";
-    weathertemperature.style.display = "none";
+    weathertemperature.style.display = "none";*/
 }
 
 function printWithoutWeather() {
@@ -465,7 +440,35 @@ function printWithoutWeather() {
     }
 }
 
+setEverythingWeather();
+
+
+function setEverythingWeather() {
+    var colorScheme = document.getElementById('color_scheme');
+    var colorSchemeValue = colorScheme.value;
+
+    if (colorSchemeValue !== "contrast" || (color !== "rgb(0, 0, 0)" && background !== "rgb(255, 255, 255)")) {
+        sky.style.display = "block";
+        sun.style.display = "block";
+        moon.style.display = "flex";
+
+        const moonPosition = SunCalc.getMoonPosition(now, latitude, longitude); //these two get rotation
+        const moonParallacticAngle = parallacticAngle(latitude, longitude, now);
+
+        setInterval(function (){
+            setSun(currentTime, calculateMinSunHeight(), 0.87, 1440, nauticalDawn, nauticalDusk);
+            setMoonPhase(moonphase, moonParallacticAngle);
+            setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt)
+        }, 1000*60);  //100 for testing
+
+        setSun(currentTime, calculateMinSunHeight(), 0.87, 1440, nauticalDawn, nauticalDusk);
+        setMoonPhase(moonphase, moonParallacticAngle);
+        setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt)
+        if (weatherCheckbox.checked) showWeather();
+    }
+    else hideWeather();
 // Run the function when the site is loaded
-window.addEventListener('load', checkUserWeatherState);
+    window.addEventListener('load', checkUserWeatherState);
 // Add an event listener for the checkbox's "click" event
-weatherCheckbox.addEventListener("click", reactUserWeatherState);
+    weatherCheckbox.addEventListener("click", reactUserWeatherState);
+}

@@ -45,8 +45,10 @@ function generateRaindropRules($num_raindrops, $start_at) {
     }
 }
 
-generateRaindropRules(500, 66);
-
+generateRaindropRules(500, 1);
+//to add numbers use this:
+//perl -pi -e 's/\((\d+)\)/"(".($1+500).")"/ge' /var/www/eh-umfragen/test/assets/css/rainmore.css
+//it adds 500 to every raindrop
 ?>
 </body>
 
