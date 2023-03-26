@@ -367,9 +367,7 @@ function parallacticAngle(observerLat, observerLon, date) {
     const parallacticAngleRadians = moonPosition.parallacticAngle;
 
     // Convert parallactic angle from radians to degrees
-    const parallacticAngleDegrees = parallacticAngleRadians * (180 / Math.PI);
-
-    return parallacticAngleDegrees;
+    return parallacticAngleRadians * (180 / Math.PI);
 }
 
 function checkUserWeatherState() {
@@ -426,11 +424,11 @@ function showWeather() {
 // This function hides the weather
 function hideWeather() {
     // Hide the weather here
-    /*
+
     skyandweathercontainer.style.opacity = "0";
     skyandweathercontainer.style.display = "none";
     weathertemperature.style.opacity = "0";
-    weathertemperature.style.display = "none";*/
+    weathertemperature.style.display = "none";
 }
 
 function printWithoutWeather() {
@@ -452,7 +450,6 @@ function setEverythingWeather() {
         sun.style.display = "block";
         moon.style.display = "flex";
 
-        const moonPosition = SunCalc.getMoonPosition(now, latitude, longitude); //these two get rotation
         const moonParallacticAngle = parallacticAngle(latitude, longitude, now);
 
         setInterval(function (){
