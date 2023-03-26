@@ -4219,6 +4219,7 @@ a > p {
 	border: var(--generic-grey-opacity-03);
 	border-style: groove;
 	border-width: thin;
+	line-height: 2em;
 }
 
 input:-webkit-autofill{
