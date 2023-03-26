@@ -43,33 +43,36 @@
         var clouds2 = document.getElementById("clouds-2");
         var clouds3 = document.getElementById("clouds-3");
 
-        setEverythingWeather();
-
         if (theme === 'contrast') {
-            weatherButton.style.display = "none";
-            sky.style.display = "none";
-            skyandweathercontainer.style.display = "none";
-            skyandweathercontainer.style.opacity = "0";
-            starfield.style.display = "none";
-            sun.style.opacity = "0";
-            moon.style.opacity = "0";
-            clouds.style.opacity = "0";
-            clouds1.style.opacity = "0";
-            clouds2.style.opacity = "0";
-            clouds3.style.opacity = "0";
+            if (weatherButton !== null) weatherButton.style.display = "none";
+            if (sky !== null) sky.style.display = "none";
+            if (skyandweathercontainer !== null) {
+                skyandweathercontainer.style.display = "none";
+                skyandweathercontainer.style.opacity = "0";
+            }
+            if (starfield !== null) starfield.style.display = "none";
+            if (sun !== null) sun.style.opacity = "0";
+            if (moon !== null) moon.style.opacity = "0";
+            if (clouds !== null) clouds.style.opacity = "0";
+            if (clouds1 !== null) clouds1.style.opacity = "0";
+            if (clouds2 !== null) clouds2.style.opacity = "0";
+            if (clouds3 !== null) clouds3.style.opacity = "0";
         } else {
-            weatherButton.style.display = "block";
-            sky.style.display = "block";
-            skyandweathercontainer.style.display = "block";
-            skyandweathercontainer.style.opacity = "0.5";
-            starfield.style.display = "block";
-            sun.style.opacity = "1";
-            moon.style.opacity = "1";
-            clouds.style.opacity = "1";
-            clouds1.style.opacity = "0.5";
-            clouds2.style.opacity = "1";
-            clouds3.style.opacity = "1";
+            if (weatherButton !== null) weatherButton.style.display = "block";
+            if (sky !== null) sky.style.display = "block";
+            if (skyandweathercontainer !== null) {
+                skyandweathercontainer.style.display = "block";
+                skyandweathercontainer.style.opacity = "0.5";
+            }
+            if (starfield !== null) starfield.style.display = "block";
+            if (sun !== null) sun.style.opacity = "1";
+            if (moon !== null) moon.style.opacity = "1";
+            if (clouds !== null) clouds.style.opacity = "1";
+            if (clouds1 !== null) clouds1.style.opacity = "0.5";
+            if (clouds2 !== null) clouds2.style.opacity = "1";
+            if (clouds3 !== null) clouds3.style.opacity = "1";
         }
+
 
         if (newHref) {
             const mainCssLink = document.querySelector('link[href="assets/css/main.css"]');
