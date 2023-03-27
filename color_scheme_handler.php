@@ -42,6 +42,7 @@
         var clouds1 = document.getElementById("clouds-1");
         var clouds2 = document.getElementById("clouds-2");
         var clouds3 = document.getElementById("clouds-3");
+        var colorSchemeSelect = document.getElementById("color_scheme");
 
         if (theme === 'contrast') {
             if (weatherButton !== null) weatherButton.style.display = "none";
@@ -57,6 +58,7 @@
             if (clouds1 !== null) clouds1.style.opacity = "0";
             if (clouds2 !== null) clouds2.style.opacity = "0";
             if (clouds3 !== null) clouds3.style.opacity = "0";
+            if (colorSchemeSelect !== null) colorSchemeSelect.style.paddingRight = "2.75em";
         } else {
             if (weatherButton !== null) weatherButton.style.display = "block";
             if (sky !== null) sky.style.display = "block";
@@ -71,6 +73,7 @@
             if (clouds1 !== null) clouds1.style.opacity = "0.5";
             if (clouds2 !== null) clouds2.style.opacity = "1";
             if (clouds3 !== null) clouds3.style.opacity = "1";
+            if (colorSchemeSelect !== null) colorSchemeSelect.style.paddingRight = "0";
         }
 
 

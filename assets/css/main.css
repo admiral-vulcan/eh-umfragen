@@ -56,10 +56,14 @@ section, summary, time, mark, audio, video {
 	border: 0;
 	font: inherit;
 	vertical-align: baseline;
-	/*overflow-x: clip;*/ /* this is killing ul & ol lists */
 	opacity: 1;
+/*this makes everything unselectable*/
+	user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
 }
-
 
 span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
@@ -2307,13 +2311,13 @@ textarea:focus {
 	display: none;
 }
 
-select {
+#color_scheme {
 	background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' preserveAspectRatio='none' viewBox='0 0 40 40'%3E%3Cpath d='M9.4,12.3l10.4,10.4l10.4-10.4c0.2-0.2,0.5-0.4,0.9-0.4c0.3,0,0.6,0.1,0.9,0.4l3.3,3.3c0.2,0.2,0.4,0.5,0.4,0.9 c0, 0.4-0.1,0.6-0.4,0.9L20.7,31.9c-0.2,0.2-0.5,0.4-0.9,0.4c-0.3,0-0.6-0.1-0.9-0.4L4.3, 17.3c-0.2-0.2-0.4-0.5-0.4-0.9 c0-0.4,0.1-0.6,0.4-0.9l3.3-3.3c0.2-0.2,0.5-0.4,0.9-0.4S9.1,12.1,9.4,12.3z' fill='var(--generic-back-border)' /%3E%3C/svg%3E");
 	background-size: 1.25rem;
 	background-repeat: no-repeat;
 	background-position: calc(110% - 1rem) center;
 	/*height: 2.75em;*/
-	padding-right: 2.75em;
+	padding-right: 0em; /*2.75*/
 	text-overflow: ellipsis;
 	font-weight: 800;
 	font-size: 12pt;
@@ -4503,6 +4507,14 @@ img {
 	padding-right: 0;
 }
 
+.language_label {
+	position: relative;
+	pointer-events: none;
+	top: 53px;
+	left: 15px;
+	z-index: 1010;
+}
+
 .language_select_container {
 	position: relative;
 	width: 100%;
@@ -4510,12 +4522,17 @@ img {
 	left: 130px;
 	height: 0;
 	margin-left: 3em;
+	font-size: 1.125em;
 }
 
-	@media screen and (max-width: 1680px) {
-		.language_select_container {
-			top: -112px;
+@media screen and (max-width: 1680px) {
+	.language_label {
+		top: 47px;
+	}
+	.language_select_container {
+		top: -112px;
 		margin-left: 1em;
+		font-size: 1em;
 	}
 }
 
@@ -4533,14 +4550,6 @@ img {
 		top: -100px;
 		margin-left: -1em;
 	}
-}
-
-.language_label {
-	position: relative;
-	pointer-events: none;
-	top: 47px;
-	left: 15px;
-	z-index: 1010;
 }
 
 .language_select_container:hover .language_label_div {
