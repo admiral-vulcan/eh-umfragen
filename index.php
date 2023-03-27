@@ -117,9 +117,9 @@ if ($GLOBALS["testDomain"]) {
         </nav>
         <div id="weather-button">
             <div id="weather_temperature" class="weather_temperature">
-                <?php echo /*. $GLOBALS['weathertext'] . " bei " .*/ $GLOBALS['temperature'] //$stationName?>
+                <?php echo $GLOBALS['temperature'] //$stationName?>
             </div>
-            <form class="not-selectable">&emsp;
+            <form class="not-selectable">
                 <input  aria-label="<?php echo translate("E.H. Wetter anzeigen", "de", $GLOBALS["lang"]); ?>" type="checkbox" name="weather_checkbox" id="weather_checkbox">
                 <label class="weather_scheme" for="weather_checkbox">
                     <?php echo translate("EH-Wetter", "de", $GLOBALS["lang"]); ?>

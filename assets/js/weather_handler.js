@@ -12,7 +12,7 @@ const weathertemperature = document.getElementById("weather_temperature");
 const times = SunCalc.getTimes(now, latitude, longitude);
 const moonPhaseFrac = SunCalc.getMoonIllumination(now).phase;
 let moonPositionAlt = SunCalc.getMoonPosition(now, latitude, longitude).altitude;
-const currentTime = now.getHours() * 60 + now.getMinutes();
+var currentTime = now.getHours() * 60 + now.getMinutes();
 const sunset = times.sunset.getHours() * 60 + times.sunset.getMinutes();
 const sunrise = times.sunrise.getHours() * 60 + times.sunrise.getMinutes();
 const noon = times.solarNoon.getHours() * 60 + times.solarNoon.getMinutes();
@@ -38,51 +38,69 @@ var script = document.createElement('script');
 script.src = 'assets/js/src/js.cookie.min.js';
 document.head.appendChild(script);
 
-/*
+
 //mega testing block
-const simulationSpeed = 1800000; // 30 minutes per 100ms
-const daysToSubtract = 2;
+const moontestmode = getQueryParam('moontestmode');
+
+if (moontestmode === 'on' || moontestmode === '1') {
+    const simulationSpeed = 1800000; // 30 minutes per 100ms
+    const daysToSubtract = 2;
 
 // Subtract the specified number of days from the current time
-now = new Date(new Date().getTime() - daysToSubtract * 24 * 3600000);
+    now = new Date(new Date().getTime() - daysToSubtract * 24 * 3600000);
 
 // Create the date and time display element
-const dateTimeDisplay = document.createElement('div');
-dateTimeDisplay.style.position = 'fixed';
-dateTimeDisplay.style.top = '10px';
-dateTimeDisplay.style.left = '50%';
-dateTimeDisplay.style.transform = 'translateX(-50%)';
-dateTimeDisplay.style.fontSize = '24px';
-dateTimeDisplay.style.zIndex = '1000';
-document.body.appendChild(dateTimeDisplay);
+    const dateTimeDisplay = document.createElement('div');
+    dateTimeDisplay.style.position = 'fixed';
+    dateTimeDisplay.style.top = '15px';
+    dateTimeDisplay.style.left = '50%';
+    dateTimeDisplay.style.transform = 'translateX(-50%)';
+    dateTimeDisplay.style.fontSize = '24px';
+    dateTimeDisplay.style.zIndex = '1020';
+    document.body.appendChild(dateTimeDisplay);
+// Create test display element
+    const moonTestText = document.createElement('div');
+    moonTestText.style.position = 'fixed';
+    moonTestText.style.top = '5';
+    moonTestText.style.left = '50%';
+    moonTestText.style.transform = 'translateX(-50%)';
+    moonTestText.style.fontSize = '12px';
+    moonTestText.style.zIndex = '1020';
+    moonTestText.textContent = "Moon Test Mode On";
+    document.body.appendChild(moonTestText);
 
-setInterval(function (){
-    // Add 30 minutes to the current time for each 100ms that passes
-    now = new Date(now.getTime() + simulationSpeed);
-    //now = new Date(Date.UTC(2023, 2, 24, 21, 0, 0));
+    setInterval(function () {
+        // Add 30 minutes to the current time for each 100ms that passes
+        now = new Date(now.getTime() + simulationSpeed);
+        //now = new Date(Date.UTC(2023, 2, 24, 21, 0, 0));
 
-    // Update the date and time display
-    dateTimeDisplay.textContent = now.toLocaleString();
+        // Update the date and time display
+        dateTimeDisplay.textContent = now.toLocaleString();
 
-    // Update the Moon's position
-    const moonPosition = SunCalc.getMoonPosition(now, latitude, longitude);
-    moonPositionAlt = moonPosition.altitude;
+        // Update the Moon's position
+        const moonPosition = SunCalc.getMoonPosition(now, latitude, longitude);
+        moonPositionAlt = moonPosition.altitude;
 
-    // Calculate the parallactic angle
-    const parallacticAngleValue = parallacticAngle(latitude, longitude, now);
+        // Calculate the parallactic angle
+        const parallacticAngleValue = parallacticAngle(latitude, longitude, now);
 
-    // Apply the parallactic angle rotation
-    moon.style.transform = `rotate(${parallacticAngleValue}deg)`;
+        // Apply the parallactic angle rotation
+        moon.style.transform = `rotate(${parallacticAngleValue}deg)`;
 
-    // Update the moon phase
-    moonphase = (SunCalc.getMoonIllumination(now).phase * 360).toFixed();
-    setMoonPhase(moonphase);
+        // Update the moon phase
+        moonphase = (SunCalc.getMoonIllumination(now).phase * 360).toFixed();
+        setMoonPhase(moonphase);
 
-    // Set Moon position
-    setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt);
-}, 100); // Update every 100ms
+        // Set Moon position
+        setMoon(calculateMinMoonHeight(), 0.94, moonPositionAlt);
+
+        //set sun
+        setSun(now, calculateMinSunHeight(), 0.87, 1440, nauticalDawn, nauticalDusk);
+        currentTime = now;
+    }, 100); // Update every 100ms
+}
 //mega testing block END
-*/
+
 
 function interpolateColors(color1, color2, ratio) {
     if (ratio > 1) ratio = 1;

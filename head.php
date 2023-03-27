@@ -48,6 +48,7 @@ else $locale = strtolower($GLOBALS["lang"]) . "_" . strtoupper($GLOBALS["lang"])
     <link rel="stylesheet" href="assets/css/<?php echo $GLOBALS["color_scheme"]; ?>.css" id="theme-css" />
     <link rel="stylesheet" href="assets/css/rain.css" />
     <link rel="stylesheet" href="assets/css/snow.css" />
+    <link rel="stylesheet" href="assets/css/stars.css" />
 
 </head>
 <script type="application/ld+json">
