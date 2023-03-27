@@ -29,19 +29,19 @@
                 }
             }
         }
-        elseif ($_GET["cid"]) {
-            $cid = decodeString($_GET["cid"]);
-            if (creator_is_validated($cid)) {
+        elseif ($_GET["creator_id"]) {
+            $creator_id = decodeString($_GET["creator_id"]);
+            if (creator_is_validated($creator_id)) {
                 alert("Hallo nochmal!", "Dein Creator-Konto war bereits freigeschaltet.", "info");
 
             }
             else {
-                set_creatorValidated($cid);
-                if (creator_is_validated($cid)) {
+                set_creatorValidated($creator_id);
+                if (creator_is_validated($creator_id)) {
                     alert("Vielen Dank!", "Dein Creator-Konto wurde erfolgreich freigeschaltet.", "info");
                 }
                 else { //Validate Error 3
-                    alert("Datenbank-Fehler", "Dein Creator-Konto konnte nicht freigeschaltet werden.", "error", true, "validate error 3 - cid not validated.", $thisGets);
+                    alert("Datenbank-Fehler", "Dein Creator-Konto konnte nicht freigeschaltet werden.", "error", true, "validate error 3 - creator_id not validated.", $thisGets);
                 }
             }
 

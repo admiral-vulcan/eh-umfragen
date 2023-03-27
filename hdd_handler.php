@@ -5,8 +5,8 @@
  */
 
 function getProfilePic() {
-    if (isset($_SESSION['cid'])) {
-        $filename = $_SESSION['cid'];
+    if (isset($_SESSION['creator_id'])) {
+        $filename = $_SESSION['creator_id'];
         // Search for file with the matching filename in /images/creatorPics
         foreach (glob("./images/creatorPics/{$filename}.*") as $file) {
             // Get the file extension
@@ -17,11 +17,11 @@ function getProfilePic() {
             if ($ext !== 'avif') return array('path' => $path, 'ext' => $ext, 'alt' => 'Profilbild');
         }
     }
-    // If no file is found or cid is not set, return the default image with the 'Ein Klemmbrett als Logo' alt text
+    // If no file is found or creator_id is not set, return the default image with the 'Ein Klemmbrett als Logo' alt text
     return array('path' => 'images/logo', 'ext' => 'png', 'alt' => 'Ein Klemmbrett als Logo');
 }
 
-function writeCSVFile(bool $final, string $name, string $cid, string $originalFilename, array $content) {
+function writeCSVFile(bool $final, string $name, string $creator_id, string $originalFilename, array $content) {
     $requestUri = $_SERVER['REQUEST_URI'];
     // Set the directory based on the value of $final
     $dir = $final ? 'surveys' : 'survey-drafts';
@@ -33,7 +33,7 @@ function writeCSVFile(bool $final, string $name, string $cid, string $originalFi
 
     if ($originalFilename != 0) $filename = $originalFilename;
     else {
-        // Create the filename with the current date, cid, and name
+        // Create the filename with the current date, creator_id, and name
         $timezone = new DateTimeZone('Europe/Berlin');
         $formattedDate = "YYYY-MM-DD";
         try {
@@ -43,7 +43,7 @@ function writeCSVFile(bool $final, string $name, string $cid, string $originalFi
             if ($GLOBALS["testDomain"] && !strpos($requestUri, 'assets/php')) echo $e;
         }
         $nameToFile = processTitleString($name);
-        $filename = "{$formattedDate}-{$nameToFile}-{$cid}.csv";
+        $filename = "{$formattedDate}-{$nameToFile}-{$creator_id}.csv";
     }
 
     if (strpos($requestUri, 'assets/php'))
@@ -150,7 +150,7 @@ function processTitleString($input) {
     return $input;
 }
 
-function getDraftsNames($cid) {
+function getDraftsNames($creator_id) {
     $draftsNames = [];
     $directory = "survey-drafts";
 
@@ -158,8 +158,8 @@ function getDraftsNames($cid) {
         $files = scandir($directory);
 
         foreach ($files as $file) {
-            // Check if the file is a CSV and contains the CID in its filename
-            if (strpos($file, $cid) !== false && pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
+            // Check if the file is a CSV and contains the creator_id in its filename
+            if (strpos($file, $creator_id) !== false && pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
                 $filePath = $directory . '/' . $file;
                 $fileHandle = fopen($filePath, 'r');
 

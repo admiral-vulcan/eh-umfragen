@@ -42,7 +42,7 @@ if (isset($_GET["open"]) && $_GET["open"] !== "") {
     $openFile = explode("/", $openGet)[1];
     $openCid = explode("-", $openFile)[4];
     /** TODO check for contributors!!! */
-    if (str_contains($openCid, $GLOBALS["cid"])) {
+    if (str_contains($openCid, $GLOBALS["creator_id"])) {
         $openPath = $openGet . ".csv";
         $openFile = explode("/", $openPath)[1];
         $openFinal = explode("/", $openPath)[0] === "surveys";
@@ -77,7 +77,7 @@ $warnUserNew = alert("Datenverlust", "Bist Du sicher, dass Du die Sprache jetzt 
         echo "<th class='hide-on-mobile hide-on-tablet'>" . translate("Inaktiv seit", "de", $GLOBALS["lang"]) . "</th>";
         echo "</tr>";
 
-        foreach (getDraftsNames($_SESSION['cid']) as $key => $value) {
+        foreach (getDraftsNames($_SESSION['creator_id']) as $key => $value) {
             $survey_name = $value['draftsname'];
             $survey_creator = $_SESSION['fullname'];
             $survey_contributors = [];
@@ -133,7 +133,7 @@ $warnUserNew = alert("Datenverlust", "Bist Du sicher, dass Du die Sprache jetzt 
             $survey = get_survey($value);
             $b = "";
             $Eb = "";
-            if ($_SESSION['cid'] === $survey['creator']) {
+            if ($_SESSION['creator_id'] === $survey['creator']) {
                 $b = "<b>";
                 $Eb = "</b>";
             }

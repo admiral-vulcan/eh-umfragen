@@ -1,6 +1,6 @@
 <?php
 // My session start function support timestamp management
-function my_session_start($cid = ""): void {
+function my_session_start($creator_id = ""): void {
     $session_lifetime = 60 * 60 * 24 * 7; // User should stay logged in for a week
     session_set_cookie_params([
         'lifetime' => $session_lifetime,
@@ -9,7 +9,7 @@ function my_session_start($cid = ""): void {
         'httponly' => true, // Recommended for better security
     ]);
     session_start();
-    if ($cid !== "") $_SESSION['cid'] = $cid;
+    if ($creator_id !== "") $_SESSION['creator_id'] = $creator_id;
     if (!empty($_SESSION['set_timer']) && $_SESSION['set_timer'] < time() - $session_lifetime) {
         session_destroy();
         session_start();
@@ -17,12 +17,12 @@ function my_session_start($cid = ""): void {
     $_SESSION['set_timer'] = time(); //set and reset time
 }
 function logout(): void {
-    $_SESSION['cid'] = null;
+    $_SESSION['creator_id'] = null;
     $_SESSION['set_timer'] = null;
     $_SESSION[] = array();
     session_destroy();
 }
 ?>
 <script type="application/javascript">
-    const userCID = "<?php echo $_SESSION['cid'] ?? ""; ?>";
+    const userCID = "<?php echo $_SESSION['creator_id'] ?? ""; ?>";
 </script>

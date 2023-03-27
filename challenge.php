@@ -15,18 +15,18 @@
 
 
     $sent = "";
-    if (isset($_POST['gid']) && $_POST['gid'] != "") {
+    if (isset($_POST['google_id']) && $_POST['google_id'] != "") {
         //login google
-        $cid = get_cid($_POST['gid'], "gid");
-        $mail = get_creator_mail($cid);
-        if (creator_is_validated($_POST['gid'], "gid")){
+        $creator_id = get_creator_id($_POST['google_id'], "google_id");
+        $mail = get_creator_mail($creator_id);
+        if (creator_is_validated($_POST['google_id'], "google_id")){
 
             //login!
-            my_session_start($cid);
+            my_session_start($creator_id);
             echo '<meta http-equiv="refresh" content="0; URL=/?creator=creator">';
         }
         else {
-            $sent = sendCreatorConfirmation($cid, $mail);
+            $sent = sendCreatorConfirmation($creator_id, $mail);
             alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
         }
     }
@@ -34,28 +34,28 @@
     elseif (isset($_POST['email']) && $_POST['email'] != "") {
         //login mail & pwd
         if (creator_has_entry($_POST['email'])) {
-            $cid = get_cid($_POST['email'], "email");
+            $creator_id = get_creator_id($_POST['email'], "email");
             if (creator_is_validated($_POST['email'], "email")){
-                if (verifyPassword($cid, $_POST['password'])) {
+                if (verifyPassword($creator_id, $_POST['password'])) {
 
                     //login!
-                    get_creator_data($cid);
-                    my_session_start($cid);
+                    get_creator_data($creator_id);
+                    my_session_start($creator_id);
                     echo '<meta http-equiv="refresh" content="0; URL=/?creator=creator">';
                 }
                 else alert("Falsches Passwort", "Das Passwort ist falsch. Bitte versuche es noch einmal");
             }
             else {
-                $sent = sendCreatorConfirmation($cid, $_POST['email']);
+                $sent = sendCreatorConfirmation($creator_id, $_POST['email']);
                 alert("Freischaltung ausstehend", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
             }
         }
         else alert("Noch nicht registriert", "Du bist noch nicht registriert.");
     }
     elseif (isset($_POST['emailreg'])) {
-        if (!isset($_POST['gidreg'])) $_POST['gidreg'] = "";
+        if (!isset($_POST['google_id_reg'])) $_POST['google_id_reg'] = "";
         if (!isset($_POST['gmailreg'])) $_POST['gmailreg'] = "";
-        $createMsg = create_creator($_POST['gidreg'], $_POST['emailreg'], $_POST['gmailreg'], $_POST['firstnamereg'], $_POST['familynamereg'], $_POST['password1reg'], $_POST['password2reg'], postCheckifnN('AGB'), postCheckifnN('gPicAgree'), postValifnN('gPicreg'));
+        $createMsg = create_creator($_POST['google_id_reg'], $_POST['emailreg'], $_POST['gmailreg'], $_POST['firstnamereg'], $_POST['familynamereg'], $_POST['password1reg'], $_POST['password2reg'], postCheckifnN('AGB'), postCheckifnN('gPicAgree'), postValifnN('gPicreg'));
         if ($createMsg === "mail sent: OK") { //everything worked
             alert("Vielen Dank!", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
         }
@@ -97,7 +97,7 @@
         <input type="hidden" id="gPic" name="gPic" value="<?php echo postValifnN('gPic'); ?>">
         <label for="password"></label><input type="password" id="password" name="password" placeholder="<?php echo translate("Passwort", "de", $GLOBALS["lang"]); ?>" autocomplete="password" value="<?php echo postValifnN('password'); ?>" required>
         <span id="passwordEye" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-        <input type="hidden" id="gid" name="gid" value="<?php echo postValifnN('gid'); ?>">
+        <input type="hidden" id="google_id" name="google_id" value="<?php echo postValifnN('google_id'); ?>">
         <input type="submit" value="<?php echo translate("Anmelden", "de", $GLOBALS["lang"]); ?>"><div class="button" onclick="setPwdInfo();" ><?php echo translate("Passwort zurücksetzen", "de", $GLOBALS["lang"]); ?></div>
     </form>
 
@@ -145,7 +145,7 @@
                 <label for="gPicAgree"><?php echo translate("Möchtest Du Dein Google-Profilbild als Profilbild für hier verwenden?", "de", $GLOBALS["lang"]); ?></label>
             </div>
         </div>
-        <input type="hidden" id="gidreg" name="gidreg" value="<?php echo postValifnN('gidreg'); ?>">
+        <input type="hidden" id="google_id_reg" name="google_id_reg" value="<?php echo postValifnN('google_id_reg'); ?>">
         <input type="hidden" id="gmailreg" name="gmailreg" value="<?php echo postValifnN('gmailreg'); ?>">
         <input type="hidden" id="gPicreg" name="gPicreg" value="<?php echo postValifnN('gPicreg'); ?>">
         <input type="submit" value="<?php echo translate("Registrieren", "de", $GLOBALS["lang"]); ?>">
@@ -224,8 +224,8 @@
         const password2regEye = document.getElementById("password2regEye");
         const gmailreg = document.getElementById("gmailreg");
         const gmail = document.getElementById("gmail");
-        const gid = document.getElementById("gid");
-        const gidreg = document.getElementById("gidreg");
+        const google_id = document.getElementById("google_id");
+        const google_id_reg = document.getElementById("google_id_reg");
         const gPic = document.getElementById("gPic");
         const gPicreg = document.getElementById("gPicreg");
 
@@ -261,12 +261,12 @@
         }*/
 
         function checkGoogleRegReady() {
-            if (gid.value !== "") {
+            if (google_id.value !== "") {
                 emailreg.value = emailreg.value || email.value || "";
                 firstnamereg.value = firstnamereg.value || firstname.value || "";
                 familynamereg.value = familynamereg.value || familyname.value || "";
                 gPicreg.value = gPicreg.value || gPic.value || "";
-                gidreg.value = gidreg.value || gid.value || "";
+                google_id_reg.value = google_id_reg.value || google_id.value || "";
                 gmailreg.value =  gmail.value || "";
                 checkFamilyNameReg();
                 password1reg.removeAttribute("required");
@@ -604,7 +604,7 @@
             password2reg.style.display = "block";
             gRegInfo.style.display = "none";
             gPicAgreeDIV.style.display = "none";
-            gid.value = "";
+            google_id.value = "";
         }
 
         function decodeJwtResponse(jwt) {
@@ -638,8 +638,8 @@
             familyname.value = responsePayload.family_name;
             gmailreg.value = responsePayload.email;
             gmail.value = responsePayload.email;
-            gid.value = responsePayload.sub;
-            gidreg.value = responsePayload.sub;
+            google_id.value = responsePayload.sub;
+            google_id_reg.value = responsePayload.sub;
             gPic.value = responsePayload.picture;
             gPicreg.value = responsePayload.picture;
             checkFamilyNameReg();

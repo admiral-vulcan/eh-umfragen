@@ -1,12 +1,12 @@
 <?php
-function deconstructData(array $dataArray, bool $final, string $cid, $originalFilename = "0", string $sid = "0", string $lang = "de"): array {
+function deconstructData(array $dataArray, bool $final, string $creator_id, $originalFilename = "0", string $sid = "0", string $lang = "de"): array {
     if ($final) $mode = "final";
     else $mode = "draft";
     $deconstructedData = [];
 
     // Extract top-level information
     $deconstructedData[0] = [
-        implode('_', [$sid, $originalFilename, $cid, $lang, $mode]),
+        implode('_', [$sid, $originalFilename, $creator_id, $lang, $mode]),
         $dataArray[0][1],
         $dataArray[0][2],
         $dataArray[0][3],

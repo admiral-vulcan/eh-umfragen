@@ -62,10 +62,10 @@ function sendconfirmation($uid, $uemail, $target) {
     return sendmail($mail_content, "Vielen Dank, nur noch ein Klick!", $uemail);
 }
 
-function sendCreatorConfirmation($cid, $uemail) { //, $target
+function sendCreatorConfirmation($creator_id, $uemail) { //, $target
     $mail1 = file_get_contents('https://' . $_SERVER['HTTP_HOST'] . '/maildata/mail-creator-1.html');
     $mail2 = file_get_contents('https://' . $_SERVER['HTTP_HOST'] . '/maildata/mail-creator-2.html');
-    $link1 = "https://www.eh-umfragen.de?content=validate&cid=".encodeString($cid);
+    $link1 = "https://www.eh-umfragen.de?content=validate&creator_id=".encodeString($creator_id);
     $mail_content = $mail1.$link1.$mail2;
     //echo $uemail . $mail_content;
     return sendmail($mail_content, "Hey Creator, nur noch ein Klick!", $uemail);

@@ -5,8 +5,8 @@
 require_once ("zitate.php");
 echo zitat("neugierde");
 my_session_start();
-get_creator_data($_SESSION['cid']);
-if (!isset($_SESSION['cid']) || $_SESSION['cid'] == "") include ("challenge.php");
+get_creator_data($_SESSION['creator_id']);
+if (!isset($_SESSION['creator_id']) || $_SESSION['creator_id'] == "") include ("challenge.php");
 elseif ($_GET["creator"] == "challenge") include ("creator.php");
 elseif ($_GET["creator"] == "creator") include ("creator.php");
 elseif ($_GET["creator"] == "profile") include ("profile.php");

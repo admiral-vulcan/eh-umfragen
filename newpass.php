@@ -18,9 +18,9 @@
 
                 if (isset($_POST["email"])) {
                     if ($_POST["email"] == $email) {
-                        $cid = get_creator_cid($email);
-                        if ($cid != -1) {
-                            $pwdChangeAnswer = setPassword($cid, $_POST["password1set"]);
+                        $creator_id = get_creator_id($email);
+                        if ($creator_id != -1) {
+                            $pwdChangeAnswer = setPassword($creator_id, $_POST["password1set"]);
                             if ($pwdChangeAnswer == "OK") alert("Passwort gesetzt", "Dein neues Passwort wurde gesetzt und funktioniert ab sofort. Probiere es gleich aus.", "info", true, "/?creator=challenge");
                             else alert("Passwort nicht akzeptiert.", $pwdChangeAnswer, "warning");
                         }

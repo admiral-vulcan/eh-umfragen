@@ -75,7 +75,7 @@ if ($GLOBALS["testDomain"]) {
                 <li>
                     <?php
                     $profilePic = getProfilePic();
-                    if (isset($_SESSION['cid']) && $_SESSION['cid'] != "")
+                    if (isset($_SESSION['creator_id']) && $_SESSION['creator_id'] != "")
                         echo '
                         <picture class="clickableIMG" style="height: 98%;  vertical-align: top;" >
                     <source srcset="' . $profilePic['path'] . '.avif" type="image/avif">
@@ -177,7 +177,7 @@ if ($GLOBALS["testDomain"]) {
             <br>
             <h3><?php echo translate("Creator-Bereich", "de", $GLOBALS["lang"]); ?></h3>
             <?php
-            if (!isset($_SESSION['cid'])) {
+            if (!isset($_SESSION['creator_id'])) {
                 if ($GLOBALS["testDomain"]) {
                     ?>
                     <a href='?creator=challenge'>
