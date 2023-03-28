@@ -25,9 +25,9 @@
     <label for="target_group"><?php echo translate('Anvisierte Zielgruppe', 'de', $GLOBALS['lang']); ?></label>
     <select name="target_group" id="target_group">
         <option value="" disabled><?php echo translate('Zielgruppe', 'de', $GLOBALS['lang']); ?></option>
-        <option value="students"><?php echo translate('Studierende der EH', 'de', $GLOBALS['lang']); ?></option>
-        <option value="lecturers"><?php echo translate('Dozierende und Mitarbeitende der EH', 'de', $GLOBALS['lang']); ?></option>
-        <option value="students&lecturers"><?php echo translate('Alle an der EH', 'de', $GLOBALS['lang']); ?></option>
+        <option value="ehlb_students"><?php echo translate('Studierende der EH', 'de', $GLOBALS['lang']); ?></option>
+        <option value="ehlb_lecturers"><?php echo translate('Dozierende und Mitarbeitende der EH', 'de', $GLOBALS['lang']); ?></option>
+        <option value="ehlb_all"><?php echo translate('Alle an der EH', 'de', $GLOBALS['lang']); ?></option>
         <option value="no_restriction"><?php echo translate('ohne Einschränkung', 'de', $GLOBALS['lang']); ?></option>
         <option value="other"><?php echo translate('Andere Zielgruppe', 'de', $GLOBALS['lang']); ?></option>
     </select>
@@ -729,7 +729,7 @@ $followUpInfo = alert("Follow-Up-Element", "
                     const openedContributors = openDeconstructArray[0][5];
                     const openedTargetGroup = openDeconstructArray[1][0];
                     let openedEmailDomain = "";
-                    if(!["students", "lecturers", "students&lecturers", "no_restriction"].includes(openedTargetGroup)) openedEmailDomain = openedTargetGroup;
+                    if(!["ehlb_students", "ehlb_lecturers", "ehlb_all", "no_restriction"].includes(openedTargetGroup)) openedEmailDomain = openedTargetGroup;
                     document.getElementById('title').value = openedTitle;
                     document.getElementById('subtitle').value = openedSubtitle;
                     document.getElementById('description').value = openedDescription;

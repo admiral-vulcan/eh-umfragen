@@ -4,22 +4,20 @@ require_once ("convertTimeFormatInString.php");
 if (!isset($surveys)) $surveys = [];
 if (!isset($thisSurveyNumber)) $thisSurveyNumber = [];
 if (!isset($globalsurveys)) $globalsurveys = [];
-$target = "all"; //studs or empl or both or all
+$target = "no_restriction"; //studs or empl or both or all
 if (
-    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb")) ||
-    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "lect"))
-) $target = "both";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "stud")) $target = "studs";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb") ||
-    str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "lect")) $target = "empl";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "all") ||
-    str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "no_restr")) $target = "all";
+    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_students") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb")) ||
+    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_students") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "lect"))
+) $target = "ehlb_all";
+elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_students")) $target = "ehlb_students";
+elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_lecturers")) $target = "ehlb_lecturers";
+elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "no_restriction")) $target = "no_restriction";
 /** TODO special targets via @domain */
 
-if ($target === "studs") $targettext = "Studierende der EH-Ludwigsburg";
-elseif ($target === "mitarb") $targettext = "Mitarbeitende der EH-Ludwigsburg";
-elseif ($target === "both") $targettext = "Studierende und Mitarbeitende der EH-Ludwigsburg";
-else $targettext = "Alle Personen";
+if ($target === "ehlb_students") $targettext = "Studierende der EH-Ludwigsburg";
+elseif ($target === "ehlb_lecturers") $targettext = "Mitarbeitende der EH-Ludwigsburg";
+elseif ($target === "ehlb_all") $targettext = "Studierende und Mitarbeitende der EH-Ludwigsburg";
+else $targettext = "Alle Personen"; //no_restriction TODO add missing custom restrictions
 
 echo "<section id='intro'><header>"; // class='not-selectable'
 $thisSurveyNumber = -1;

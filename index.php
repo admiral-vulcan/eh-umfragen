@@ -1,4 +1,5 @@
 <?php
+$start = 0;
 require_once ("assets/php/getVars.php");
 session_start();
 $ver_str = "0.9.7";                      //0.9.5
@@ -16,6 +17,8 @@ require_once ("zitate.php");
 require_once ("gitignore/code.php");
 require_once ("sanitize.php");
 require_once ("sendmail.php");
+require_once("gitignore/dbcred.php");
+require_once("assets/php/classes/DatabaseHandler.php");
 require_once ("database_com.php");
 require_once ("session_handler.php");
 require_once ("loadsurveys.php");

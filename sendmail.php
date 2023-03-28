@@ -48,7 +48,7 @@ function sendmail($content, $subject, $to) {
 }
 
 function sendconfirmation($uid, $uemail, $target) {
-    if ($target == "studs") {
+    if ($target == "ehlb_students") {
         $mail1 = file_get_contents('https://' . $_SERVER['HTTP_HOST'] . '/maildata/mail-du-1.html');
         $mail2 = file_get_contents('https://' . $_SERVER['HTTP_HOST'] . '/maildata/mail-du-2.html');
     }

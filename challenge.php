@@ -1,6 +1,11 @@
 <section id="intro">
     <?php
+
+    use assets\php\classes\Creators;
+
     require_once "gitignore/gcred.php";
+
+    $creators = new Creators();
 
     /**
      * TODO
@@ -55,7 +60,7 @@
     elseif (isset($_POST['emailreg'])) {
         if (!isset($_POST['google_id_reg'])) $_POST['google_id_reg'] = "";
         if (!isset($_POST['gmailreg'])) $_POST['gmailreg'] = "";
-        $createMsg = create_creator($_POST['google_id_reg'], $_POST['emailreg'], $_POST['gmailreg'], $_POST['firstnamereg'], $_POST['familynamereg'], $_POST['password1reg'], $_POST['password2reg'], postCheckifnN('AGB'), postCheckifnN('gPicAgree'), postValifnN('gPicreg'));
+        $createMsg = $creators->addCreator($_POST['google_id_reg'], $_POST['emailreg'], $_POST['gmailreg'], $_POST['firstnamereg'], $_POST['familynamereg'], $_POST['password1reg'], $_POST['password2reg'], postCheckifnN('AGB'), postCheckifnN('gPicAgree'), postValifnN('gPicreg'));
         if ($createMsg === "mail sent: OK") { //everything worked
             alert("Vielen Dank!", "Um Deine Registrierung abzuschließen, klicke bitte auf den Link, die wir Dir an Deine studentische E-Mail-Adresse geschickt haben.");
         }

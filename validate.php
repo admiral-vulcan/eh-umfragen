@@ -2,6 +2,10 @@
     <header>
         <h2>EH-Umfragen</h2>
         <?php
+
+        use assets\php\classes\Users;
+        $users = new Users();
+
         require_once("head.php");
         require_once("gitignore/code.php");
         require_once ("database_com.php");
@@ -15,13 +19,13 @@
 
         if ($_GET["uid"]) {
             $uid = decodeString($_GET["uid"]);
-            if (mail_is_validated($uid)) {
+            if ($users->getUserValidation($uid)) {
                 alert("Hallo nochmal!", "Deine Mail war bereits validiert.<br><br>Deine Stimmen zählen.", "info");
 
             }
             else {
-                set_validated($uid);
-                if (mail_is_validated($uid)) {
+                $users->validateUser($uid);
+                if ($users->getUserValidation($uid)) {
                     alert("Vielen Dank!", "Deine E-Mail-Adresse wurde erfolgreich validiert.", "info");
                 }
                 else { //Validate Error 2
