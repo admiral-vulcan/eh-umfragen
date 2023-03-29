@@ -2,23 +2,12 @@
 require_once("gitignore/dbcred.php");
 require_once ("passwordcheck.php");
 
-function set_validated($uid) { //UPDATE users SET email = ? WHERE id = ?
-    $validated = 0;
-    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("UPDATE users SET isvalid = 1 WHERE uid = ?");
-    try {
-        $statement->execute(array($uid));
-    }
-    catch (Exception $e) {
-        $e->getMessage();
-    }
-    $pdo = null;
-}
+
 
 function set_creatorValidated($creator_id) { //UPDATE users SET email = ? WHERE id = ?
     $validated = 0;
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("UPDATE creators SET isvalid = 1 WHERE creator_id = ?");
+    $statement = $pdo->prepare("UPDATE creators SET valid = 1 WHERE creator_id = ?");
     try {
         $statement->execute(array($creator_id));
     }
@@ -28,29 +17,13 @@ function set_creatorValidated($creator_id) { //UPDATE users SET email = ? WHERE 
     $pdo = null;
 }
 
-function mail_is_validated($uid) {
-    $validated = 0;
-    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT isvalid FROM users WHERE uid = ?");
-    try {
-        $statement->execute(array($uid));
-        while($row = $statement->fetch()) {
-            $valdata = $row['isvalid'];
-            if ($valdata == 1) $validated = 1;
-        }
-    }
-    catch (Exception $e) {
-        $e->getMessage();
-    }
-    $pdo = null;
-    return $validated;
-}
+
 
 function creator_is_validated($string, $type = 'creator_id') {
     $validated = 0;
     if ($type !== "creator_id" && $type !== "google_id" && $type !== "email") return -1;
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT isvalid FROM creators WHERE " . $type . " = ?");
+    $statement = $pdo->prepare("SELECT valid FROM creators WHERE " . $type . " = ?");
     try {
         $statement->execute([$string]);
         while($row = $statement->fetch()) {
@@ -104,18 +77,7 @@ function get_creator_mail($creator_id) {
     return $email;
 }
 
-function get_email_id($mailhash) {
-    $uid = -1;
-    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT * FROM users WHERE mailhash = ?");
-    $statement->execute(array($mailhash));
-    while($row = $statement->fetch()) {
-        $uid = $row['uid'];
-    }
 
-    $pdo = null;
-    return $uid;
-}
 
 function get_survey_name($sid) {
     $name = -1;
@@ -193,7 +155,7 @@ function get_survey_filename($sid) {
 function get_survey_id($name) {
     $id = -1;
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT * FROM surveys WHERE name = ? LIMIT 1");
+    $statement = $pdo->prepare("SELECT * FROM surveys WHERE title = ? LIMIT 1");
     $statement->execute(array(sanitize($name)));
     while($row = $statement->fetch()) {
         $id = $row['id'];
@@ -212,8 +174,8 @@ function set_survey_id($name, $filename = "YYYY-MM-DD-title-creator_id.csv") {
         $id = $row['id'] + 1;
     }
     try {
-        $statement = $pdo->prepare("INSERT INTO surveys (id, creator, isactive, hasresults, name, since, filename) VALUES (?,?,?,?,?,?,?)");
-        $statement->execute([$id, $creator, 1, 0, sanitize($name), time(), $filename]);
+        //$statement = $pdo->prepare("INSERT INTO surveys (id, creator_id, is_active, has_results, title, created_at, filename) VALUES (?,?,?,?,?,?,?)");
+        //$statement->execute([$id, $creator, 1, 0, sanitize($name), time(), $filename]);
     }
 
     catch (Exception $e) {
@@ -246,13 +208,13 @@ function get_inactivesince($id) {
 }
 
 function get_since($id) {
-    $since = -1;
+    $created_at = -1;
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
     $statement = $pdo->prepare("SELECT * FROM surveys WHERE id = ? LIMIT 1");
     try {
         $statement->execute([$id]);
         while ($row = $statement->fetch()) {
-            $since = $row['since'];
+            $created_at = $row['created_at'];
         }
     }
 
@@ -261,7 +223,7 @@ function get_since($id) {
         //echo $e;
     }
     $pdo = null;
-    return $since;
+    return $created_at;
 }
 
 function get_active($id) {
@@ -314,7 +276,7 @@ function get_type($sid, $Qnum) {
 function set_active($id): void {
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
     try {
-        $statement = $pdo->prepare("UPDATE surveys SET isactive=? WHERE id=?");
+        $statement = $pdo->prepare("UPDATE surveys SET is_active=? WHERE id=?");
         $statement->execute([1, $id]);
     }
 
@@ -329,7 +291,7 @@ function set_inactive($id): void {
     if (get_active($id) == 1) {
         $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
         try {
-            $statement = $pdo->prepare("UPDATE surveys SET isactive=?, inactivesince=? WHERE id=?");
+            $statement = $pdo->prepare("UPDATE surveys SET is_active=?, inactivated_at=? WHERE id=?");
             $statement->execute([0, time(), $id]);
         } catch (Exception $e) {
             $e->getMessage();
@@ -342,7 +304,7 @@ function set_inactive($id): void {
 function set_hasresults($id, $hasresults = 1): void {
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
     try {
-        $statement = $pdo->prepare("UPDATE surveys SET hasresults=? WHERE id=?");
+        $statement = $pdo->prepare("UPDATE surveys SET has_results=? WHERE id=?");
         $statement->execute([$hasresults, $id]);
     }
 
@@ -356,7 +318,7 @@ function set_hasresults($id, $hasresults = 1): void {
 function set_hasnoresults($id): void {
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
     try {
-        $statement = $pdo->prepare("UPDATE surveys SET hasresults=? WHERE id=?");
+        $statement = $pdo->prepare("UPDATE surveys SET has_results=? WHERE id=?");
         $statement->execute([0, $id]);
     }
 
@@ -395,7 +357,10 @@ function create_survey($id, $qcount, $types, $questions, $options): void {
     $pdo = null;
 }
 
+
 function get_creator_data($creator_id) {
+    $creators = new Creators();
+    //$creator = $creators->ge
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
     $statement = $pdo->prepare("SELECT * FROM creators WHERE creator_id = ?");
     $statement->execute([$creator_id]);
@@ -414,7 +379,7 @@ function get_creator_data($creator_id) {
         $_SESSION['since'] = $row['since'];
     }
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT * FROM surveys WHERE creator = ?");
+    $statement = $pdo->prepare("SELECT * FROM surveys WHERE creator_id = ?");
     $statement->execute([$creator_id]);
     $i=0;
     $_SESSION['my_creations'] = [];
@@ -423,8 +388,8 @@ function get_creator_data($creator_id) {
         $i++;
     }
     $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT * FROM surveys WHERE contributors LIKE ?");
-    $statement->execute(["%$creator_id%"]);
+    //$statement = $pdo->prepare("SELECT * FROM surveys WHERE contributors LIKE ?");
+    //$statement->execute(["%$creator_id%"]);
     $i=0;
     $_SESSION['my_contributions'] = [];
     while($row = $statement->fetch()) {
@@ -434,47 +399,7 @@ function get_creator_data($creator_id) {
     $pdo = null;
 }
 
-function create_creator($google_id, $email, $gmail, $firstname, $familyname, $password1, $password2, $agb, $gPicAgree, $gPic): bool|int|string
-{
 
-    $email = sanitize($email);
-    $firstname = sanitize($firstname);
-    $familyname = sanitize($familyname);
-    $password1 = htmlspecialchars($password1);
-    $password2 = htmlspecialchars($password2);
-    $isvalid = 0;
-    $isadmin = 0;
-    $pwdhash = "";
-    $since = time();
-    $du = 0;
-    $du = 1;
-    $creator_id = checkCreatorUniqid(str_replace('.', '', uniqid('', true)));
-
-    if ($agb !== "checked") return "Bitte stimme unseren AGB zu.";
-
-    if ($password1 !== $password2) return "Die Passwörter stimmen nicht überein.";
-
-    if ($google_id != "" && checkCreatorGoogleid($google_id)) return "Du bist bereits mit Deiner Google-ID bei uns registriert.";
-    if (checkCreatorEmail($email)) return "Du bist bereits mit Deiner E-Mail-Adresse bei uns registriert.";
-
-    if ($google_id === "") {
-        $pwdIsBad = check_password_is_bad($password1);
-        if ($pwdIsBad != '') return $pwdIsBad;
-        $pwdhash = hashPassword($password1);
-    }
-
-    if ($gPicAgree === "checked") saveCreatorPicture($creator_id, $gPic);
-
-    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("INSERT INTO creators (creator_id, google_id, email, gmail, firstname, familyname, pwdhash, du, isvalid, isadmin, since) VALUES (?,?,?,?, ?,?,?,?,?,?,?)");
-    $statement->execute([$creator_id, $google_id, $email, $gmail, $firstname, $familyname, $pwdhash, $du, $isvalid, $isadmin, $since]);
-
-    $pdo = null;
-
-    return "mail sent: ".sendCreatorConfirmation($creator_id, $email); //returns OK or ERROR or exception message
-
-    //return "OK";
-}
 
 function saveCreatorPicture($creator_id, $picURL) {
     // Get the size of the file
@@ -559,27 +484,6 @@ function checkCreatorUniqid($id) {
 
 
 
-function create_user($email, $mailhash, $target) {
-    $email = sanitize($email);
-    $databasemails="";
-    $isvalid = 0;
-    require_once("databasemails.php");
-    if (str_contains($databasemails, $email)) $isvalid = 1;
-    $du = 0;
-    if ($target == "studs") $du = 1;
-    $id = 1;
-    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-    $statement = $pdo->prepare("SELECT * FROM users ORDER BY uid DESC LIMIT 1");
-    $statement->execute();
-    while($row = $statement->fetch()) {
-        $id = $row['uid'] + 1;
-    }
-    $statement = $pdo->prepare("INSERT INTO users (uid, mailhash, du, isvalid, since) VALUES (?,?,?,?,?)");
-    $statement->execute([$id, $mailhash, $du, $isvalid, time()]);
-
-    $pdo = null;
-    return $id;
-}
 
 function fill_survey($sid, $uid, $answers) {
     $already_submitted = 0;
@@ -769,42 +673,6 @@ function read_surveys($sid) {
     return $filename . " stored";
 }
 if (isset($_GET["storeresults"]) && intval($_GET["storeresults"]) > 0) echo read_surveys(intval($_GET["storeresults"]));
-
-//echo get_survey_id("genial");
-//echo set_survey_id("genial");
-//create_survey("485","3",array("hallöchen mein guter", "komische fragen hier!", "noch ne Frage"),array("und", "oder", "offen"), array("hier; dort", "ja; nein; vielleicht", "offen"));
-
-//echo get_type(1, 2);
-
-//echo checkCreatorUniqid(str_replace('.', '', uniqid('', true)));
-
-
-
-
-function create_table($filename) {
-    $pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2-surveys', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
-
-
-
-    $statement = $pdo->prepare("CREATE TABLE my_test_table2 ( sid INT(11) PRIMARY KEY, creator VARCHAR(255), contrib VARCHAR(255), targets VARCHAR(255), questions VARCHAR(255), question_types VARCHAR(255), follow_up VARCHAR(255), answers VARCHAR(255) );");
-    $statement->execute();
-
-
-    $statement = $pdo->prepare("LOAD DATA INFILE '/var/www/eh-umfragen/test/load/test.csv'
- INTO TABLE my_test_table
- FIELDS TERMINATED BY ';'
- ENCLOSED BY '\"'
- LINES TERMINATED BY '\\n'
- IGNORE 1 ROWS;");
-    $statement->execute();
-
-
-
-
-    $pdo = null;
-    exit;
-}
-//create_table("");
 
 
 ?>

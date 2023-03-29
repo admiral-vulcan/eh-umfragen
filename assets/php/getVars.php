@@ -27,7 +27,7 @@ function verToInt($str) {
     return floatval($str);
 }
 if ($GLOBALS["testDomain"]) {
-    $start = hrtime(true);
+    $GLOBALS["timer_start"] = hrtime(true);
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     if (isset($_GET["warnings"]) && $_GET["warnings"] == "1") error_reporting(E_ALL);

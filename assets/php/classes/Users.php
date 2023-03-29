@@ -1,5 +1,4 @@
 <?php
-
 namespace assets\php\classes;
 
 use PDO;

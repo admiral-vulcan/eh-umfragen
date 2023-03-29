@@ -1,5 +1,5 @@
 <?php
-$start = 0;
+require_once 'assets/php/autoload.php';
 require_once ("assets/php/getVars.php");
 session_start();
 $ver_str = "0.9.7";                      //0.9.5
@@ -10,6 +10,7 @@ $version = $ver_str;                    //legacy reasons, but it's nice to have
 require_once ("utf8Encode.php");
 require_once ("message_drawer.php");
 require_once ("translate.php");
+
 require_once ("head.php");
 require_once ("assets/php/deconstruct_data.php");
 require_once ("hdd_handler.php");
@@ -18,11 +19,11 @@ require_once ("gitignore/code.php");
 require_once ("sanitize.php");
 require_once ("sendmail.php");
 require_once("gitignore/dbcred.php");
-require_once("assets/php/classes/DatabaseHandler.php");
 require_once ("database_com.php");
 require_once ("session_handler.php");
 require_once ("loadsurveys.php");
 require_once ("loadresults.php");
+
 if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
 else  $draft = "";
 if (!isset($surveys)) $surveys = [];
@@ -306,12 +307,7 @@ if ($GLOBALS["testDomain"]) {
 <?php
 require_once ("color_scheme_handler.php");
 if ($GLOBALS["testDomain"]) {
-    /*
-    echo "<br> " . $GLOBALS['weathertext'] . " bei ";
-    echo $GLOBALS['temperature'] . "<br>";
-    */
-    $end = hrtime(true);
-    $elapsed = intval(($end - $start)/1000000);
+    $elapsed = intval((hrtime(true) - $GLOBALS["timer_start"])/1000000);
     echo "<br> Serverseitige Seitenladezeit: $elapsed ms.<br><br><br><br><br><br>";
 }
 if (isset($_GET["tabclose"]) && $_GET["tabclose"] == "1") echo "<br><br><br><br><br><br>";
