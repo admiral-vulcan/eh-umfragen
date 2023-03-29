@@ -58,20 +58,4 @@ class Users extends DatabaseHandler {
             return false;
         }
     }
-
-    // Get all submitted surveys by user
-    public function getSurveysByUser($user_id): false|array
-    {
-        $stmt = $this->connection->prepare("SELECT s.* FROM surveys s JOIN responses r ON s.id = r.survey_id WHERE r.user_id = :user_id GROUP BY s.id");
-        $stmt->execute([':user_id' => $user_id]);
-        return $stmt->fetchAll();
-    }
-
-    // Get all responses by user
-    public function getResponsesByUser($user_id): false|array
-    {
-        $stmt = $this->connection->prepare("SELECT r.* FROM responses r WHERE r.user_id = :user_id");
-        $stmt->execute([':user_id' => $user_id]);
-        return $stmt->fetchAll();
-    }
 }

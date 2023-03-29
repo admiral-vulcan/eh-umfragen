@@ -32,8 +32,8 @@ class Creators extends DatabaseHandler {
         $_SESSION['since'] = $creatorData['created_at']; //deprecated; for backwards compatibility reasons
         $_SESSION['created_at'] = $creatorData['created_at'];
 
-        $_SESSION['creatorSurveys'] = $surveys->getCreatorSurveys($creator_id);
-        $_SESSION['creatorCollaborations'] = $collaborators->getCreatorCollaborations($creator_id);
+        $_SESSION['creatorSurveys'] = $surveys->getCreations($creator_id);
+        $_SESSION['creatorCollaborations'] = $collaborators->getCollaborations($creator_id);
     }
 
     public function addCreator($google_id, $email, $gmail, $firstname, $familyname, $password1, $password2, $agb, $gPicAgree, $gPic): bool|int|string {
