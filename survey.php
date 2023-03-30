@@ -1,47 +1,127 @@
 <?php
-require_once ("convertTimeFormatInString.php");
 
-if (!isset($surveys)) $surveys = [];
-if (!isset($thisSurveyNumber)) $thisSurveyNumber = [];
-if (!isset($globalsurveys)) $globalsurveys = [];
-$target = "no_restriction"; //studs or empl or both or all
-if (
-    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_students") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "mitarb")) ||
-    (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_students") && str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "lect"))
-) $target = "ehlb_all";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_students")) $target = "ehlb_students";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "ehlb_lecturers")) $target = "ehlb_lecturers";
-elseif (str_contains(strtolower($surveys[$thisSurveyNumber][1][0]), "no_restriction")) $target = "no_restriction";
-/** TODO special targets via @domain */
+use EHUmfragen\DatabaseModels\Surveys;
+use EHUmfragen\DatabaseModels\Responses;
 
-if ($target === "ehlb_students") $targettext = "Studierende der EH-Ludwigsburg";
-elseif ($target === "ehlb_lecturers") $targettext = "Mitarbeitende der EH-Ludwigsburg";
-elseif ($target === "ehlb_all") $targettext = "Studierende und Mitarbeitende der EH-Ludwigsburg";
-else $targettext = "Alle Personen"; //no_restriction TODO add missing custom restrictions
+require_once ("convertTimeFormatInString.php");                                                     /** ???????????????????????? */
 
-echo "<section id='intro'><header>"; // class='not-selectable'
-$thisSurveyNumber = -1;
+$surveys = new Surveys();
+$allResponses = new Responses();
+
+$survey_id = $surveys->getSurveysIdsBy(htmlspecialchars($_GET["survey"]), "title")[0];
+
+echo "<section id='intro'><header>";
+echo "<h1>eh-umfragen.de - " . translate("Eure Umfragen", "de", $GLOBALS["lang"]) . "</h1>";
+echo zitat("lebenswirklichkeit");
+
+if ($survey_id === null) echo "not found";
+else {
+    $survey = $surveys->getSurvey($survey_id);
+
+
+    if ($survey["target_group"] === "ehlb_students") $targettext = "Studierende der EH-Ludwigsburg";
+    elseif ($survey["target_group"] === "ehlb_lecturers") $targettext = "Mitarbeitende der EH-Ludwigsburg";
+    elseif ($survey["target_group"] === "ehlb_all") $targettext = "Studierende und Mitarbeitende der EH-Ludwigsburg";
+    elseif ($survey["target_group"] === "o_restriction") $targettext = "Alle Personen";
+    else $targettext = "Andere Gruppe: " . $survey["target_group"]; // TODO handle elsewhere...
+
+    $has_results = $survey["has_results"];
+    $backview = false;
+    if (isset($_GET["forceresults"]) && $_GET["forceresults"] == 1) $has_results = true;
+    if (isset($_GET["backview"]) && $_GET["backview"] == 1) {
+        $has_results = false;
+        $backview = true;
+    }
+
+    $title = translate($survey["title"], "de", $GLOBALS["lang"]);
+    $titleDE = $survey["title"];
+    $description1 = translate($survey["description"], "de", $GLOBALS["lang"]);
+    $description2 = translate($survey["subdescription"], "de", $GLOBALS["lang"]);
+
+    echo "<h2>#" . $survey_id . " " . $title;
+    if ($has_results) {
+        $responses_count = $allResponses->countUniqueUsersBySurveyId($survey_id);
+        //$results = loadResults($survey_id);
+        echo translate(": Ergebnisse, n=" . $responses_count, "de", $GLOBALS["lang"]);
+    }
+    if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
+    //if ($backview) echo " (" . translate("Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
+    echo "</h2>";
+
+    if ($description1 != "") {
+        echo "<h3>" . $description1 . "</h3>";
+    }
+
+    if ($description2 != "") {
+        echo "<h4>" . $description2 . "</h4>";
+    }
+    echo "<br>";
+    echo "<div id='choose_anchor'></div>";
+
+    $targettext = "<p>" . translate("Zielgruppe: " . $targettext, "de", $GLOBALS["lang"]) . "</p>";
+    if (!isset($_GET["draft"]) || $_GET["draft"] !== "1") {
+        $sincetext = "<p>" . translate("Geöffnet seit " . $survey["activated_at"], "de", $GLOBALS["lang"]) . "";
+        $inactivesincetext = "<p>" . translate("Geschlossen seit " . $survey["inactivated_at"], "de", $GLOBALS["lang"]) . "</p>";
+        $hasresultstext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&backview=1'>" . translate("Geschlossene Umfrage nochmals anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='" /*. $results["file"]*/ . "'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
+        $backviewtext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
+    }
+    else {
+        $sincetext = "<p>" . translate("In der Umfrage wird hier stehen, seit wann sie <b>geöffnet</b> worden sein wird.", "de", $GLOBALS["lang"]) . "</p>";
+        $inactivesincetext = "<p>" . translate("Sobald die Umfrage <b>geschlossen</b> sein wird, steht hier seit wann.", "de", $GLOBALS["lang"]) . "</p>";
+        $hasresultstext = "<p>" . translate("Sobald die Umfrage <b>ausgewertet</b> sein wird, findet man unten alle Statistiken. ", "de", $GLOBALS["lang"]) . "</p>";
+        $backviewtext = "<p>" . translate("An dieser Stelle wird man die <b>Rohdaten für Excel herunterladen</b>, die Ergebnisse inkl. Grafiken <b>drucken</b> können und hier erscheint ein Link zur <b>ursprünglichen Umfrage</b>, damit man sie nochmals ansehen kann.", "de", $GLOBALS["lang"]) . "</p>";
+    }
+
+    echo $targettext;
+    echo $sincetext;
+    if ($survey["inactivated_at"] !== "0000-00-00 00:00:00" || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivesincetext;
+    if ($has_results == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $hasresultstext;
+    if ($backview || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $backviewtext;
+    echo "<br>";
+
+
+    $label_id = 0;
+    $denum = 0;
+
+    echo "</header><form action='' method='post'>";
+
+
+
+
+
+
+}
+
+ini_set('display_errors', 0);
+
+echo "<br><br><br><br><b>Hier wird aktuell viel Neues getestet, das noch nicht funktioniert...</b><br><br><a href='https://www.eh-umfragen.de'>Gehe besser zurück zur produktiven Seite www.eh-umfragen.de</a><br><br>";
+
+
+
+
+
+
+
 for ($i = 0; $i < sizeof($surveys); $i++) {
     if (array_search(str_replace("_", " ", $_GET["survey"]), $surveys[$i][0]) === 1) {
         $thisSurveyNumber = $i;
     }
 }
-
-$thisid = utf8Encode($surveys[$thisSurveyNumber][0][0]);
-$inactivesince = get_inactivesince($thisid);
+$survey_id = utf8Encode($surveys[$thisSurveyNumber][0][0]);
+$inactivesince = get_inactivesince($survey_id);
 $inactivesincetext = date("d. ", $inactivesince) . translate(date("F", $inactivesince), "en", "de") . date(" Y", $inactivesince) . " um " . date("H:i", $inactivesince) . " Uhr.";
 if (strtolower($GLOBALS["lang"]) == "en") $inactivesince = convertTimeFormatInString($inactivesince);
-$since = get_since($thisid);
+$since = get_since($survey_id);
 $since = date("d. ", $since) . translate(date("F", $since), "en", "de") . date(" Y", $since) . " um " . date("H:i", $since) . " Uhr.";
 if (strtolower($GLOBALS["lang"]) == "en") $since = convertTimeFormatInString($since);
 $wasactive = $inactivesince - $since;
 $wasactive = date("d. ", $wasactive) . translate(date("F", $wasactive), "en", "de") . date(" Y", $wasactive) . " um " . date("H:i", $wasactive) . " Uhr.";
 if (strtolower($GLOBALS["lang"]) == "en") $wasactive = convertTimeFormatInString($wasactive);
-$hasresults = get_hasresults($thisid);
+$has_results = get_hasresults($survey_id);
 $backview = false;
-if (isset($_GET["forceresults"]) && $_GET["forceresults"] == 1) $hasresults = 1;
+if (isset($_GET["forceresults"]) && $_GET["forceresults"] == 1) $has_results = 1;
 if (isset($_GET["backview"]) && $_GET["backview"] == 1) {
-    $hasresults = 0;
+    $has_results = 0;
     $backview = true;
 }
 echo "<h1>eh-umfragen.de - " . translate("Eure Umfragen", "de", $GLOBALS["lang"]) . "</h1>";
@@ -53,9 +133,9 @@ $description1 = translate($surveys[$thisSurveyNumber][0][2], "de", $GLOBALS["lan
 $description2 = translate($surveys[$thisSurveyNumber][0][3], "de", $GLOBALS["lang"]);
 $description3 = translate($surveys[$thisSurveyNumber][0][4], "de", $GLOBALS["lang"]);
 $description4 = translate($surveys[$thisSurveyNumber][0][5], "de", $GLOBALS["lang"]);
-echo "<h2>#" . $thisid . " " . $title;
-if ($hasresults == 1) {
-    $results = loadResults($thisid);
+echo "<h2>#" . $survey_id . " " . $title;
+if ($has_results == 1) {
+    $results = loadResults($survey_id);
     echo translate(": Ergebnisse, n=" . $results["n"], "de", $GLOBALS["lang"]);
 }
 if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
@@ -103,7 +183,7 @@ else {
 echo $targettext;
 echo $sincetext;
 if ($inactivesince > 0 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivesincetext;
-if ($hasresults == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $hasresultstext;
+if ($has_results == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $hasresultstext;
 if ($backview || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $backviewtext;
 echo "<br>";
 
@@ -113,7 +193,7 @@ $denum = 0;
 
 echo "</header><form action='' method='post'>";
 
-if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $thisid != 0 && get_active($thisid) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) || $backview) {      //check if survey is set active
+if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $survey_id != 0 && get_active($survey_id) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) || $backview) {      //check if survey is set active
 
     $lastFollowUpNum = 0;
     $thisFollowUpNum = 0;
@@ -198,12 +278,12 @@ if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $thisid != 0 && get_activ
             echo "</div>";
         }
     }
-} elseif (get_active($thisid) == 0 && $hasresults == 0) {      //check if survey is set inactive
+} elseif (get_active($survey_id) == 0 && $has_results == 0) {      //check if survey is set inactive
     echo "<br><br><br><p><b>" . translate("Danke für Dein Interesse!</b><br>Diese Umfrage ist geschlossen und war " . secondsToTime($wasactive) . " offen.<br>Schau bald wieder vorbei, wenn unsere Ergebnisse veröffentlicht sind.", "de", $GLOBALS["lang"]) . "</p><br><br><br>";
 }
 
 
-if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_active($thisid) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) {
+if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_active($survey_id) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) {
     echo "<br><br><input type='hidden' name='content' value='sendsurvey' />";
     echo "<input type='hidden' name='target' value='" . $target . "' />";
     echo '<div><p>' . translate('Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein.', 'de', $GLOBALS["lang"]) . ' <br>
@@ -276,7 +356,7 @@ if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_acti
  * we work with $thisid
  *
  * */
-if ($hasresults == 1) {
+if ($has_results == 1) {
     $thisName = urldecode($_GET["survey"]);
     if (isset($_GET["leftQ"]) && $_GET["leftQ"] == "") unset($_GET["leftQ"]);
     if (isset($_GET["rightQ"]) && $_GET["rightQ"] == "") unset($_GET["rightQ"]);

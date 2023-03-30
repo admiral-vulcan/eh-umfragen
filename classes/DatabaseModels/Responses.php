@@ -74,4 +74,17 @@ class Responses extends DatabaseHandler
         $stmt = $this->connection->prepare("DELETE FROM responses WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
+
+    /**
+     * Count the number of unique users for a given survey_id.
+     *
+     * @param int $survey_id
+     * @return int
+     */
+    public function countUniqueUsersBySurveyId(int $survey_id): int
+    {
+        $stmt = $this->connection->prepare("SELECT COUNT(DISTINCT user_id) FROM responses WHERE survey_id = :survey_id");
+        $stmt->execute([':survey_id' => $survey_id]);
+        return (int)$stmt->fetchColumn();
+    }
 }

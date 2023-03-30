@@ -3,7 +3,6 @@ require_once ('autoload.php');
 
 use EHUmfragen\DatabaseModels\Surveys;
 
-
 require_once ("assets/php/getVars.php");
 session_start();
 $ver_str = "0.9.7";                      //0.9.5
