@@ -1,17 +1,34 @@
 <?php
+/**
+ * Class Creators
+ *
+ * Provides functionality for handling creator-related database operations.
+ */
 namespace assets\php\classes;
+
 use PDO;
 
 class Creators extends DatabaseHandler {
 
-    // Get creator by creator_id, google_id or email
-    private function getCreatorBy($value, $type = "creator_id") {
+    /**
+     * Get creator by creator_id, google_id, or email.
+     *
+     * @param string $value The value to search for.
+     * @param string $type The type of value to search for, either 'creator_id', 'google_id', or 'email'.
+     * @return array|null The creator's data as an associative array, or null if not found.
+     */
+    private function getCreatorBy(string $value, string $type = "creator_id"): ?array {
         $stmt = $this->connection->prepare("SELECT * FROM creators WHERE $type = :value");
         $stmt->execute([':value' => $value]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function fillSession($creator_id) {
+    /**
+     * Fill the session with creator data.
+     *
+     * @param string $creator_id The creator ID.
+     */
+    public function fillSession(string $creator_id): void {
         $creatorData = $this->getCreatorBy($creator_id);
         $surveys = new Surveys();
         $collaborators = new Collaborators();
@@ -36,7 +53,23 @@ class Creators extends DatabaseHandler {
         $_SESSION['creatorCollaborations'] = $collaborators->getCollaborations($creator_id);
     }
 
-    public function addCreator($google_id, $email, $gmail, $firstname, $familyname, $password1, $password2, $agb, $gPicAgree, $gPic): bool|int|string {
+    /**
+     * Add a new creator to the database.
+     *
+     * @param string $google_id The creator's Google ID.
+     * @param string $email The creator's email address.
+     * @param string $gmail The creator's Gmail address.
+     * @param string $firstname The creator's first name.
+     * @param string $familyname The creator's family name.
+     * @param string $password1 The creator's password.
+     * @param string $password2 The creator's password confirmation.
+     * @param string $agb The creator's agreement to the terms and conditions.
+     * @param string $gPicAgree The creator's agreement to use their Google picture.
+     * @param string $gPic The creator's Google picture URL.
+     * @return bool|int|string Returns true if successful, or an error message.
+     */
+    public function addCreator(string $google_id, string $email, string $gmail, string $firstname, string $familyname, string $password1, string $password2, string $agb, string $gPicAgree, string $gPic): bool|int|string
+    {
         $email = sanitize($email);
         $firstname = sanitize($firstname);
         $familyname = sanitize($familyname);
@@ -70,24 +103,41 @@ class Creators extends DatabaseHandler {
         return "mail sent: ".sendCreatorConfirmation($creator_id, $email); //returns OK or ERROR or exception message
     }
 
-    // Get creator validation
-    public function getCreatorValidation($string, $type = 'creator_id'): bool
+    /**
+     * Get creator validation status.
+     *
+     * @param string $string The value to search for.
+     * @param string $type The type of value to search for, either 'creator_id' or 'email'.
+     * @return bool True if the creator is validated, false otherwise.
+     */
+    public function getCreatorValidation(string $string, string $type = 'creator_id'): bool
     {
         $creator = $this->getCreatorBy($string, $type);
         return $creator && $creator['valid'] == 1;
     }
 
-    // Validate creator
-    public function validateCreator($creator_id) {
+    /**
+     * Validate a creator by setting the valid flag to 1.
+     *
+     * @param string $creator_id The creator ID.
+     */
+    public function validateCreator(string $creator_id): void
+    {
         $stmt = $this->connection->prepare("UPDATE creators SET valid = 1 WHERE creator_id = :creator_id");
         $stmt->execute([':creator_id' => $creator_id]);
     }
 
-    // Get creator_id by email or google_id
-    public function getCreatorId($string, $type = 'email') {
+    /**
+     * Get the creator_id by email or google_id.
+     *
+     * @param string $string The value to search for, either email or google_id.
+     * @param string $type The type of value to search for, either 'email' or 'google_id'.
+     * @return string|bool The creator_id if found, false otherwise.
+     */
+    public function getCreatorId(string $string, string $type = 'email'): string|false
+    {
+        if ($type !== "email" && $type !== "google_id") return false;
         $creator = $this->getCreatorBy($string, $type);
         return $creator ? $creator['creator_id'] : false;
     }
-
-    // ... other getters and setters ...
 }

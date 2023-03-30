@@ -1,5 +1,11 @@
 <?php
+/**
+ * Class Surveys
+ *
+ * Provides functionality for handling survey-related database operations.
+ */
 namespace assets\php\classes;
+
 use PDO;
 
 class Surveys extends DatabaseHandler {

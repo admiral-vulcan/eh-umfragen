@@ -1,12 +1,25 @@
 <?php
+/**
+ * Class DatabaseHandler
+ *
+ * Provides basic functionality for connecting to the database and handling database operations.
+ * This class should be extended by other classes that perform specific database operations.
+ */
 namespace assets\php\classes;
 
 use PDO;
 
-
 class DatabaseHandler {
+    /**
+     * @var PDO The database connection
+     */
     protected PDO $connection;
 
+    /**
+     * DatabaseHandler constructor.
+     *
+     * Initializes the database connection using the provided credentials.
+     */
     public function __construct() {
         require_once ("gitignore/code.php");
         require_once ("sanitize.php");
