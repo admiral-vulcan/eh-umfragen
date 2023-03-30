@@ -5,8 +5,9 @@
  * Provides functionality for handling question choice-related database operations.
  */
 
-namespace assets\php\classes;
+namespace EHUmfragen\DatabaseModels;
 
+use EHUmfragen\DatabaseHandler;
 use PDO;
 
 class QuestionChoices extends DatabaseHandler

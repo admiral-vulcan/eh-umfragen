@@ -5,7 +5,8 @@
  * Provides basic functionality for connecting to the database and handling database operations.
  * This class should be extended by other classes that perform specific database operations.
  */
-namespace assets\php\classes;
+
+namespace EHUmfragen;
 
 use PDO;
 

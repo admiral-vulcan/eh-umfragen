@@ -4,8 +4,10 @@
  *
  * Provides functionality for handling survey-related database operations.
  */
-namespace assets\php\classes;
 
+namespace EHUmfragen\DatabaseModels;
+
+use EHUmfragen\DatabaseHandler;
 use PDO;
 
 class Surveys extends DatabaseHandler {

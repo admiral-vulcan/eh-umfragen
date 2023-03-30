@@ -4,7 +4,10 @@
  *
  * Provides functionality for handling response-related database operations.
  */
-namespace assets\php\classes;
+
+namespace EHUmfragen\DatabaseModels;
+
+use EHUmfragen\DatabaseHandler;
 
 class Responses extends DatabaseHandler
 {

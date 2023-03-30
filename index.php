@@ -1,5 +1,9 @@
 <?php
-require_once 'assets/php/autoload.php';
+require_once ('autoload.php');
+
+use EHUmfragen\DatabaseModels\Surveys;
+
+
 require_once ("assets/php/getVars.php");
 session_start();
 $ver_str = "0.9.7";                      //0.9.5
@@ -246,6 +250,15 @@ if ($GLOBALS["testDomain"]) {
         if (strtolower($GLOBALS["lang"]) != "de") {
             echo "<br><p>" . translate("Diese Seite wurde live von <a href='https://www.deepl.com/' target='_blank' rel='nofollow'>deepL</a> übersetzt.", "de", $GLOBALS["lang"]) . "</p><br>";
         }
+        /**
+        //testing class Surveys();
+        $surveys = new Surveys();
+        foreach ($surveys->getSurvey(1) as $key => $value) {
+         echo $key . ": " . $value . "<br>";
+        }
+        echo $surveys->getSurvey(1)["title"];
+        echo "<br>";
+        */
         ?>
         <!-- Footer -->
         <div style="white-space: normal;">
