@@ -31,11 +31,11 @@ for ($i = 0; $i < sizeof($files); $i++) {
                 $surveys[$i][$j][$c] = utf8Encode($data[$c]);
                 if ($c > 0) {
                     if (
-                        str_contains("und", $surveys[$i][$j][0]) ||
-                        str_contains("oder", $surveys[$i][$j][0]) ||
-                        str_contains("gruppe", $surveys[$i][$j][0]) ||
-                        str_contains("textfeld", $surveys[$i][$j][0]) ||
-                        str_contains("info", $surveys[$i][$j][0])
+                        str_contains("multiple_choice", $surveys[$i][$j][0]) ||
+                        str_contains("single_choice", $surveys[$i][$j][0]) ||
+                        str_contains("dropdown", $surveys[$i][$j][0]) ||
+                        str_contains("free_text", $surveys[$i][$j][0]) ||
+                        str_contains("description", $surveys[$i][$j][0])
                     ) $surveys[$i][$j][$c] = translate($surveys[$i][$j][$c], "de", $GLOBALS["lang"]);
                 }
             }

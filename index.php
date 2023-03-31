@@ -29,7 +29,7 @@ require_once ("loadresults.php");
 
 if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
 else  $draft = "";
-if (!isset($surveys)) $surveys = [];
+if (!isset($allSurveys)) $surveys = [];
 if ( isset($_GET["survey"]) ) {
 
     $thisSurveyNumber = -1;
@@ -57,10 +57,14 @@ if ($GLOBALS["testDomain"]) {
     <br>Diese Domain wird auch laufend und ohne Vorwarnung aktualisiert. 
     <br>Dabei können Fehler aufkommen, die die Seite unbrauchbar machen. 
     <br>Falls Du unabsichtlich hier angekommen bist, gehe bitte zur produktiven Domain zurück: <a href='https://www.eh-umfragen.de'>www.eh-umfragen.de</a>.
-    ", "info", false);
+    ", "description", false);
     echo '<div style="position: fixed; bottom: 0; width: 100%; z-index: 20000;"><h2 style="text-align: center;"><a style="cursor: pointer;" onclick="showAlert(' . $testInfo . ')">' .
  translate("Potentiell fehlerhaltige Testversion", 'de', $GLOBALS['lang'])
  . '</a></h2></div>';
+}
+if (isset($_GET["error_survey_not_found"])) {
+    //alert("Umfrage nicht gefunden", "Der Umfrage-Link konnte keiner Umfrage zugeordnet werden.", "description", true);
+    alert("Umfrage nicht gefunden", "Der Umfrage-Link konnte keiner Umfrage zugeordnet werden.<br>Du kannst aber hier auf der Startseite alle öffentlichen Umfragen anklicken.", "error", "true", "survey link error 1: not found: " . htmlspecialchars($_GET["error_survey_not_found"]));
 }
 ?>
 <body class="is-preload" id="top">

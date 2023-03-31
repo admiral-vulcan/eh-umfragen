@@ -2,50 +2,63 @@
 
 use EHUmfragen\DatabaseModels\Surveys;
 use EHUmfragen\DatabaseModels\Responses;
+use EHUmfragen\DatabaseModels\Questions;
+use EHUmfragen\DatabaseModels\QuestionChoices;
 
 require_once ("convertTimeFormatInString.php");                                                     /** ???????????????????????? */
 
-$surveys = new Surveys();
+$allSurveys = new Surveys();
 $allResponses = new Responses();
+$allQuestions = new Questions();
+$allQuestionChoices = new QuestionChoices();
 
-$survey_id = $surveys->getSurveysIdsBy(htmlspecialchars($_GET["survey"]), "title")[0];
+$survey_id = $allSurveys->getSurveysIdsBy(htmlspecialchars($_GET["survey"]), "title")[0];
 
 echo "<section id='intro'><header>";
 echo "<h1>eh-umfragen.de - " . translate("Eure Umfragen", "de", $GLOBALS["lang"]) . "</h1>";
 echo zitat("lebenswirklichkeit");
 
-if ($survey_id === null) echo "not found";
+if ($survey_id === null) {
+    //if survey not found
+    echo "<head><meta http-equiv='Refresh' content='0; url=/?error_survey_not_found=" . $_GET["survey"] . "' /></head>";
+}
 else {
-    $survey = $surveys->getSurvey($survey_id);
+    //if survey found: load survey
+    $survey = $allSurveys->getSurvey($survey_id);
 
+    //load target group
+    if ($survey["target_group"] === "ehlb_students") $target_group_text = "Studierende der EH-Ludwigsburg";
+    elseif ($survey["target_group"] === "ehlb_lecturers") $target_group_text = "Mitarbeitende der EH-Ludwigsburg";
+    elseif ($survey["target_group"] === "ehlb_all") $target_group_text = "Studierende und Mitarbeitende der EH-Ludwigsburg";
+    elseif ($survey["target_group"] === "no_restriction") $target_group_text = "Alle Personen";
+    else $target_group_text = "Andere Gruppe: " . $survey["target_group"]; // TODO handle elsewhere...
 
-    if ($survey["target_group"] === "ehlb_students") $targettext = "Studierende der EH-Ludwigsburg";
-    elseif ($survey["target_group"] === "ehlb_lecturers") $targettext = "Mitarbeitende der EH-Ludwigsburg";
-    elseif ($survey["target_group"] === "ehlb_all") $targettext = "Studierende und Mitarbeitende der EH-Ludwigsburg";
-    elseif ($survey["target_group"] === "o_restriction") $targettext = "Alle Personen";
-    else $targettext = "Andere Gruppe: " . $survey["target_group"]; // TODO handle elsewhere...
-
+    //check if it has results
     $has_results = $survey["has_results"];
-    $backview = false;
-    if (isset($_GET["forceresults"]) && $_GET["forceresults"] == 1) $has_results = true;
-    if (isset($_GET["backview"]) && $_GET["backview"] == 1) {
+    $look_back = false;
+    if (isset($_GET["force_results"]) && $_GET["force_results"] == 1) $has_results = true;
+    if (isset($_GET["look_back"]) && $_GET["look_back"] == 1) {
         $has_results = false;
-        $backview = true;
+        $look_back = true;
     }
 
+    //load titles, descriptions
     $title = translate($survey["title"], "de", $GLOBALS["lang"]);
     $titleDE = $survey["title"];
     $description1 = translate($survey["description"], "de", $GLOBALS["lang"]);
     $description2 = translate($survey["subdescription"], "de", $GLOBALS["lang"]);
 
+    //print tiles, descriptions, description
     echo "<h2>#" . $survey_id . " " . $title;
     if ($has_results) {
         $responses_count = $allResponses->countUniqueUsersBySurveyId($survey_id);
         //$results = loadResults($survey_id);
         echo translate(": Ergebnisse, n=" . $responses_count, "de", $GLOBALS["lang"]);
     }
+    //am I draft?
     if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
-    //if ($backview) echo " (" . translate("Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
+    //am I look back?
+    if ($look_back) echo " (" . translate("Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
     echo "</h2>";
 
     if ($description1 != "") {
@@ -58,36 +71,140 @@ else {
     echo "<br>";
     echo "<div id='choose_anchor'></div>";
 
-    $targettext = "<p>" . translate("Zielgruppe: " . $targettext, "de", $GLOBALS["lang"]) . "</p>";
+    $target_group_text = "<p>" . translate("Zielgruppe: " . $target_group_text, "de", $GLOBALS["lang"]) . "</p>";
     if (!isset($_GET["draft"]) || $_GET["draft"] !== "1") {
-        $sincetext = "<p>" . translate("Geöffnet seit " . $survey["activated_at"], "de", $GLOBALS["lang"]) . "";
-        $inactivesincetext = "<p>" . translate("Geschlossen seit " . $survey["inactivated_at"], "de", $GLOBALS["lang"]) . "</p>";
-        $hasresultstext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&backview=1'>" . translate("Geschlossene Umfrage nochmals anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='" /*. $results["file"]*/ . "'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
-        $backviewtext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
+        $activated_at_text = "<p>" . translate("Geöffnet seit " . $survey["activated_at"], "de", $GLOBALS["lang"]) . "";
+        $inactivated_at_text = "<p>" . translate("Geschlossen seit " . $survey["inactivated_at"], "de", $GLOBALS["lang"]) . "</p>";
+        $has_results_text = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&look_back=1'>" . translate("Geschlossene Umfrage nochmals anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='" /*. $results["file"]*/ . "'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
+        $look_back_text = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
     }
     else {
-        $sincetext = "<p>" . translate("In der Umfrage wird hier stehen, seit wann sie <b>geöffnet</b> worden sein wird.", "de", $GLOBALS["lang"]) . "</p>";
-        $inactivesincetext = "<p>" . translate("Sobald die Umfrage <b>geschlossen</b> sein wird, steht hier seit wann.", "de", $GLOBALS["lang"]) . "</p>";
-        $hasresultstext = "<p>" . translate("Sobald die Umfrage <b>ausgewertet</b> sein wird, findet man unten alle Statistiken. ", "de", $GLOBALS["lang"]) . "</p>";
-        $backviewtext = "<p>" . translate("An dieser Stelle wird man die <b>Rohdaten für Excel herunterladen</b>, die Ergebnisse inkl. Grafiken <b>drucken</b> können und hier erscheint ein Link zur <b>ursprünglichen Umfrage</b>, damit man sie nochmals ansehen kann.", "de", $GLOBALS["lang"]) . "</p>";
+        $activated_at_text = "<p>" . translate("In der Umfrage wird hier stehen, seit wann sie <b>geöffnet</b> worden sein wird.", "de", $GLOBALS["lang"]) . "</p>";
+        $inactivated_at_text = "<p>" . translate("Sobald die Umfrage <b>geschlossen</b> sein wird, steht hier seit wann.", "de", $GLOBALS["lang"]) . "</p>";
+        $has_results_text = "<p>" . translate("Sobald die Umfrage <b>ausgewertet</b> sein wird, findet man unten alle Statistiken. ", "de", $GLOBALS["lang"]) . "</p>";
+        $look_back_text = "<p>" . translate("An dieser Stelle wird man die <b>Rohdaten für Excel herunterladen</b>, die Ergebnisse inkl. Grafiken <b>drucken</b> können und hier erscheint ein Link zur <b>ursprünglichen Umfrage</b>, damit man sie nochmals ansehen kann.", "de", $GLOBALS["lang"]) . "</p>";
     }
 
-    echo $targettext;
-    echo $sincetext;
-    if ($survey["inactivated_at"] !== "0000-00-00 00:00:00" || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivesincetext;
-    if ($has_results == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $hasresultstext;
-    if ($backview || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $backviewtext;
-    echo "<br>";
+    echo $target_group_text;
+    echo $activated_at_text;
+    if ($survey["inactivated_at"] !== "0000-00-00 00:00:00" || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivated_at_text;
+    if ($has_results == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $has_results_text;
+    if ($look_back || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $look_back_text;
+    echo "<br><br>";
 
 
     $label_id = 0;
     $denum = 0;
 
+    //print survey //TODO required
     echo "</header><form action='' method='post'>";
 
+    //check if we really want to show the survey (is draft view or active or look back or otherwise forced to show
+    if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $survey_id != 0 && $survey["is_active"] && !((isset($_GET["force_results"]) && $_GET["force_results"] == 1))) || $look_back) {
+
+        //loop through all questions and answers
+        $lastFollowUpNum = 0;
+        $thisFollowUpNum = 0;
+
+        $questions = $allQuestions->getQuestionsBySurveyId($survey_id);
+        $questionChoices = $allQuestionChoices->getQuestionChoicesBySurveyId($survey_id);
+
+        //if ($questions[0]["follow_up_question_id"] > 0) echo "true";
+        //else echo "false";
+
+        for ($i = 0; $i < sizeof($questions); $i++) {
+
+            $question_id = $questions[$i]["id"];
+            $question_type = $questions[$i]["question_type"];
+            $is_follow_up = $questions[$i]["follow_up_question_id"] > 0;
 
 
+            if (true) { //obsolete check if not empty sizeof($allSurveys[$thisSurveyNumber][$i]) > 0
 
+
+                if (!$is_follow_up) {
+                    echo "<div class='toggleDiv' style='display: block' id='toggle" . $i + 1 . "'>";
+                } else echo "<div class='toggleDiv' style='display: block' id='toggle" . $i + 1 . "'>";
+
+
+                if ($question_type === "dropdown") {
+                    echo "<input type='hidden' name='" . $questions[$i]["id"] . "' value='-1' />"; // in case of empty answer
+                    echo '<div><p class="poll">#' . $i + 1 . ': ' . translate($questions[$i]["question_text"], 'de', $GLOBALS["lang"]) . '<select name="' .
+                        $questions[$i]["id"] . '" id="' . $questions[$i]["id"] .
+                        '" title="' . $questions[$i]["question_text"] .
+                        '" required><option id="none" value="none"  hidden disabled selected value>' . translate('Bitte auswählen', 'de', $GLOBALS["lang"]) . '</option>';
+
+                    $choices = $allQuestionChoices->getQuestionChoicesByQuestionId($question_id);
+                    for ($j = 0; $j < sizeof($choices); $j++) {
+                        echo '<option id="' . $choices[$j]["id"] .
+                            '" value="' . $choices[$j]["id"] . '">' .
+                            translate($choices[$j]["choice_text"], 'de', $GLOBALS["lang"]) . '</option>';
+                    }
+                    echo '</p></optgroup></select></div>';
+                } elseif ($question_type === "single_choice") {
+                    echo "<input type='hidden' name='" . $questions[$i]["id"] . "' value='-1' />"; // in case of empty answer
+                    echo '<div><p class="poll">#' . $i + 1 . ': ' . translate($questions[$i]["question_text"], 'de', $GLOBALS["lang"]) . '<br>';
+
+                    $choices = $allQuestionChoices->getQuestionChoicesByQuestionId($question_id);
+                    for ($j = 0; $j < sizeof($choices); $j++) {
+                        echo '<input type="radio" id="' . $choices[$j]["id"] . '" name="' .
+                            $questions[$i]["id"] . '" value="' . $choices[$j]["id"] .
+                            '" required><label for="' .
+                            $choices[$j]["id"] . '">' . translate($choices[$j]["choice_text"], 'de', $GLOBALS["lang"]) .
+                            '</label>';
+                    }
+                    echo '</p></div>';
+                } elseif ($question_type === "multiple_choice") {
+                    echo '<div><p class="poll">#' . $i + 1 . ': ' . translate($questions[$i]["question_text"], 'de', $GLOBALS["lang"]) . '<br>';
+
+                    $choices = $allQuestionChoices->getQuestionChoicesByQuestionId($question_id);
+                    for ($j = 0; $j < sizeof($choices); $j++) {
+                        echo '<input type="checkbox" id="' . $choices[$j]["id"] . '" name="' .
+                            $questions[$i]["id"] . '" value="' . $choices[$j]["id"] . '"><label for="' .
+                            $choices[$j]["id"] . '">' . translate($choices[$j]["choice_text"], 'de', $GLOBALS["lang"]) .
+                            '</label>';
+                    }
+                    echo '</p></div>';
+                } elseif ($question_type === "free_text") {
+                    echo "<input type='hidden' name='" . $questions[$i]["id"] . "' value='-1' />"; // in case of empty answer
+                    echo '<div><p class="poll">#' . $i + 1 . ': ' . translate($questions[$i]["question_text"], 'de', $GLOBALS["lang"]) .
+                        '<input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="text" id="' .
+                        $questions[$i]["id"] . '" name="' . $questions[$i]["id"] .
+                        '"></p></div>';
+                } elseif ($question_type === "description") {
+                    echo "<p>#" . $i + 1 . ": " . translate($questions[$i]["question_text"], 'de', $GLOBALS["lang"]) . "</p>";
+                    //$denum++; not working if this is here, don't know y :/
+                } elseif ($question_type === "picture") {
+                    echo "    <div class='gallery'>
+    
+                        <picture>
+                    <source srcset='/images/" . $questions[$i]["question_text"] . ".avif' type='image/avif'>
+    <img class='clickableIMG' src='/images/" . $questions[$i]["question_text"] . ".jpg' style='max-height:200px; max-width:200px;' alt='" . str_replace(["-thumb", "-hoch", "-quer"], ["", "", ""], pathinfo($questions[$i]["question_text"] . ".jpg", PATHINFO_FILENAME)) . "'>
+    </picture>
+    </div>";
+                    echo "<div id='fullpage' onclick='this.style.display=\"none\";'></div>";
+                }
+                echo "</div>";
+            }
+        }
+
+
+    }
+    //check if survey is set inactive and has no results yet
+    elseif ($survey["is_inactive"] && !$survey["has_results"]) {
+        echo "<br><br><br><p><b>" . translate("Danke für Dein Interesse!</b><br>Diese Umfrage ist geschlossen und war " /** TODO wie lange war sie offen? */  . " offen.<br>Schau bald wieder vorbei, wenn unsere Ergebnisse veröffentlicht sind.", "de", $GLOBALS["lang"]) . "</p><br><br><br>";
+    }
+
+if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $look_back) && $survey["is_active"] && !((isset($_GET["force_results"]) && $_GET["force_results"] == 1))) {
+    echo "<br><br><input type='hidden' name='content' value='sendsurvey' />";
+    echo "<input type='hidden' name='target' value='" . $survey["target_group"] . "' />";
+    echo '<div><p>' . translate('Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein.', 'de', $GLOBALS["lang"]) . ' <br>
+&emsp;&emsp;<a><span tooltip="' . translate('Nur so können wir sicherstellen, dass nur Studierende der EH teilnehmen und niemand mehrfach teilnimmt.', 'de', $GLOBALS["lang"]) . '">' . translate('Warum das?', 'de', $GLOBALS["lang"]) . '</span></a><br>
+&emsp;&emsp;<a><span tooltip="' . translate('Ja, denn wir speichern nur den Hash-Wert und nicht die Adresse selbst.', 'de', $GLOBALS["lang"]) . '">' . translate('Ist die Umfrage dann noch anonym?<', 'de', $GLOBALS["lang"]) . '/span></a><br>
+&emsp;&emsp;<a href="/?content=mailinfo" target="_blank">' . translate('Klicke hier für mehr Informationen.', 'de', $GLOBALS["lang"]) . '</a>
+<input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="email" id="email" name="email" required></p></div>';
+    echo "<input type='hidden' name='survey_id' value='" . $allSurveys[$thisSurveyNumber][0][0] . "' />";
+    echo '<br><input type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
 
 
 }
@@ -102,224 +219,23 @@ echo "<br><br><br><br><b>Hier wird aktuell viel Neues getestet, das noch nicht f
 
 
 
-for ($i = 0; $i < sizeof($surveys); $i++) {
-    if (array_search(str_replace("_", " ", $_GET["survey"]), $surveys[$i][0]) === 1) {
-        $thisSurveyNumber = $i;
-    }
-}
-$survey_id = utf8Encode($surveys[$thisSurveyNumber][0][0]);
-$inactivesince = get_inactivesince($survey_id);
-$inactivesincetext = date("d. ", $inactivesince) . translate(date("F", $inactivesince), "en", "de") . date(" Y", $inactivesince) . " um " . date("H:i", $inactivesince) . " Uhr.";
-if (strtolower($GLOBALS["lang"]) == "en") $inactivesince = convertTimeFormatInString($inactivesince);
-$since = get_since($survey_id);
-$since = date("d. ", $since) . translate(date("F", $since), "en", "de") . date(" Y", $since) . " um " . date("H:i", $since) . " Uhr.";
-if (strtolower($GLOBALS["lang"]) == "en") $since = convertTimeFormatInString($since);
-$wasactive = $inactivesince - $since;
-$wasactive = date("d. ", $wasactive) . translate(date("F", $wasactive), "en", "de") . date(" Y", $wasactive) . " um " . date("H:i", $wasactive) . " Uhr.";
-if (strtolower($GLOBALS["lang"]) == "en") $wasactive = convertTimeFormatInString($wasactive);
-$has_results = get_hasresults($survey_id);
-$backview = false;
-if (isset($_GET["forceresults"]) && $_GET["forceresults"] == 1) $has_results = 1;
-if (isset($_GET["backview"]) && $_GET["backview"] == 1) {
-    $has_results = 0;
-    $backview = true;
-}
-echo "<h1>eh-umfragen.de - " . translate("Eure Umfragen", "de", $GLOBALS["lang"]) . "</h1>";
-echo zitat("lebenswirklichkeit");
-
-$title = translate($surveys[$thisSurveyNumber][0][1], "de", $GLOBALS["lang"]);
-$titleDE = $surveys[$thisSurveyNumber][0][1];
-$description1 = translate($surveys[$thisSurveyNumber][0][2], "de", $GLOBALS["lang"]);
-$description2 = translate($surveys[$thisSurveyNumber][0][3], "de", $GLOBALS["lang"]);
-$description3 = translate($surveys[$thisSurveyNumber][0][4], "de", $GLOBALS["lang"]);
-$description4 = translate($surveys[$thisSurveyNumber][0][5], "de", $GLOBALS["lang"]);
-echo "<h2>#" . $survey_id . " " . $title;
-if ($has_results == 1) {
-    $results = loadResults($survey_id);
-    echo translate(": Ergebnisse, n=" . $results["n"], "de", $GLOBALS["lang"]);
-}
-if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
-if ($backview) echo " (" . translate("Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
-echo "</h2>";
-
-if ($description1 != "") {
-    echo "<h3>" . $description1 . "</h3>";
-}
-
-if ($description3 != "") {
-    if ($description2 != "") {
-        echo "<h3>" . $description2 . "</h3>";
-    }
-} else {
-    if ($description2 != "") {
-        echo $description2 . "<br>";
-    }
-}
-if ($description3 != "") {
-    echo $description3 . "<br>";
-
-
-    if ($description4 != "") {
-        echo $description4 . "<br>";
-    }
-}
-echo "<br>";
-echo "<div id='choose_anchor'></div>";
-
-$targettext = "<p>" . translate("Zielgruppe: " . $targettext, "de", $GLOBALS["lang"]) . "</p>";
-if (!isset($_GET["draft"]) || $_GET["draft"] !== "1") {
-    $sincetext = "<p>" . translate("Geöffnet seit dem " . $since, "de", $GLOBALS["lang"]) . "";
-    $inactivesincetext = "<p>" . translate("Geschlossen seit dem " . $inactivesincetext, "de", $GLOBALS["lang"]) . "</p>";
-    $hasresultstext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&backview=1'>" . translate("Geschlossene Umfrage nochmals anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='" . $results["file"] . "'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
-    $backviewtext = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
-}
-else {
-    $sincetext = "<p>" . translate("In der Umfrage wird hier stehen, seit wann sie <b>geöffnet</b> worden sein wird.", "de", $GLOBALS["lang"]) . "</p>";
-    $inactivesincetext = "<p>" . translate("Sobald die Umfrage <b>geschlossen</b> sein wird, steht hier seit wann.", "de", $GLOBALS["lang"]) . "</p>";
-    $hasresultstext = "<p>" . translate("Sobald die Umfrage <b>ausgewertet</b> sein wird, findet man unten alle Statistiken. ", "de", $GLOBALS["lang"]) . "</p>";
-    $backviewtext = "<p>" . translate("An dieser Stelle wird man die <b>Rohdaten für Excel herunterladen</b>, die Ergebnisse inkl. Grafiken <b>drucken</b> können und hier erscheint ein Link zur <b>ursprünglichen Umfrage</b>, damit man sie nochmals ansehen kann.", "de", $GLOBALS["lang"]) . "</p>";
-}
-
-echo $targettext;
-echo $sincetext;
-if ($inactivesince > 0 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivesincetext;
-if ($has_results == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $hasresultstext;
-if ($backview || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $backviewtext;
-echo "<br>";
-
-
-$label_id = 0;
-$denum = 0;
-
-echo "</header><form action='' method='post'>";
-
-if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $survey_id != 0 && get_active($survey_id) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) || $backview) {      //check if survey is set active
-
-    $lastFollowUpNum = 0;
-    $thisFollowUpNum = 0;
-
-    for ($i = 2; $i < sizeof($surveys[$thisSurveyNumber]); $i++) {
-
-        $thisType = extractNumber($surveys[$thisSurveyNumber][$i][0])["string"];
-        $thisFollowUpNum = extractNumber($surveys[$thisSurveyNumber][$i][0])["number"];
-
-
-        if (sizeof($surveys[$thisSurveyNumber][$i]) > 0) { //check if not empty
-
-
-            if ($thisFollowUpNum > 0 && $lastFollowUpNum == 0) {
-                $lastFollowUpNum = $thisFollowUpNum;
-                echo "<div class='toggleDiv' style='display: block' id='toggle". $i . "'>";
-            }
-            elseif ($lastFollowUpNum > 0) {
-                echo "<div class='toggleDiv' style='display: none' id='toggle". $i . "'>";
-                $lastFollowUpNum--;
-            }
-            else echo "<div class='toggleDiv' style='display: block' id='toggle". $i . "'>";
-
-
-            if ($thisType === "gruppe") {
-                echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' .  translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . '<select name="' .
-                    $i - $denum . '" id="' . $surveys[$thisSurveyNumber][$i][1] .
-                    '" title="' . $surveys[$thisSurveyNumber][$i][1] .
-                    '" required><option id="none" value="none"  hidden disabled selected value>' . translate('Bitte auswählen', 'de', $GLOBALS["lang"]) . '</option>';
-                for ($j = 2; $j < sizeof($surveys[$thisSurveyNumber][$i]); $j++) {
-                    echo '<option id="' . $label_id .
-                        '" value="' . $j - 2 . '">' .
-                        translate($surveys[$thisSurveyNumber][$i][$j], 'de', $GLOBALS["lang"]) . '</option>';
-                    $label_id++;
-                }
-                echo '</p></optgroup></select></div>';
-            } elseif ($thisType === "oder") {
-                echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . '<br>';
-                for ($j = 2; $j < sizeof($surveys[$thisSurveyNumber][$i]); $j++) {
-                    echo '<input type="radio" id="' . $label_id . '" name="' .
-                        $i - $denum . '" value="' . $j - 2 .
-                        '" required><label for="' .
-                        $label_id . '">' . translate($surveys[$thisSurveyNumber][$i][$j], 'de', $GLOBALS["lang"]) .
-                        '</label>';
-                    $label_id++;
-                }
-                echo '</p></div>';
-            } elseif ($thisType === "und") {
-                //echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . '<br>';
-                for ($j = 2; $j < sizeof($surveys[$thisSurveyNumber][$i]); $j++) {
-                    echo '<input type="checkbox" id="' . $label_id . '" name="' .
-                        $i - $denum . 'x' . $j . '" value="' . $j - 2 . '"><label for="' .
-                        $label_id . '">' . translate($surveys[$thisSurveyNumber][$i][$j], 'de', $GLOBALS["lang"]) .
-                        '</label>';
-                    $label_id++;
-                }
-                echo '</p></div>';
-            } elseif ($thisType === "textfeld") {
-                echo "<input type='hidden' name='" . $i - $denum . "' value='-1' />"; // in case of empty answer
-                echo '<div><p class="poll">' . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) .
-                    '<input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="text" id="' .
-                    $label_id . '" name="' . $i - $denum .
-                    '"></p></div>'; //required?
-                $label_id++;
-            } elseif ($thisType === "info") {
-                echo "<p>" . translate($surveys[$thisSurveyNumber][$i][1], 'de', $GLOBALS["lang"]) . "</p>";
-                //$denum++; not working if this is here, don't know y :/
-            } elseif ($thisType === "img") {
-                echo "    <div class='gallery'>
-    
-                        <picture>
-                    <source srcset='/images/" . $surveys[$thisSurveyNumber][$i][1] . ".avif' type='image/avif'>
-    <img class='clickableIMG' src='/images/" . $surveys[$thisSurveyNumber][$i][1] . ".jpg' style='max-height:200px; max-width:200px;' alt='" . str_replace(["-thumb", "-hoch", "-quer"], ["", "", ""], pathinfo($surveys[$thisSurveyNumber][$i][1].".jpg", PATHINFO_FILENAME)) . "'>
-    </picture>
-    </div>";
-                echo "<div id='fullpage' onclick='this.style.display=\"none\";'></div>";
-                //$denum++; not working if this is here, don't know y :/
-            }
-            echo "</div>";
-        }
-    }
-} elseif (get_active($survey_id) == 0 && $has_results == 0) {      //check if survey is set inactive
-    echo "<br><br><br><p><b>" . translate("Danke für Dein Interesse!</b><br>Diese Umfrage ist geschlossen und war " . secondsToTime($wasactive) . " offen.<br>Schau bald wieder vorbei, wenn unsere Ergebnisse veröffentlicht sind.", "de", $GLOBALS["lang"]) . "</p><br><br><br>";
-}
-
-
-if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_active($survey_id) != 0 && !((isset($_GET["forceresults"]) && $_GET["forceresults"] == 1))) {
-    echo "<br><br><input type='hidden' name='content' value='sendsurvey' />";
-    echo "<input type='hidden' name='target' value='" . $target . "' />";
-    echo '<div><p>' . translate('Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein.', 'de', $GLOBALS["lang"]) . ' <br>
-&emsp;&emsp;<a><span tooltip="' . translate('Nur so können wir sicherstellen, dass nur Studierende der EH teilnehmen und niemand mehrfach teilnimmt.', 'de', $GLOBALS["lang"]) . '">' . translate('Warum das?', 'de', $GLOBALS["lang"]) . '</span></a><br>
-&emsp;&emsp;<a><span tooltip="' . translate('Ja, denn wir speichern nur den Hash-Wert und nicht die Adresse selbst.', 'de', $GLOBALS["lang"]) . '">' . translate('Ist die Umfrage dann noch anonym?<', 'de', $GLOBALS["lang"]) . '/span></a><br>
-&emsp;&emsp;<a href="/?content=mailinfo" target="_blank">' . translate('Klicke hier für mehr Informationen.', 'de', $GLOBALS["lang"]) . '</a>
-<input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="email" id="email" name="email" required></p></div>';
-    echo "<input type='hidden' name='sid' value='" . $surveys[$thisSurveyNumber][0][0] . "' />";
-    echo '<br><input type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
-
-
-
-    /* TODO
-     * Man muss eine neue Umfrage #0 erstmal komplett öffnen, damit sie in die Datenbank aufgenommen wird. BESCHEUERT!^^
-     *
-    */
-
-
-
-    for ($i = 0; $i < sizeof($surveys); $i++) {
+    for ($i = 0; $i < sizeof($allSurveys); $i++) {
         $id = -1;
-        $id_file = intval(utf8Encode($surveys[$i][0][0]));
-        $id_db = get_survey_id($surveys[$i][0][1]);
+        $id_file = intval(utf8Encode($allSurveys[$i][0][0]));
+        $id_db = get_survey_id($allSurveys[$i][0][1]);
         if ($id_file === $id_db) $id = $id_file;
 
         else {
-            if ($id_file < 1 || $id_db < 1) $id = set_survey_id($surveys[$i][0][1], $globalsurveys[$i]['filename']);
+            if ($id_file < 1 || $id_db < 1) $id = set_survey_id($allSurveys[$i][0][1], $globalsurveys[$i]['filename']);
             else $id = $id_db;
-            $surveys[$i][0][0] = $id;
+            $allSurveys[$i][0][0] = $id;
             $files = glob("surveys/*.csv");
             $handle = fopen($files[$i], "w");
-            for ($j = 0; $j < sizeof($surveys[$i]); $j++) {
-                for ($k = 0; $k < sizeof($surveys[$i][$j]); $k++) {
-                    $surveys[$i][$j][$k] = iconv("UTF-8", "Windows-1252", $surveys[$i][$j][$k]);
+            for ($j = 0; $j < sizeof($allSurveys[$i]); $j++) {
+                for ($k = 0; $k < sizeof($allSurveys[$i][$j]); $k++) {
+                    $allSurveys[$i][$j][$k] = iconv("UTF-8", "Windows-1252", $allSurveys[$i][$j][$k]);
                 }
-                fputcsv($handle, $surveys[$i][$j], ";");
+                fputcsv($handle, $allSurveys[$i][$j], ";");
             }
             fclose($handle);
             chmod('results/' . $files[$i], 0775);
@@ -328,21 +244,21 @@ if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $backview) && get_acti
             $questions[] = "";
             $options[] = "";
             $denum = 0;
-            for ($j = 1; $j < sizeof($surveys[$i]); $j++) {
-                if ($surveys[$i][$j][0] == "gruppe" or $surveys[$i][$j][0] == "und" or $surveys[$i][$j][0] == "oder" or $surveys[$i][$j][0] == "textfeld") {
-                    $types[$j - 1 - $denum] = utf8Encode($surveys[$i][$j][0]);
+            for ($j = 1; $j < sizeof($allSurveys[$i]); $j++) {
+                if ($allSurveys[$i][$j][0] == "dropdown" or $allSurveys[$i][$j][0] == "multiple_choice" or $allSurveys[$i][$j][0] == "single_choice" or $allSurveys[$i][$j][0] == "free_text") {
+                    $types[$j - 1 - $denum] = utf8Encode($allSurveys[$i][$j][0]);
                     //echo $types[$j-1];
-                    $questions[$j - 1 - $denum] = utf8Encode($surveys[$i][$j][1]);
-                    if (sizeof($surveys[$i][$j]) <= 2) $options[$j - 1 - $denum] = "offene Frage";
+                    $questions[$j - 1 - $denum] = utf8Encode($allSurveys[$i][$j][1]);
+                    if (sizeof($allSurveys[$i][$j]) <= 2) $options[$j - 1 - $denum] = "offene Frage";
                     else {
-                        for ($k = 2; $k < sizeof($surveys[$i][$j]); $k++) {
-                            $options[$j - 1 - $denum] .= utf8Encode($surveys[$i][$j][$k]);
-                            if ($surveys[$i][$j][$k + 1] != null) $options[$j - 1 - $denum] .= "; ";
+                        for ($k = 2; $k < sizeof($allSurveys[$i][$j]); $k++) {
+                            $options[$j - 1 - $denum] .= utf8Encode($allSurveys[$i][$j][$k]);
+                            if ($allSurveys[$i][$j][$k + 1] != null) $options[$j - 1 - $denum] .= "; ";
                         }
                     }
                 } else $denum++;
             }
-            create_survey($surveys[$i][0][0], sizeof($questions), $types, $questions, $options);
+            create_survey($allSurveys[$i][0][0], sizeof($questions), $types, $questions, $options);
         }
     }
 }
@@ -454,15 +370,15 @@ if ($has_results == 1) {
                             }
                             while ($x >= 0) {
                                 $x--;
-                                if ($thisSurveyHead["types"][$x] === "info") {
+                                if ($thisSurveyHead["types"][$x] === "description") {
                                     $foundInfo = true;
                                     break;
                                 }
                                 elseif (
-                                    $thisSurveyHead["types"][$x] === "gruppe" ||
-                                    $thisSurveyHead["types"][$x] === "oder" ||
-                                    $thisSurveyHead["types"][$x] === "und" ||
-                                    $thisSurveyHead["types"][$x] === "textfeld"
+                                    $thisSurveyHead["types"][$x] === "dropdown" ||
+                                    $thisSurveyHead["types"][$x] === "single_choice" ||
+                                    $thisSurveyHead["types"][$x] === "multiple_choice" ||
+                                    $thisSurveyHead["types"][$x] === "free_text"
                                 ) {
                                     $foundInfo = false;
                                      $x = $headAt;
@@ -472,11 +388,11 @@ if ($has_results == 1) {
                             if ($foundInfo) {
                                 $thisHead = "";
                                 while ( isset($thisSurveyHead["types"][$x-1]) &&
-                                $thisSurveyHead["types"][$x-1] === "info" &&
+                                $thisSurveyHead["types"][$x-1] === "description" &&
                                 $x < sizeof($thisSurveyHead["heads"])
                             ) $x--;
                                 while (
-                                        $thisSurveyHead["types"][$x] === "info" &&
+                                        $thisSurveyHead["types"][$x] === "description" &&
                                         $x < sizeof($thisSurveyHead["heads"])
                                 ) {
                                     $thisHead .= $thisSurveyHead["heads"][$x] . "<br>";
@@ -628,15 +544,15 @@ if ($has_results == 1) {
                             }
                             while ($x >= 0) {
                                 $x--;
-                                if ($thisSurveyHead["types"][$x] === "info") {
+                                if ($thisSurveyHead["types"][$x] === "description") {
                                     $foundInfo = true;
                                     break;
                                 }
                                 elseif (
-                                    $thisSurveyHead["types"][$x] === "gruppe" ||
-                                    $thisSurveyHead["types"][$x] === "oder" ||
-                                    $thisSurveyHead["types"][$x] === "und" ||
-                                    $thisSurveyHead["types"][$x] === "textfeld"
+                                    $thisSurveyHead["types"][$x] === "dropdown" ||
+                                    $thisSurveyHead["types"][$x] === "single_choice" ||
+                                    $thisSurveyHead["types"][$x] === "multiple_choice" ||
+                                    $thisSurveyHead["types"][$x] === "free_text"
                                 ) {
                                     $foundInfo = false;
                                     $x = $headAt;
@@ -646,11 +562,11 @@ if ($has_results == 1) {
                             if ($foundInfo) {
                                 $thisHead = "";
                                 while ( isset($thisSurveyHead["types"][$x-1]) &&
-                                    $thisSurveyHead["types"][$x-1] === "info" &&
+                                    $thisSurveyHead["types"][$x-1] === "description" &&
                                     $x < sizeof($thisSurveyHead["heads"])
                                 ) $x--;
                                 while (
-                                    $thisSurveyHead["types"][$x] === "info" &&
+                                    $thisSurveyHead["types"][$x] === "description" &&
                                     $x < sizeof($thisSurveyHead["heads"])
                                 ) {
                                     $thisHead .= $thisSurveyHead["heads"][$x] . "<br>";
@@ -743,9 +659,9 @@ if ($has_results == 1) {
 
     <script src="assets/js/src/js.cookie.min.js"></script>
     <script type="application/javascript">
-        let forceresults = parseInt("<?php if ($_GET["forceresults"] && intval($_GET["forceresults"]) == 1) echo 1; else echo 0; ?>");
+        let forceresults = parseInt("<?php if ($_GET["force_results"] && intval($_GET["force_results"]) == 1) echo 1; else echo 0; ?>");
         if (forceresults === 1) {
-            forceresults = "&forceresults=1";
+            forceresults = "&force_results=1";
         }
         else forceresults = "";
 

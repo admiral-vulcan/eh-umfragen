@@ -13,11 +13,11 @@
 function loadResults($sid_or_sname) {
     if (intval($sid_or_sname) > 0) {
         $output["name"] = get_survey_name($sid_or_sname);
-        $output["sid"] = $sid_or_sname;
+        $output["survey_id"] = $sid_or_sname;
     }
     elseif (strlen($sid_or_sname) > 3) {
         $output["name"] = $sid_or_sname;
-        $output["sid"] = get_survey_id($sid_or_sname);
+        $output["survey_id"] = get_survey_id($sid_or_sname);
     }
     else return -1;
 
@@ -84,7 +84,7 @@ function loadResults($sid_or_sname) {
     for ($i= 0; $i < sizeof($output["counts"]) - 1; $i++) {
         $free = 0;
         $n = 0;
-        $output["type"][$i] = get_type($output["sid"], $i);
+        $output["type"][$i] = get_type($output["survey_id"], $i);
         for ($j = 0; $j < sizeof($output["QNA"][$i]) - 1; $j++) {
             if ($output["QNA"][$i][1] != "offene Frage") {
                 if (!isset($output["counts"][$i][$j])) $output["counts"][$i][$j] = 0;
@@ -126,10 +126,10 @@ function loadRelativeResults($sid_or_sname, $needleQuestion, $needleValue): int|
 {
     if (is_int($sid_or_sname)) {
         $output["name"] = get_survey_name($sid_or_sname);
-        $output["sid"] = $sid_or_sname;
+        $output["survey_id"] = $sid_or_sname;
     } elseif (is_string($sid_or_sname)) {
         $output["name"] = $sid_or_sname;
-        $output["sid"] = get_survey_id($sid_or_sname);
+        $output["survey_id"] = get_survey_id($sid_or_sname);
     }
     else return -1;
 
@@ -198,7 +198,7 @@ function loadRelativeResults($sid_or_sname, $needleQuestion, $needleValue): int|
     for ($i = 0; $i < sizeof($output["counts"]) - 1; $i++) {
         $free = 0;
         $n = 0;
-        $output["type"][$i] = get_type($output["sid"], $i);
+        $output["type"][$i] = get_type($output["survey_id"], $i);
         for ($j = 0; $j < sizeof($output["QNA"][$i]) - 1; $j++) {
             if ($output["QNA"][$i][1] != "offene Frage") {
                 if (!isset($output["counts"][$i][$j])) $output["counts"][$i][$j] = 0;
@@ -254,7 +254,7 @@ function getSurveyHeads($surveys, $thisSurveyNumber) {
     return $thisSurveys;
 }
 
-if (isset($_GET["sid"]) && $_GET["sid"] != "") {
-    loadResults($_GET["sid"]);
+if (isset($_GET["survey_id"]) && $_GET["survey_id"] != "") {
+    loadResults($_GET["survey_id"]);
 }
 ?>
