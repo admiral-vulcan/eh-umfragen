@@ -9,6 +9,7 @@
         $users = new Users();
 
         require_once ("gitignore/code.php");
+        require_once ("translate.php");
 
         if (!isset($ver_float)) $ver_float = 0;
         if (!isset($this_uri)) $this_uri = "";
@@ -28,7 +29,7 @@
                         if (intval($value) > 0) //non-free_text (int) vs free_text (string)
                             $responses->addResponse(intval($survey_id), intval($key), intval($value), "", $user_id);
                         else
-                            $responses->addResponse(intval($survey_id), intval($key), 0, $value, $user_id);
+                            $responses->addResponse(intval($survey_id), intval($key), 0, translate($value, $GLOBALS["lang"], 'de'), $user_id);
                     }
                 }
                 return 0;
