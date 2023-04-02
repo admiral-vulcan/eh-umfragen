@@ -4,7 +4,6 @@
  *
  * Provides functionality for handling response-related database operations.
  */
-
 namespace EHUmfragen\DatabaseModels;
 
 use EHUmfragen\DatabaseHandler;
@@ -14,11 +13,11 @@ class Responses extends DatabaseHandler
     /**
      * Add a response.
      *
-     * @param int $survey_id
-     * @param int $question_id
-     * @param int $choice_id
-     * @param string $response_text
-     * @param int $user_id
+     * @param int $survey_id The ID of the survey the response is for
+     * @param int $question_id The ID of the question the response is for
+     * @param int $choice_id The ID of the choice the user selected (if applicable)
+     * @param string $response_text The response text (if applicable)
+     * @param int $user_id The ID of the user who submitted the response
      * @return bool
      */
     public function addResponse(int $survey_id, int $question_id, int $choice_id, string $response_text, int $user_id): bool
@@ -36,9 +35,9 @@ class Responses extends DatabaseHandler
     /**
      * Get all responses by user.
      *
-     * @param string $string
-     * @param string $type
-     * @return false|array
+     * @param string $string The user ID to retrieve responses for
+     * @param string $type The type of ID to retrieve responses for (e.g. survey_id or question_id)
+     * @return false|array Returns an array of response data, or false if the query failed
      */
     public function getResponsesBy(string $string, string $type = "survey_id"): false|array
     {
@@ -50,8 +49,8 @@ class Responses extends DatabaseHandler
     /**
      * Update response_text.
      *
-     * @param int $id
-     * @param string $response_text
+     * @param int $id The ID of the response to update
+     * @param string $response_text The new response text
      * @return bool
      */
     public function updateResponseText(int $id, string $response_text): bool
@@ -66,7 +65,7 @@ class Responses extends DatabaseHandler
     /**
      * Delete a response by ID.
      *
-     * @param int $id
+     * @param int $id The ID of the response to delete
      * @return bool
      */
     public function deleteResponseById(int $id): bool
@@ -78,8 +77,8 @@ class Responses extends DatabaseHandler
     /**
      * Count the number of unique users for a given survey_id.
      *
-     * @param int $survey_id
-     * @return int
+     * @param int $survey_id The ID of the survey to count unique users for
+     * @return int The number of unique users who responded to the survey
      */
     public function countUniqueUsersBySurveyId(int $survey_id): int
     {
@@ -88,6 +87,12 @@ class Responses extends DatabaseHandler
         return (int)$stmt->fetchColumn();
     }
 
+    /**
+     * Count the number of responses for a given choice_id.
+     *
+     * @param int $choice_id The ID of the choice to count responses for
+     * @return int The number of responses for the given choice
+     */
     public function countResponsesByChoiceId(int $choice_id): int
     {
         $sql = "SELECT COUNT(*) FROM responses WHERE choice_id = :choice_id";
@@ -98,6 +103,13 @@ class Responses extends DatabaseHandler
         return (int)$stmt->fetchColumn();
     }
 
+    /**
+     * Count the number of unique users who responded to a given question and selected a given choice.
+     *
+     * @param int $question_id The ID of the question to count responses for
+     * @param int $question_choice The ID of the choice to count responses for
+     * @return int The number of unique users who responded to the question and selected the choice
+     */
     public function countUniqueUsersByChoice(int $question_id, int $question_choice): int
     {
         $sql = "SELECT COUNT(DISTINCT user_id) FROM responses WHERE question_id = :question_id AND choice_id = :question_choice";
@@ -109,6 +121,14 @@ class Responses extends DatabaseHandler
         return (int)$stmt->fetchColumn();
     }
 
+    /**
+     * Count the number of responses for a given choice_id and reference choice.
+     *
+     * @param int $choice_id The ID of the choice to count responses for
+     * @param int $ref_question_id The ID of the question to use as a reference
+     * @param int $ref_question_choice The ID of the reference choice to compare against
+     * @return int The number of responses for the given choice and reference choice
+     */
     public function countResponsesByChoiceIdAndReferenceChoice(int $choice_id, int $ref_question_id, int $ref_question_choice): int
     {
         $sql = "SELECT COUNT(*) FROM responses AS r1 JOIN responses AS r2 ON r1.user_id = r2.user_id WHERE r1.choice_id = :choice_id AND r2.question_id = :ref_question_id AND r2.choice_id = :ref_question_choice";
@@ -121,6 +141,14 @@ class Responses extends DatabaseHandler
         return (int)$stmt->fetchColumn();
     }
 
+    /**
+     * Get all responses for a given question_id where the user selected a specific choice for a different question.
+     *
+     * @param int $question_id The ID of the question to retrieve responses for
+     * @param int $ref_question_id The ID of the reference question
+     * @param int $ref_question_choice The ID of the reference question choice
+     * @return array Returns an array of response data
+     */
     public function getResponsesByQuestionIdAndReferenceChoice(int $question_id, int $ref_question_id, int $ref_question_choice): array
     {
         $sql = "SELECT r1.* FROM responses AS r1 JOIN responses AS r2 ON r1.user_id = r2.user_id WHERE r1.question_id = :question_id AND r2.question_id = :ref_question_id AND r2.choice_id = :ref_question_choice";
@@ -132,4 +160,5 @@ class Responses extends DatabaseHandler
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
 }

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class Results
+ *
+ * Provides functionality for handling result-related database operations.
+ */
 namespace EHUmfragen\DatabaseModels;
 
 use EHUmfragen\DatabaseHandler;
@@ -7,7 +12,12 @@ class Results extends DatabaseHandler
 {
     private Surveys $surveys;
     private Responses $responses;
+    private Creators $creators;
+    private Collaborators $collaborators;
 
+    /**
+     * Results constructor.
+     */
     public function __construct()
     {
         parent::__construct();
@@ -16,6 +26,13 @@ class Results extends DatabaseHandler
         $this->creators = new Creators($this->connection);
         $this->collaborators = new Collaborators($this->connection);
     }
+
+    /**
+     * Get results data by survey ID.
+     *
+     * @param int $survey_id The ID of the survey to get results for
+     * @return array Returns an array of result data
+     */
     public function getResultsBySurveyId(int $survey_id): array
     {
         $result = [];
@@ -65,6 +82,14 @@ class Results extends DatabaseHandler
         return $result;
     }
 
+    /**
+     * Get relative results by choice.
+     *
+     * @param int $survey_id The ID of the survey to get results for
+     * @param int $question_id The ID of the question to get results for
+     * @param int $question_choice The ID of the choice to get relative results for
+     * @return array
+     */
     public function getRelativeResultsByChoice(int $survey_id, int $question_id, int $question_choice): array
     {
         $result = [];
@@ -114,6 +139,12 @@ class Results extends DatabaseHandler
         return $result;
     }
 
+    /**
+     * Get all questions for a survey.
+     *
+     * @param int $survey_id The ID of the survey to get questions for
+     * @return array
+     */
     private function getQuestionsBySurveyId(int $survey_id): array
     {
         $sql = "SELECT * FROM questions WHERE survey_id = :survey_id";
@@ -124,6 +155,12 @@ class Results extends DatabaseHandler
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Get all choices for a question.
+     *
+     * @param int $question_id The ID of the question
+     * @return array Returns an array of choices
+     */
     private function getChoicesByQuestionId(int $question_id): array
     {
         $sql = "SELECT * FROM question_choices WHERE question_id = :question_id";
@@ -134,6 +171,12 @@ class Results extends DatabaseHandler
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Download results for a survey in CSV format.
+     *
+     * @param int $survey_id The ID of the survey to download results for
+     * @return array Returns an array with 'title' and 'csv' keys
+     */
     public function downloadResultsbySurveyId(int $survey_id)
     {
         $survey = $this->surveys->getSurvey($survey_id);
@@ -168,7 +211,13 @@ class Results extends DatabaseHandler
         return array('title' => $title, 'csv' => $csv);
     }
 
-    public function downloadMetasbySurveyId(int $survey_id)
+    /**
+     * Download survey metadata in CSV format.
+     *
+     * @param int $survey_id The ID of the survey to download metadata for
+     * @return array Returns an array with 'title' and 'csv' keys
+     */
+    public function downloadMetasbySurveyId(int $survey_id): array
     {
         $survey = $this->surveys->getSurvey($survey_id);
         $responses = $this->responses->countUniqueUsersBySurveyId($survey_id);
@@ -184,10 +233,13 @@ class Results extends DatabaseHandler
         $creator_name = $creator['firstname'] . " " . $creator['familyname'];
         $collaborators = $this->collaborators->getCollaborators($survey_id);
         foreach ($collaborators as $thisCollaborator) {
-            $collaborators_names .=  $this->creators->getCreatorBy($thisCollaborator)['firstname'] . " " . $this->creators->getCreatorBy($thisCollaborator)['familyname'] . ", ";
+            $collaborators_names .= $this->creators->getCreatorBy($thisCollaborator)['firstname'] . " " . $this->creators->getCreatorBy($thisCollaborator)['familyname'] . ", ";
         }
-        if (isset($collaborators_names)) $collaborators_names = substr($collaborators_names, 0, -2);
-        else $collaborators_names = "";
+        if (isset($collaborators_names)) {
+            $collaborators_names = substr($collaborators_names, 0, -2);
+        } else {
+            $collaborators_names = "";
+        }
         $target_group = $survey['target_group'];
         $activated_at = $survey['activated_at'];
         $inactivated_at = $survey['inactivated_at'];
