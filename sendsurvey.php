@@ -72,7 +72,7 @@
                         echo "<h3>Vielen Dank!</h3>";
                         echo "<p>Danke für die Abgabe, " . $nice[rand(0, 3)] . " :) <br>Deine E-Mail-Adresse ist noch nicht validiert. Ein Link dazu wird Dir zugesandt. Erfahre <a href='https://www.eh-umfragen.de?content=mailinfo' target='_blank'>hier</a>, warum wir das brauchen und wie das funktioniert.</p>";
                         echo "<p>".$share."</p>";
-                        if ($ver_float > 0.99) echo "<p>".$beCreator."</p>";
+                        if ($ver_float > 0.9999999) echo "<p>".$beCreator."</p>";
                         echo "<p>".$contactus."</p>";
                         echo "<p>".$othersurveys."</p>";
                         echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
@@ -80,7 +80,7 @@
                         echo "<h3>Vielen Dank!</h3>";
                         echo "<p>Danke für die Abgabe, " . $nice[rand(0, 3)] . " :)</p>";
                         echo "<p>".$share."</p>";
-                        if ($ver_float > 0.99) echo "<p>".$beCreator."</p>";
+                        if ($ver_float > 0.9999999) echo "<p>".$beCreator."</p>";
                         echo "<p>".$contactus."</p>";
                         echo "<p>".$othersurveys."</p>";
                         echo "<a href='/' class='button large fit'>Startseite</a>";
@@ -91,7 +91,7 @@
                         echo "<h3>Du hast bereits teilgenommen.</h3>";
                         echo "<p>Eine zweite Abgabe kann leider nicht gewertet werden. Deine ursprüngliche Abgabe wird allerdings erst gewertet, wenn Du Deine E-Mail-Adresse validierst. Ein Link dazu wird Dir zugesandt. Erfahre <a href='https://www.eh-umfragen.de/mailinfo' target='_blank'>hier</a>, warum wir das brauchen und wie das funktioniert.</p>";
                         echo "<p>".$share."</p>";
-                        if ($ver_float > 0.99) echo "<p>".$beCreator."</p>";
+                        if ($ver_float > 0.9999999) echo "<p>".$beCreator."</p>";
                         echo "<p>".$contactus."</p>";
                         echo "<p>".$othersurveys."</p>";
                         echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
@@ -99,7 +99,7 @@
                         echo "<h3>Du hast bereits teilgenommen.</h3>";
                         echo "<p>Eine zweite Abgabe kann leider nicht gewertet werden. Deine ursprüngliche Abgabe wird allerdings gewertet. Danke dafür!</p>";
                         echo "<p>".$share."</p>";
-                        if ($ver_float > 0.99) echo "<p>".$beCreator."</p>";
+                        if ($ver_float > 0.9999999) echo "<p>".$beCreator."</p>";
                         echo "<p>".$contactus."</p>";
                         echo "<p>".$othersurveys."</p>";
                         echo "<a href='/' class='button large fit'>Startseite</a>";
