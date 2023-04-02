@@ -183,7 +183,7 @@ class Results extends DatabaseHandler
         $title = $survey['title'];
         $results = $this->getResultsBySurveyId($survey_id);
         $csv = "\xEF\xBB\xBF"; // write BOM (Byte Order Mark) for UTF-8 encoding
-        $csv .= "Question ID;Question Text;Question Type;Choice ID;Choice Text;Answer Count;Not Answered Count\r\n";
+        $csv .= "Frage-ID; Frage; Fragetyp; Auswahl-ID; Auswahl; Anzahl\r\n";
 
         foreach ($results as $question_id => $result) {
             $question_text = $result['question']['text'];
@@ -193,17 +193,15 @@ class Results extends DatabaseHandler
                 foreach ($result['choices'] as $choice_id => $choice) {
                     $choice_text = $choice['text'];
                     $answer_count = $choice['count'];
-                    $not_answered_count = $result['not_answered'];
 
-                    $csv .= "$question_id;$question_text;$question_type;$choice_id;$choice_text;$answer_count;$not_answered_count\r\n";
+                    $csv .= "$question_id;$question_text;$question_type;$choice_id;$choice_text;$answer_count\r\n";
                 }
             } elseif (isset($result['responses'])) {
                 foreach ($result['responses'] as $response) {
                     $response_text = $response['response_text'];
                     if ($response_text !== '') {
                         $answer_count = 1;
-                        $not_answered_count = $result['not_answered'];
-                        $csv .= "$question_id;$question_text;$question_type;;$response_text;$answer_count;$not_answered_count\r\n";
+                        $csv .= "$question_id;$question_text;$question_type;;$response_text;$answer_count\r\n";
                     }
                 }
             }
