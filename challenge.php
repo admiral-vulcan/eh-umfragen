@@ -1,7 +1,7 @@
 <section id="intro">
     <?php
 
-    use assets\php\classes\Creators;
+    use EHUmfragen\DatabaseModels\Creators;
 
     require_once "gitignore/gcred.php";
 
@@ -22,9 +22,9 @@
     $sent = "";
     if (isset($_POST['google_id']) && $_POST['google_id'] != "") {
         //login google
-        $creator_id = get_creator_id($_POST['google_id'], "google_id");
-        $mail = get_creator_mail($creator_id);
-        if (creator_is_validated($_POST['google_id'], "google_id")){
+        $creator_id = $creators->getCreatorId($_POST['google_id'], "google_id");
+        $mail = $creators->getCreatorBy($creator_id)["email"];
+        if ($creators->getCreatorValidation($_POST['google_id'], "google_id")){
 
             //login!
             my_session_start($creator_id);
@@ -38,13 +38,13 @@
 
     elseif (isset($_POST['email']) && $_POST['email'] != "") {
         //login mail & pwd
-        if (creator_has_entry($_POST['email'])) {
-            $creator_id = get_creator_id($_POST['email'], "email");
-            if (creator_is_validated($_POST['email'], "email")){
-                if (verifyPassword($creator_id, $_POST['password'])) {
+        if ($creators->getCreatorBy($_POST['email'], 'email') !== null) {
+            $creator_id = $creators->getCreatorId($_POST['email'], "email");
+            if ($creators->getCreatorValidation($_POST['email'], "email")){
+                if ($creators->verifyCreatorPassword($creator_id, $_POST['password'])) {
 
                     //login!
-                    get_creator_data($creator_id);
+                    $creators->fillSession($creator_id);
                     my_session_start($creator_id);
                     echo '<meta http-equiv="refresh" content="0; URL=/?creator=creator">';
                 }

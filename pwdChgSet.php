@@ -1,6 +1,6 @@
 <?php
 require_once ("gitignore/code.php");
-require_once ("database_com.php");
+//require_once ("database_com.php");
 
 $psetstr = "";
 if (isset($_GET["psetstr"])) $psetstr = $_GET["psetstr"];

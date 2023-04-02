@@ -4,7 +4,7 @@
         <?php
         require_once("head.php");
         require_once("gitignore/code.php");
-        require_once ("database_com.php");
+        //require_once ("database_com.php");
         require_once ("pwdChgSet.php");
         //include ("greeting.php");
 

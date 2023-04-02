@@ -142,4 +142,17 @@ class Creators extends DatabaseHandler {
         $creator = $this->getCreatorBy($string, $type);
         return $creator ? $creator['creator_id'] : false;
     }
+
+    /**
+     * Verify a creator's password.
+     *
+     * @param string $creator_id The creator ID.
+     * @param string $password The password to verify.
+     * @return bool True if the password is correct, false otherwise.
+     */
+    public function verifyCreatorPassword(string $creator_id, string $password): bool
+    {
+        $creatorData = $this->getCreatorBy($creator_id);
+        return password_verify($password, $creatorData['pwdhash']);
+    }
 }
