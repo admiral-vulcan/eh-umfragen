@@ -3,12 +3,12 @@
         <h2>EH-Umfragen</h2>
         <?php
 
-        use assets\php\classes\Users;
+        use EHUmfragen\DatabaseModels\Users;
+
         $users = new Users();
 
         require_once("head.php");
         require_once("gitignore/code.php");
-        require_once ("database_com.php");
         include ("greeting.php");
 
         $thisGets = "";

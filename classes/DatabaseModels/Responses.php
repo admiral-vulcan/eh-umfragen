@@ -20,17 +20,27 @@ class Responses extends DatabaseHandler
      * @param int $user_id The ID of the user who submitted the response
      * @return bool
      */
-    public function addResponse(int $survey_id, int $question_id, int $choice_id, string $response_text, int $user_id): bool
+    public function addResponse(int $survey_id, int $question_id, ?int $choice_id, string $response_text, int $user_id): bool
     {
-        $stmt = $this->connection->prepare("INSERT INTO responses (survey_id, question_id, choice_id, response_text, user_id) VALUES (:survey_id, :question_id, :choice_id, :response_text, :user_id)");
-        return $stmt->execute([
-            ':survey_id' => $survey_id,
-            ':question_id' => $question_id,
-            ':choice_id' => $choice_id,
-            ':response_text' => $response_text,
-            ':user_id' => $user_id
-        ]);
+        if ($choice_id === null || $choice_id === "" || $choice_id === 0) {
+            $stmt = $this->connection->prepare("INSERT INTO responses (survey_id, question_id, response_text, user_id) VALUES (:survey_id, :question_id, :response_text, :user_id)");
+            return $stmt->execute([
+                ':survey_id' => $survey_id,
+                ':question_id' => $question_id,
+                ':response_text' => $response_text,
+                ':user_id' => $user_id
+            ]);
+        } else {
+            $stmt = $this->connection->prepare("INSERT INTO responses (survey_id, question_id, choice_id, user_id) VALUES (:survey_id, :question_id, :choice_id, :user_id)");
+            return $stmt->execute([
+                ':survey_id' => $survey_id,
+                ':question_id' => $question_id,
+                ':choice_id' => $choice_id,
+                ':user_id' => $user_id
+            ]);
+        }
     }
+
 
     /**
      * Get all responses by user.
@@ -161,4 +171,21 @@ class Responses extends DatabaseHandler
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Check if a user has already submitted a response to a survey.
+     *
+     * @param int $survey_id The ID of the survey to check
+     * @param int $user_id The ID of the user to check
+     * @return bool Returns true if the user has already submitted a response, false otherwise
+     */
+    public function hasUserSubmittedResponse(int $survey_id, int $user_id): bool
+    {
+        $responses = $this->getResponsesBy($survey_id, "survey_id");
+        foreach ($responses as $response) {
+            if ($response['user_id'] == $user_id) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

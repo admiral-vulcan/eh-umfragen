@@ -5,9 +5,10 @@
 
         use EHUmfragen\DatabaseModels\Users;
         use EHUmfragen\DatabaseModels\Responses;
-        use EHUmfragen\DatabaseModels\Surveys;
 
         $users = new Users();
+
+        require_once ("gitignore/code.php");
 
         if (!isset($ver_float)) $ver_float = 0;
         if (!isset($this_uri)) $this_uri = "";
@@ -17,20 +18,22 @@
         $sent = "";
 
 
-        function fillDB($user_id) {
-            $surveys = new Surveys();
+        function fill_survey($user_id) {
             $responses = new Responses();
-            $survey_id = $surveys->getSurveysIdsBy($_GET['survey'], "title")[0];
-            foreach ($_POST as $key => $value) {
-                if (intval($key) > 0) { //POST contains other data, only question_id are int
-                    if (intval($value) > 0) //non-free_text (int) vs free_text (string)
-                        $responses->addResponse($survey_id, $key, $value, "", $user_id);
-                    else
-                        $responses->addResponse($survey_id, $key, "", $value, $user_id);
+            $survey_id = $_POST["survey_id"];
+            if ($responses->hasUserSubmittedResponse($survey_id, $user_id)) return -1;
+            else {
+                foreach ($_POST as $key => $value) {
+                    if (intval($key) > 0) { //POST contains other data, only question_id are int
+                        if (intval($value) > 0) //non-free_text (int) vs free_text (string)
+                            $responses->addResponse(intval($survey_id), intval($key), intval($value), "", $user_id);
+                        else
+                            $responses->addResponse(intval($survey_id), intval($key), 0, $value, $user_id);
+                    }
                 }
+                return 0;
             }
         }
-
         //check target:
         $target = $_POST["target"];
         $mailneedle = ["@", "@"];
@@ -61,9 +64,9 @@
                 $mailhash = md5(String2Hex($email));
                 $uid = $users->getUserIdByMailHash($mailhash);
                 if ($uid < 1) $uid = $users->addUser($target, $mailhash); //TODO check if already answered
-                if (fill_survey($_POST["survey_id"], $uid, $answers) === 0) { //answers is two-dim-array [answer-nums][answers-per-num]
+                echo $uid;
+                if (fill_survey($uid) === 0) {
 
-                    $uid = decodeString($_GET["uid"]);
                     if (!$users->getUserValidation($uid)) {
                         $sent = sendconfirmation($uid, $email, $target);
                         echo "<h3>Vielen Dank!</h3>";
