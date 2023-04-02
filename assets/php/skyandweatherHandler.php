@@ -291,3 +291,27 @@ echo $data->{$stationId}->forecast1->start;
  */
 
 ?>
+<script type="application/javascript">
+    // Error correction: This is erasing all raindrops that are outside the visible zone and are not falling
+    // Get all the raindrop elements
+    const raindrops = document.querySelectorAll('.raindrop');
+
+    // Check if each raindrop is visible and remove it if it's not in the upper third of the viewport
+    function removeInvisibleRaindrops() {
+        const viewportTop = window.scrollY;
+        const viewportBottom = viewportTop + window.innerHeight / 3;
+
+        raindrops.forEach((raindrop) => {
+            const rect = raindrop.getBoundingClientRect();
+            const hasFallen = raindrop.dataset.fallen === 'true';
+            if (rect.bottom < viewportTop && hasFallen) {
+                raindrop.remove();
+            } else if (rect.bottom > viewportTop) {
+                raindrop.dataset.fallen = 'true';
+            }
+        });
+    }
+
+    // Call the function periodically to remove invisible raindrops
+    setInterval(removeInvisibleRaindrops, 1000); // adjust the interval as needed
+</script>

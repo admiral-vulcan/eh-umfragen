@@ -42,7 +42,7 @@ class Responses extends DatabaseHandler
      */
     public function getResponsesBy(string $string, string $type = "survey_id"): false|array
     {
-        $stmt = $this->connection->prepare("SELECT * FROM responses WHERE $type = ?");
+        $stmt = $this->connection->prepare("SELECT * FROM responses WHERE $type = ? ORDER BY id ASC");
         $stmt->execute([$string]);
         return $stmt->fetchAll();
     }
@@ -86,5 +86,50 @@ class Responses extends DatabaseHandler
         $stmt = $this->connection->prepare("SELECT COUNT(DISTINCT user_id) FROM responses WHERE survey_id = :survey_id");
         $stmt->execute([':survey_id' => $survey_id]);
         return (int)$stmt->fetchColumn();
+    }
+
+    public function countResponsesByChoiceId(int $choice_id): int
+    {
+        $sql = "SELECT COUNT(*) FROM responses WHERE choice_id = :choice_id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':choice_id', $choice_id, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function countUniqueUsersByChoice(int $question_id, int $question_choice): int
+    {
+        $sql = "SELECT COUNT(DISTINCT user_id) FROM responses WHERE question_id = :question_id AND choice_id = :question_choice";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':question_id', $question_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':question_choice', $question_choice, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function countResponsesByChoiceIdAndReferenceChoice(int $choice_id, int $ref_question_id, int $ref_question_choice): int
+    {
+        $sql = "SELECT COUNT(*) FROM responses AS r1 JOIN responses AS r2 ON r1.user_id = r2.user_id WHERE r1.choice_id = :choice_id AND r2.question_id = :ref_question_id AND r2.choice_id = :ref_question_choice";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':choice_id', $choice_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':ref_question_id', $ref_question_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':ref_question_choice', $ref_question_choice, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getResponsesByQuestionIdAndReferenceChoice(int $question_id, int $ref_question_id, int $ref_question_choice): array
+    {
+        $sql = "SELECT r1.* FROM responses AS r1 JOIN responses AS r2 ON r1.user_id = r2.user_id WHERE r1.question_id = :question_id AND r2.question_id = :ref_question_id AND r2.choice_id = :ref_question_choice";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':question_id', $question_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':ref_question_id', $ref_question_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':ref_question_choice', $ref_question_choice, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }

@@ -19,7 +19,7 @@ class Creators extends DatabaseHandler {
      * @param string $type The type of value to search for, either 'creator_id', 'google_id', or 'email'.
      * @return array|null The creator's data as an associative array, or null if not found.
      */
-    private function getCreatorBy(string $value, string $type = "creator_id"): ?array {
+    public function getCreatorBy(string $value, string $type = "creator_id"): ?array {
         $stmt = $this->connection->prepare("SELECT * FROM creators WHERE $type = :value");
         $stmt->execute([':value' => $value]);
         return $stmt->fetch(PDO::FETCH_ASSOC);

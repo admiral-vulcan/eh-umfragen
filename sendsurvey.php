@@ -1,10 +1,12 @@
 <section id="intro">
     <header>
         <h2>EH-Umfragen</h2>
-
         <?php
 
-        use assets\php\classes\Users;
+        use EHUmfragen\DatabaseModels\Users;
+        use EHUmfragen\DatabaseModels\Responses;
+        use EHUmfragen\DatabaseModels\Surveys;
+
         $users = new Users();
 
         if (!isset($ver_float)) $ver_float = 0;
@@ -14,19 +16,17 @@
         $answers[][] = 0;
         $sent = "";
 
-        foreach ($_POST as $key => $value) {
-            //echo $value . "<br>";
-            if (intval(substr($key, 0, 1)) > 0) {
-                if (str_contains($key, "x")) {
-                    if ($tmpkey == substr($key, 0, strpos($key, "x"))) $countkey++;
-                    else {
-                        $countkey = 0;
-                        $tmpkey = substr($key, 0, strpos($key, "x"));
-                    }
-                    $answers[substr($key, 0, strpos($key, "x")) - 2][$countkey] = $value;
-                }
-                else {
-                    $answers[$key - 2][0] = $value;
+
+        function fillDB($user_id) {
+            $surveys = new Surveys();
+            $responses = new Responses();
+            $survey_id = $surveys->getSurveysIdsBy($_GET['survey'], "title")[0];
+            foreach ($_POST as $key => $value) {
+                if (intval($key) > 0) { //POST contains other data, only question_id are int
+                    if (intval($value) > 0) //non-free_text (int) vs free_text (string)
+                        $responses->addResponse($survey_id, $key, $value, "", $user_id);
+                    else
+                        $responses->addResponse($survey_id, $key, "", $value, $user_id);
                 }
             }
         }
@@ -37,6 +37,7 @@
         if ($target == "ehlb_students") $mailneedle = ["@studnet.eh-ludwigsburg.de", "@studnet.eh-ludwigsburg.de"];
         elseif ($target == "ehlb_lecturers") $mailneedle = ["@lehrbeauftragte.eh-ludwigsburg.de", "@eh-ludwigsburg.de"];
         elseif ($target == "ehlb_all") $mailneedle = ["eh-ludwigsburg.de", "eh-ludwigsburg.de"];
+        elseif (str_contains($target, "@")) $mailneedle = [$target, $target];
 
         if ($target == "ehlb_students") {
             $nice = ["Du bist toll!", "Du bist großartig!", "Du hast uns eine große Freude gemacht!", "Du bist ein wunderbarer Mensch!"];
@@ -52,7 +53,6 @@
             $othersurveys = "Schauen Sie sich auch gerne unsere anderen Umfragen und schon fertigen Auswertungen an. <br>Diese finden Sie auf der";
             $beCreator = "";
         }
-
         //Hier nur Studierende
         if ($target == "ehlb_students") {
             if (str_contains(strtolower($_POST["email"]), $mailneedle[0]) or str_contains(strtolower($_POST["email"]), $mailneedle[1])) {
@@ -61,7 +61,7 @@
                 $mailhash = md5(String2Hex($email));
                 $uid = $users->getUserIdByMailHash($mailhash);
                 if ($uid < 1) $uid = $users->addUser($target, $mailhash); //TODO check if already answered
-                if (fill_survey($_POST["sid"], $uid, $answers) === 0) { //answers is two-dim-array [answer-nums][answers-per-num]
+                if (fill_survey($_POST["survey_id"], $uid, $answers) === 0) { //answers is two-dim-array [answer-nums][answers-per-num]
 
                     $uid = decodeString($_GET["uid"]);
                     if (!$users->getUserValidation($uid)) {

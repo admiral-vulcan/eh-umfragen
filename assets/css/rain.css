@@ -1,7 +1,7 @@
 /* rainfall animation */
 
 .raindrop {
-    position: fixed;
+    position: absolute;
     width: 0.2vw;
     height: 1vw;
     background: var(--rain);

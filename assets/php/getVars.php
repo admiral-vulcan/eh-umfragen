@@ -96,8 +96,6 @@ if ($GLOBALS["color_scheme"] === "light") $GLOBALS["luminosity"] = "light";
 elseif ($GLOBALS["color_scheme"] === "dark" ) $GLOBALS["luminosity"] = "dark";
 elseif ($GLOBALS["prefers_color_scheme"] === "dark") $GLOBALS["luminosity"] = "dark";
 else $GLOBALS["luminosity"] = "light";
-
-$GLOBALS["luminosity"];
 ?>
 <script type="application/javascript">
     const testDomain = "<?php echo $GLOBALS["testDomain"]; ?>";

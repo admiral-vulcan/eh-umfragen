@@ -125,4 +125,17 @@ class Surveys extends DatabaseHandler {
         $ownedSurveys = $stmt->fetchAll(PDO::FETCH_COLUMN);
         return implode(';', $ownedSurveys);
     }
+
+    /**
+     * Get all survey IDs.
+     *
+     * @return int[]
+     */
+    public function getAllSurveyIds(): array
+    {
+        $stmt = $this->connection->prepare("SELECT id FROM surveys ORDER BY id ASC");
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
 }

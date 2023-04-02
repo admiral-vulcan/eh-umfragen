@@ -25,7 +25,7 @@ class DatabaseHandler {
         require_once ("gitignore/code.php");
         require_once ("sanitize.php");
         require_once("gitignore/dbcred.php");
-        require_once ("passwordcheck.php");
+        if (!strpos($_SERVER['REQUEST_URI'], 'downloadCsv')) require_once ("passwordcheck.php");
 
         $dbuser = $GLOBALS["dbuser"];
         $dbpwd = $GLOBALS["dbpwd"];

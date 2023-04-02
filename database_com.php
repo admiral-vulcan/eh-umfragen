@@ -1,7 +1,7 @@
 <?php
+/* no longer in use
 require_once("gitignore/dbcred.php");
 require_once ("passwordcheck.php");
-
 
 
 function set_creatorValidated($creator_id) { //UPDATE users SET email = ? WHERE id = ?
@@ -525,7 +525,7 @@ function fill_survey($sid, $uid, $answers) {
                     echo $valplaceholder . "<br>";
         */
 
-
+/*
         try {
             $query = "INSERT INTO `" . $sid . "`(" . $rownames . ") VALUES (" . $valplaceholder . ")";
             //$pdo = new PDO('mysql:host=localhost;dbname=eh-umfragen-2', $GLOBALS["dbuser"], $GLOBALS["dbpwd"]);
@@ -589,6 +589,7 @@ function read_surveys($sid) {
                 echo $questions[$i] . "<br>";
             }
         */
+/*
         $i = 0;
         $statement = $pdo->prepare("SELECT * FROM `" . $sid . "`");
         $statement->execute();
@@ -600,6 +601,7 @@ function read_surveys($sid) {
                 echo $j . " ";
                 echo $row[$j] . "<br>";
                 */
+/*
             }
             $answers[$i][sizeof($questions) - 2] = date("d.m.Y", $row["timestamp"]) . " " . date("H:i", $row["timestamp"]) . " Uhr";
             $answers[$i][sizeof($questions) - 1] = $row["uid"];
@@ -674,5 +676,5 @@ function read_surveys($sid) {
 }
 if (isset($_GET["storeresults"]) && intval($_GET["storeresults"]) > 0) echo read_surveys(intval($_GET["storeresults"]));
 
-
+*/
 ?>

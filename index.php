@@ -4,6 +4,7 @@ require_once ('autoload.php');
 use EHUmfragen\DatabaseModels\Surveys;
 
 require_once ("assets/php/getVars.php");
+
 session_start();
 $ver_str = "0.9.7";                      //0.9.5
 $ver_float = verToInt($ver_str);     //0.95
@@ -22,34 +23,19 @@ require_once ("gitignore/code.php");
 require_once ("sanitize.php");
 require_once ("sendmail.php");
 require_once("gitignore/dbcred.php");
-require_once ("database_com.php");
 require_once ("session_handler.php");
-require_once ("loadsurveys.php");
-require_once ("loadresults.php");
 
-if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
-else  $draft = "";
-if (!isset($allSurveys)) $surveys = [];
-if ( isset($_GET["survey"]) ) {
-
-    $thisSurveyNumber = -1;
-    for ($i = 0; $i < sizeof($surveys); $i++) {
-        if (array_search(str_replace("_", " ", $_GET["survey"]), $surveys[$i][0]) === 1) {
-            $thisSurveyNumber = $i;
-        }
-    }
-    $title = "eh-umfragen.de - " . translate($surveys[$thisSurveyNumber][0][1], "de", $GLOBALS["lang"]);
-    $description1 = $surveys[$thisSurveyNumber][0][2];
-    $description1 = translate($surveys[$thisSurveyNumber][0][2], "de", $GLOBALS["lang"]);
-}
 require_once ("graphdrawer.php");
 require_once("assets/php/skyandweatherHandler.php");
 
-function secondsToTime($seconds) {
-    $dtF = new \DateTime('@0');
-    $dtT = new \DateTime("@$seconds");
-    return $dtF->diff($dtT)->format('%a Tage und %h Stunden'); // und %i Minuten %s Sekunden
-}
+
+
+if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
+else  $draft = "";
+$allSurveys = new Surveys();
+$allSurveyIds = $allSurveys->getAllSurveyIds();
+
+
 if ($GLOBALS["testDomain"]) {
     $testInfo = alert("Potentiell fehlerhaltige Testversion", "
     Du befindest Dich auf der Test-Domain test.eh-umfragen.de. 
@@ -59,8 +45,8 @@ if ($GLOBALS["testDomain"]) {
     <br>Falls Du unabsichtlich hier angekommen bist, gehe bitte zur produktiven Domain zurück: <a href='https://www.eh-umfragen.de'>www.eh-umfragen.de</a>.
     ", "description", false);
     echo '<div style="position: fixed; bottom: 0; width: 100%; z-index: 20000;"><h2 style="text-align: center;"><a style="cursor: pointer;" onclick="showAlert(' . $testInfo . ')">' .
- translate("Potentiell fehlerhaltige Testversion", 'de', $GLOBALS['lang'])
- . '</a></h2></div>';
+        translate("Potentiell fehlerhaltige Testversion", 'de', $GLOBALS['lang'])
+        . '</a></h2></div>';
 }
 if (isset($_GET["error_survey_not_found"])) {
     //alert("Umfrage nicht gefunden", "Der Umfrage-Link konnte keiner Umfrage zugeordnet werden.", "description", true);
@@ -77,7 +63,7 @@ if (isset($_GET["error_survey_not_found"])) {
         <nav class="main" style="min-height: 4em;">
             <ul>
                 <li class="menu">
-                    <a class="fa-bars" id="mainmenu" href="#menu" tabindex="2" aria-label="<?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>"><?php echo translate("Menü", "de", $GLOBALS["lang"]); ?></a
+                    <a class="fa-bars" id="mainmenu" onclick="toggleMenu();" tabindex="2" aria-label="<?php echo translate("Menü", "de", $GLOBALS["lang"]); ?>"><?php echo translate("Menü", "de", $GLOBALS["lang"]); ?></a
                 </li>
             </ul>
         </nav>
@@ -181,8 +167,8 @@ if (isset($_GET["error_survey_not_found"])) {
                     </select>
                 </div>
             </div>
-                <h3><?php echo translate("Startseite", "de", $GLOBALS["lang"]); ?></h3>
-                <a href="/">
+            <h3><?php echo translate("Startseite", "de", $GLOBALS["lang"]); ?></h3>
+            <a href="/">
                 <p style=''><?php echo translate("Zurück zur Startseite", "de", $GLOBALS["lang"]); ?></p>
             </a>
             <br>
@@ -224,13 +210,23 @@ if (isset($_GET["error_survey_not_found"])) {
             ?>
             <br><h3><?php echo translate("Umfragen", "de", $GLOBALS["lang"]); ?></h3>
             <?php
-            for ($i = sizeof($surveys) - 1; $i >= 0 ; $i--) {
-                $thisid = utf8Encode($surveys[$i][0][0]);
-                if (get_hasresults($thisid) == 1) $activestate = "Ergebnisse";
-                elseif (get_active($thisid) == 0) $activestate = "geschlossen";
-                else $activestate = "offen";
-                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "'>
-                    <p>" . "#" . $thisid . " ". translate($surveys[$i][0][1], "de", $GLOBALS["lang"]) . "</p></a>&emsp;➥". translate($surveys[$i][0][2], "de", $GLOBALS["lang"]) . "<br><br><br>";
+            //load surveys for menu
+            foreach ($allSurveyIds as $survey_id) {
+                $survey = $allSurveys->getSurvey($survey_id);
+                if ((isset($_GET["draft"]) && $_GET["draft"] == "1") && $survey["is_draft"]) {
+                    if ($survey["has_results"]) $activestate = "Vorschau, Ergebnisse";
+                    elseif (!$survey["active"]) $activestate = "Vorschau, geschlossen";
+                    else $activestate = "Vorschau, offen";
+                    echo "<a href='?survey=" . urlencode($survey["title"]) . "&draft=1" . "'>
+                    <p>" . "#" . $survey_id . " ". translate($survey["title"], "de", $GLOBALS["lang"]) . "</p></a>&emsp;➥". translate($survey["subtitle"], "de", $GLOBALS["lang"]) . "<br><br><br>";
+                }
+                elseif ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_draft"]) {
+                    if ($survey["has_results"]) $activestate = "Ergebnisse";
+                    elseif (!$survey["active"]) $activestate = "geschlossen";
+                    else $activestate = "offen";
+                    echo "<a href='?survey=" . urlencode($survey["title"]) . "'>
+                    <p>" . "#" . $survey_id . " ". translate($survey["title"], "de", $GLOBALS["lang"]) . "</p></a>&emsp;➥". translate($survey["subtitle"], "de", $GLOBALS["lang"]) . "<br><br><br>";
+                }
             }
             ?>
         </section>
@@ -257,11 +253,11 @@ if (isset($_GET["error_survey_not_found"])) {
         //testing class Surveys();
         $surveys = new Surveys();
         foreach ($surveys->getSurvey(1) as $key => $value) {
-         echo $key . ": " . $value . "<br>";
+        echo $key . ": " . $value . "<br>";
         }
         echo $surveys->getSurvey(1)["title"];
         echo "<br>";
-        */
+         */
         ?>
         <!-- Footer -->
         <div style="white-space: normal;">
@@ -274,34 +270,34 @@ if (isset($_GET["error_survey_not_found"])) {
                     <li><a href="mailto:kontakt@eh-umfragen.de" class="icon solid fa-envelope"><span class="label">E-Mail</span></a></li>
                 </ul>
                 <div class="copyright">
-                <p>eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de"><?php echo translate("Kontakt", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=impressum" target="_blank"><?php echo translate("Impressum", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=agb" target="_blank"><?php echo translate("AGB", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=cookies" target="_blank"><?php echo translate("Cookies", "en", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank"><?php echo translate("Datenschutz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=lizenz" target="_blank"><?php echo translate("Lizenz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank"><?php echo translate("Übertragung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank"><?php echo translate("Passwortspeicherung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank"><?php echo translate("Mailnutzung", "de", $GLOBALS["lang"]); ?></a><br><br><br>
-                    <?php echo translate('Quellen:', 'de', $GLOBALS['lang']); ?>
-                    <br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
-                    <br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,
-                    <br><a href="https://www.deepl.com/" target="_blank" rel="nofollow">DeepL</a>,
-                    <br><a href="https://unsplash.com" target="_blank" rel="nofollow">Unsplash</a>,
-                    <br><a href="https://fontawesome.com" target="_blank" rel="nofollow">Font Awesome</a>,
-                    <br><a href="https://jquery.com" target="_blank" rel="nofollow">jQuery</a>,
-                    <br><a href="https://github.com/ajlkn/responsive-tools" target="_blank" rel="nofollow">Responsive Tools</a>,
-                    <br><a href="https://colorbrewer2.org/#type=qualitative&scheme=Set3&n=12" target="_blank" rel="nofollow">COLORBREWER</a>,
-                    <br><a href="https://github.com/WebDevSHORTS/Parallax-Star-Background" target="_blank" rel="nofollow">Parallax Star background</a>,
-                    <br><a href="https://www.schattenbaum.net/php/kreisdiagramm_mit_gd-lib.php" target="_blank" rel="nofollow">Kreisdiagramm</a>,
-                    <br><a href="http://www.ulrichmierendorff.com/software/antialiased_arcs.html" target="_blank" rel="nofollow">Antialiased Filled Arcs</a>,
-                    <br><a href="https://datenschutz-generator.de/" target="_blank" rel="nofollow">Datenschutz-Generator.de von Dr. Thomas Schwenke</a>,
-                    <br><br><a href="/LICENSE.md" target="_blank"><?php echo translate('Apache Lizenz (Textfassung, Englisch), Version 2.0', 'de', $GLOBALS['lang']); ?></a>
-                    <?php
-                    if ( isset($_GET["content"]) && (
-                        $_GET["content"] === "impressum" or
-                        $_GET["content"] === "agb" or
-                        $_GET["content"] === "cookies" or
-                        $_GET["content"] === "datenschutz" or
-                        $_GET["content"] === "secureinfo" or
-                        $_GET["content"] === "passwordinfo" or
-                        $_GET["content"] === "mailinfo"
-                        )
-                    ) echo "<br><br><br><br><br><br>";
-                    ?>
-                </p></div>
+                    <p>eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de"><?php echo translate("Kontakt", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=impressum" target="_blank"><?php echo translate("Impressum", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=agb" target="_blank"><?php echo translate("AGB", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=cookies" target="_blank"><?php echo translate("Cookies", "en", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank"><?php echo translate("Datenschutz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=lizenz" target="_blank"><?php echo translate("Lizenz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank"><?php echo translate("Übertragung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank"><?php echo translate("Passwortspeicherung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank"><?php echo translate("Mailnutzung", "de", $GLOBALS["lang"]); ?></a><br><br><br>
+                        <?php echo translate('Quellen:', 'de', $GLOBALS['lang']); ?>
+                        <br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
+                        <br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,
+                        <br><a href="https://www.deepl.com/" target="_blank" rel="nofollow">DeepL</a>,
+                        <br><a href="https://unsplash.com" target="_blank" rel="nofollow">Unsplash</a>,
+                        <br><a href="https://fontawesome.com" target="_blank" rel="nofollow">Font Awesome</a>,
+                        <br><a href="https://jquery.com" target="_blank" rel="nofollow">jQuery</a>,
+                        <br><a href="https://github.com/ajlkn/responsive-tools" target="_blank" rel="nofollow">Responsive Tools</a>,
+                        <br><a href="https://colorbrewer2.org/#type=qualitative&scheme=Set3&n=12" target="_blank" rel="nofollow">COLORBREWER</a>,
+                        <br><a href="https://github.com/WebDevSHORTS/Parallax-Star-Background" target="_blank" rel="nofollow">Parallax Star background</a>,
+                        <br><a href="https://www.schattenbaum.net/php/kreisdiagramm_mit_gd-lib.php" target="_blank" rel="nofollow">Kreisdiagramm</a>,
+                        <br><a href="http://www.ulrichmierendorff.com/software/antialiased_arcs.html" target="_blank" rel="nofollow">Antialiased Filled Arcs</a>,
+                        <br><a href="https://datenschutz-generator.de/" target="_blank" rel="nofollow">Datenschutz-Generator.de von Dr. Thomas Schwenke</a>,
+                        <br><br><a href="/LICENSE.md" target="_blank"><?php echo translate('Apache Lizenz (Textfassung, Englisch), Version 2.0', 'de', $GLOBALS['lang']); ?></a>
+                        <?php
+                        if ( isset($_GET["content"]) && (
+                                $_GET["content"] === "impressum" or
+                                $_GET["content"] === "agb" or
+                                $_GET["content"] === "cookies" or
+                                $_GET["content"] === "datenschutz" or
+                                $_GET["content"] === "secureinfo" or
+                                $_GET["content"] === "passwordinfo" or
+                                $_GET["content"] === "mailinfo"
+                            )
+                        ) echo "<br><br><br><br><br><br>";
+                        ?>
+                    </p></div>
             </section>
         </div>
     </div>
@@ -327,5 +323,21 @@ if ($GLOBALS["testDomain"]) {
     echo "<br> Serverseitige Seitenladezeit: $elapsed ms.<br><br><br><br><br><br>";
 }
 if (isset($_GET["tabclose"]) && $_GET["tabclose"] == "1") echo "<br><br><br><br><br><br>";
-    echo "</html>";
+echo "</html>";
 ?>
+
+<script type="application/javascript">
+    function toggleMenu() {
+        var body = document.body;
+        var menuButton = document.getElementById("mainmenu");
+        if (body.classList.contains("is-menu-visible")) {
+            body.classList.remove("is-menu-visible");
+            menuButton.setAttribute("aria-expanded", "false");
+        } else {
+            setTimeout(function() {
+                body.classList.add("is-menu-visible");
+            }, 50);
+            menuButton.setAttribute("aria-expanded", "true");
+        }
+    }
+</script>

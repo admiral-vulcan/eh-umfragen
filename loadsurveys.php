@@ -9,6 +9,7 @@
  * [datei][1...][1] = Frage
  * [datei][1...][2...] = Optionen
  */
+/* no longer in use
 
 $surveys = [];
 if (isset($_GET["draft"]) == "1") $files = glob("survey-drafts/*.csv");
@@ -73,6 +74,7 @@ function loadSurveys() {
     }
     return $surveys;
 }
+*/
 //testing
 /*
 echo "Umfragetitel: ";

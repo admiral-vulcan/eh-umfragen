@@ -9,49 +9,29 @@
  * [datei][1...][1] = Frage
  * [datei][1...][2...] = Optionen
  */
+/*
+use EHUmfragen\DatabaseModels\Surveys;
+use EHUmfragen\DatabaseModels\Responses;
+use EHUmfragen\DatabaseModels\Questions;
 
-function loadResults($sid_or_sname) {
-    if (intval($sid_or_sname) > 0) {
-        $output["name"] = get_survey_name($sid_or_sname);
-        $output["survey_id"] = $sid_or_sname;
-    }
-    elseif (strlen($sid_or_sname) > 3) {
-        $output["name"] = $sid_or_sname;
-        $output["survey_id"] = get_survey_id($sid_or_sname);
-    }
-    else return -1;
+function loadResults($survey_id) {
+    $allSurveys = new Surveys();
+    $survey = $allSurveys->getSurvey($survey_id);
 
-    $results = [];
-    $files = glob("results/*.csv");
-    $fileNotFound = true;
-    for ($i = 0; $i < sizeof($files); $i++) {
-        $j = 0; //this row
-        if (str_contains(strtolower($files[$i]), strtolower($output["name"]))) {
-            $fileNotFound = false;
-            $handle = fopen($files[$i], "r");
-            $output["file"] = $files[$i];
-            while (($data = fgetcsv($handle, null, ";")) !== FALSE) {
-                $columns = count($data);
-                if ($j <= 1) {
-                    for ($c = 0; $c < $columns; $c++) {
-                        if ($data[$c] === "") {
-                            $columns = $c;
-                            break;
-                        }
-                    }
-                }
-                for ($c = 0; $c < $columns; $c++) {
-                    if (isset($data[$c]) && $data[$c] != "") $results[$j][$c] = utf8Encode($data[$c]);
-                    else $results[$j][$c] = 0;
-                }
-                $j++;
-            }
-            fclose($handle);
-            break;
-        }
-    }
+    $allResponses = new Responses();
+    $responses = $allResponses->getResponsesBy($survey_id);
 
-    $output["countOfQuestions"] =  sizeof($results[1]) - 2 ;
+    $allQuestions = new Questions();
+    $questions = $allQuestions->getQuestionsBySurveyId($survey_id);
+
+
+        $output["name"] = $survey["title"];
+        $output["survey_id"] = $survey_id;
+
+
+
+
+    $output["countOfQuestions"] =  count($questions);
     for ($j = 1; $j < sizeof($results); $j++) {
         for ($k = 0; $k < sizeof($results[$j]); $k++) {
             if ($j == 1) {  //here we get Questions [0] and answers [1..n]
@@ -257,4 +237,5 @@ function getSurveyHeads($surveys, $thisSurveyNumber) {
 if (isset($_GET["survey_id"]) && $_GET["survey_id"] != "") {
     loadResults($_GET["survey_id"]);
 }
+*/
 ?>

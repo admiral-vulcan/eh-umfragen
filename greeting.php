@@ -1,75 +1,79 @@
+<?php
+use EHUmfragen\DatabaseModels\Surveys;
+$allSurveys = new Surveys();
+$allSurveyIds = $allSurveys->getAllSurveyIds();
+?>
 <section id="">
     <header>
         <h1>eh-umfragen.de - <?php echo translate("Eure Umfragen", "de", $GLOBALS["lang"]); ?></h1>
         <?php echo zitat("antworten"); ?>
         <br>
-        <h2><?php echo translate("Aktuelle Umfragen", "de", $GLOBALS["lang"]); ?></h2>
+        <h2>
+            <?php
+
+            //active surveys
+            echo translate("Aktuelle Umfragen", "de", $GLOBALS["lang"]); ?></h2>
         <?php
         if (isset($_GET["draft"]) && $_GET["draft"] == "1") $draft = "&draft=1";
         else  $draft = "";
-        if (!isset($surveys)) $surveys = [];
-        if (sizeof($surveys) > 0) {
-            for ($i = sizeof($surveys) - 1; $i >= 0 ; $i--) {
-                $thisid = utf8Encode($surveys[$i][0][0]);
-                if (get_active($thisid) != 0) {
-                    $activestate = "offen seit ". date("d. m. Y, H:i", get_since($thisid)) . " Uhr";
-                    $activestate = translate($activestate, "de", $GLOBALS["lang"]);
-                    echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "' rel='nofollow'><h3>" .
-                        "&emsp;&emsp;#" . $thisid . " ".
-                        translate($surveys[$i][0][1], "de", $GLOBALS["lang"]) . " (".
-                        $activestate
-                        .")</h3><p>&emsp;&emsp;" . translate($surveys[$i][0][2], "de", $GLOBALS["lang"]) . "</p></a>";
-                }
-            }
-        } else echo "<p>&emsp;&emsp;Schau bald wieder vorbei. Momentan gibt es keine aktiven Umfragen.</p>";
-        echo "<br>";
-        echo translate("
-        <h2>Umfragenergebnisse</h2>
-        ", "de", $GLOBALS["lang"]);
-        $hasresults = 0;
-        for ($i = sizeof($surveys) - 1; $i >= 0 ; $i--) {
-            $thisid = utf8Encode($surveys[$i][0][0]);
-            if (get_active($thisid) == 0 && get_hasresults($thisid) == 1) {
-                $hasresults++;
-                $inactivesince = get_inactivesince($thisid);
-                $since = get_since($thisid);
-                $wasactive = $inactivesince - $since;
-                $wasactive = translate($wasactive, "de", $GLOBALS["lang"]);
-                $activestate = "war " . secondsToTime($wasactive) . " offen";
+        $any_active = false;
+        foreach ($allSurveyIds as $survey_id) {
+            $survey = $allSurveys->getSurvey($survey_id);
+            if ($survey["is_active"]) {
+                $any_active = true;
+                $activestate = "offen seit ". $survey["activated_at"];
                 $activestate = translate($activestate, "de", $GLOBALS["lang"]);
-                echo "<a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "' rel='nofollow'><h3>" .
-                    "&emsp;&emsp;#" . $thisid . " ".
-                    translate($surveys[$i][0][1], "de", $GLOBALS["lang"]) . " (" .
+                echo "<a href='?survey=" . urlencode($survey["title"]) . $draft . "' rel='nofollow'><h3>" .
+                    "&emsp;&emsp;#" . $survey_id . " ".
+                    translate($survey["title"], "de", $GLOBALS["lang"]) . " (".
                     $activestate
-                    . ")</h3><p>&emsp;&emsp;" . translate($surveys[$i][0][2], "de", $GLOBALS["lang"]) . "</p></a>";
+                    .")</h3><p>&emsp;&emsp;" . translate($survey["subtitle"], "de", $GLOBALS["lang"]) . "</p></a>";
             }
         }
-        if ($hasresults === 0)
-            echo translate("
-<p>&emsp;&emsp;Schau bald wieder vorbei. Momentan gibt es noch keine Ergebnisse.</p><br>
-        ", "de", $GLOBALS["lang"]);
+        if (!$any_active) echo translate("<p>&emsp;&emsp;Schau bald wieder vorbei. Momentan gibt es keine aktiven Umfragen.</p>", "de", $GLOBALS["lang"]);
         echo "<br>";
+
+        //inactive surveys that have results
+        echo translate("
+        <h2>Umfrageergebnisse</h2>
+        ", "de", $GLOBALS["lang"]);
+        $any_results = false;
+        foreach ($allSurveyIds as $survey_id) {
+            $survey = $allSurveys->getSurvey($survey_id);
+            if ($survey["has_results"]) {
+                $any_results = true;
+                $resultstate = "hat Ergebnisse seit ". $survey["results_received_at"];
+                $resultstate = translate($resultstate, "de", $GLOBALS["lang"]);
+                echo "<a href='?survey=" . urlencode($survey["title"]) . $draft . "' rel='nofollow'><h3>" .
+                    "&emsp;&emsp;#" . $survey_id . " ".
+                    translate($survey["title"], "de", $GLOBALS["lang"]) . " (".
+                    $resultstate
+                    .")</h3><p>&emsp;&emsp;" . translate($survey["subtitle"], "de", $GLOBALS["lang"]) . "</p></a>";
+            }
+        }
+        if (!$any_results) echo translate("<p>&emsp;&emsp;Schau bald wieder vorbei. Momentan gibt es noch keine Ergebnisse.</p>", "de", $GLOBALS["lang"]);
+        echo "<br>";
+
+        //inactive surveys that do not have results
         echo translate("
         <h2>Geschlossene Umfragen - In Auswertung</h2>
         ", "de", $GLOBALS["lang"]);
-        $ineval = 0;
-        for ($i = sizeof($surveys) - 1; $i >= 0 ; $i--) {
-            $thisid = utf8Encode($surveys[$i][0][0]);
-            if (get_active($thisid) == 0 && get_hasresults($thisid) == 0) {
-                $ineval++;
-                $activestate = "geschlossen seit " . date("d. m. Y, H:i", get_inactivesince($thisid)) . " Uhr";
-                echo translate("
-                <a href='?survey=" . str_replace(" ", "_", $surveys[$i][0][1]) . $draft . "' rel='nofollow'><h3>" .
-                    "&emsp;&emsp;#" . $thisid . " ".
-                    $surveys[$i][0][1] . " (" .
-                    $activestate
-                    . ")</h3><p>&emsp;&emsp;" . $surveys[$i][0][2] . "</p></a>
-        ", "de", $GLOBALS["lang"]);
+        $inactive_no_results = false;
+        foreach ($allSurveyIds as $survey_id) {
+            $survey = $allSurveys->getSurvey($survey_id);
+            if ($survey["inactive"] && !$survey["has_results"]) {
+                $inactive_no_results = true;
+                $inactivestate = "ist geschlossen seit ". $survey["inactivated_at"];
+                $inactivestate = translate($inactivestate, "de", $GLOBALS["lang"]);
+                echo "<a href='?survey=" . urlencode($survey["title"]) . $draft . "' rel='nofollow'><h3>" .
+                    "&emsp;&emsp;#" . $survey_id . " ".
+                    translate($survey["title"], "de", $GLOBALS["lang"]) . " (".
+                    $inactivestate
+                    .")</h3><p>&emsp;&emsp;" . translate($survey["subtitle"], "de", $GLOBALS["lang"]) . "</p></a>";
             }
         }
-        if ($ineval === 0)
-            echo translate("<p>&emsp;&emsp;Momentan sind keine Umfragen in Auswertung.</p><br><br>
-        ", "de", $GLOBALS["lang"]);
+        if (!$inactive_no_results) echo translate("<p>&emsp;&emsp;Momentan sind keine Umfragen in Auswertung.</p>", "de", $GLOBALS["lang"]);
+        echo "<br>";
         ?>
     </header>
 </section>
