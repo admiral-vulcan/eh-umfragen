@@ -4132,12 +4132,12 @@ scrollbar {
 
 ::-webkit-scrollbar-thumb {
 	/* Handle */
-	background: var(--generic-mid-grey);
+	background: var(--generic-mid-grey) !important;
 	border-radius: 10px;
 }
 
-::-webkit-scrollbar:hover {
-
+::-webkit-scrollbar-thumb:hover {
+	background: var(--generic-hover) !important;
 }
 
 ::-webkit-scrollbar-track-piece {
