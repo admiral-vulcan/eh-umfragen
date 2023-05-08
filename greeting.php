@@ -19,7 +19,7 @@ $allSurveyIds = $allSurveys->getAllSurveyIds();
         $any_active = false;
         foreach ($allSurveyIds as $survey_id) {
             $survey = $allSurveys->getSurvey($survey_id);
-            if ($survey["is_active"]) {
+            if ($survey["is_active"] && $survey["is_visible"]) {
                 $any_active = true;
                 $activestate = "offen seit ". $survey["activated_at"];
                 $activestate = translate($activestate, "de", $GLOBALS["lang"]);
@@ -40,7 +40,7 @@ $allSurveyIds = $allSurveys->getAllSurveyIds();
         $any_results = false;
         foreach ($allSurveyIds as $survey_id) {
             $survey = $allSurveys->getSurvey($survey_id);
-            if ($survey["has_results"]) {
+            if ($survey["has_results"] && $survey["is_visible"]) {
                 $any_results = true;
                 $resultstate = "hat Ergebnisse seit ". $survey["results_received_at"];
                 $resultstate = translate($resultstate, "de", $GLOBALS["lang"]);
@@ -61,7 +61,7 @@ $allSurveyIds = $allSurveys->getAllSurveyIds();
         $inactive_no_results = false;
         foreach ($allSurveyIds as $survey_id) {
             $survey = $allSurveys->getSurvey($survey_id);
-            if ($survey["inactive"] && !$survey["has_results"]) {
+            if ($survey["inactive"] && !$survey["has_results"] && $survey["is_visible"]) {
                 $inactive_no_results = true;
                 $inactivestate = "ist geschlossen seit ". $survey["inactivated_at"];
                 $inactivestate = translate($inactivestate, "de", $GLOBALS["lang"]);

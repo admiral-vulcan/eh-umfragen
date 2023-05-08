@@ -22,7 +22,7 @@
         function fill_survey($user_id) {
             $responses = new Responses();
             $survey_id = $_POST["survey_id"];
-            if ($responses->hasUserSubmittedResponse($survey_id, $user_id)) return -1;
+            if ($user_id > 2 && $responses->hasUserSubmittedResponse($survey_id, $user_id)) return -1;
             else {
                 foreach ($_POST as $key => $value) {
                     if (intval($key) > 0) { //POST contains other data, only question_id are int
@@ -37,6 +37,7 @@
         }
         //check target:
         $target = $_POST["target"];
+        $survey_id = $_POST["survey_id"];
         $mailneedle = ["@", "@"];
         if ($target == "ehlb_students") $mailneedle = ["@studnet.eh-ludwigsburg.de", "@studnet.eh-ludwigsburg.de"];
         elseif ($target == "ehlb_lecturers") $mailneedle = ["@lehrbeauftragte.eh-ludwigsburg.de", "@eh-ludwigsburg.de"];
@@ -122,7 +123,7 @@
                 $mailhash = md5(String2Hex($email));
                 $uid = $users->getUserIdByMailHash($mailhash);
                 if ($uid < 1) $uid = $users->addUser($target, $mailhash); //TODO check if already answered
-                if (fill_survey($_POST["sid"], $uid, $answers) === 0) { //answers is two-dim-array [answer-nums][answers-per-num]
+                if (fill_survey($uid) === 0) { //answers is two-dim-array [answer-nums][answers-per-num]
 
                     if (!$users->getUserValidation($uid)) {
                         $sent = sendconfirmation($uid, $email, $target);
@@ -147,7 +148,21 @@
 
                     }
                 }
-            } else {
+            }
+            elseif ($target === "no_restriction"){
+                if (has_submitted($survey_id)) {
+                    echo "<h3>Sie haben bereits teilgenommen.</h3>";
+                    echo "<p>Eine zweite Abgabe kann leider nicht gewertet werden. Ihre ursprüngliche Abgabe wird allerdings gewertet. Danke dafür!</p>";
+                    echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
+                } else {
+                    fill_survey(1); //always open generic polite user
+                    store_submission($survey_id);
+                    echo "<h3>Vielen Dank!</h3>";
+                    echo "<p>Danke für die Abgabe, " . $nice[rand(0, 3)] . " :)</p>";
+                    echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
+                }
+            }
+            else {
                 //hier nur Mitarbeitende
                 if ($target == "ehlb_lecturers") {
                     echo "<h3>Die E-Mail-Adresse scheint keine Adresse der EH zu sein.</h3>";
@@ -167,7 +182,7 @@
                     echo "<a href='javascript:history.back()' class='button large fit'>Zurück zur Umfrage</a>";
                 }
             }
-            echo "Schauen Sie bald wieder vorbei, wenn wir nicht nur neue Fragen, sondern auch Auswertungen Ihrer aktuellen Antworten haben!</p>";
+            if ($target !== "no_restriction") echo "Schauen Sie bald wieder vorbei, wenn wir nicht nur neue Fragen, sondern auch Auswertungen Ihrer aktuellen Antworten haben!</p>";
         }
 
 
@@ -190,6 +205,29 @@
         echo $_POST["sid"] . "<br>";
         echo time();
 */
+        function has_submitted($survey_id) {
+            if (isset($_COOKIE["submitted_surveys"])) {
+                $submitted_surveys = json_decode($_COOKIE["submitted_surveys"], true);
+                return in_array($survey_id, $submitted_surveys);
+            }
+            return false;
+        }
+
+        function store_submission($survey_id) {
+            $submitted_surveys = [];
+            if (isset($_COOKIE["submitted_surveys"])) {
+                $submitted_surveys = json_decode($_COOKIE["submitted_surveys"], true);
+            }
+
+            $submitted_surveys[] = $survey_id;
+            $cookie_value = json_encode($submitted_surveys);
+            $cookie_expiration = time() + 60 * 60 * 24 * 365;
+
+            //somehow php setcookie doesnt work TODO fix this
+            echo "<script>
+        document.cookie = 'submitted_surveys=" . $cookie_value . "; expires=" . date('D, d M Y H:i:s T', $cookie_expiration) . "; path=/';
+    </script>";
+        }
         ?>
 
     </header>

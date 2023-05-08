@@ -213,19 +213,21 @@ if (isset($_GET["error_survey_not_found"])) {
             //load surveys for menu
             foreach ($allSurveyIds as $survey_id) {
                 $survey = $allSurveys->getSurvey($survey_id);
-                if ((isset($_GET["draft"]) && $_GET["draft"] == "1") && $survey["is_draft"]) {
-                    if ($survey["has_results"]) $activestate = "Vorschau, Ergebnisse";
-                    elseif (!$survey["active"]) $activestate = "Vorschau, geschlossen";
-                    else $activestate = "Vorschau, offen";
-                    echo "<a href='?survey=" . urlencode($survey["title"]) . "&draft=1" . "'>
+                if ($survey["is_visible"]) {
+                    if ((isset($_GET["draft"]) && $_GET["draft"] == "1") && $survey["is_draft"]) {
+                        if ($survey["has_results"]) $activestate = "Vorschau, Ergebnisse";
+                        elseif (!$survey["active"]) $activestate = "Vorschau, geschlossen";
+                        else $activestate = "Vorschau, offen";
+                        echo "<a href='?survey=" . urlencode($survey["title"]) . "&draft=1" . "'>
                     <p>" . "#" . $survey_id . " ". translate($survey["title"], "de", $GLOBALS["lang"]) . "</p></a>&emsp;➥". translate($survey["subtitle"], "de", $GLOBALS["lang"]) . "<br><br><br>";
-                }
-                elseif ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_draft"]) {
-                    if ($survey["has_results"]) $activestate = "Ergebnisse";
-                    elseif (!$survey["active"]) $activestate = "geschlossen";
-                    else $activestate = "offen";
-                    echo "<a href='?survey=" . urlencode($survey["title"]) . "'>
+                    }
+                    elseif ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_draft"]) {
+                        if ($survey["has_results"]) $activestate = "Ergebnisse";
+                        elseif (!$survey["active"]) $activestate = "geschlossen";
+                        else $activestate = "offen";
+                        echo "<a href='?survey=" . urlencode($survey["title"]) . "'>
                     <p>" . "#" . $survey_id . " ". translate($survey["title"], "de", $GLOBALS["lang"]) . "</p></a>&emsp;➥". translate($survey["subtitle"], "de", $GLOBALS["lang"]) . "<br><br><br>";
+                    }
                 }
             }
             ?>
@@ -259,6 +261,7 @@ if (isset($_GET["error_survey_not_found"])) {
         echo "<br>";
          */
         ?>
+        <br><br>
         <!-- Footer -->
         <div style="white-space: normal;">
             <section id="footer">
@@ -270,7 +273,7 @@ if (isset($_GET["error_survey_not_found"])) {
                     <li><a href="mailto:kontakt@eh-umfragen.de" class="icon solid fa-envelope"><span class="label">E-Mail</span></a></li>
                 </ul>
                 <div class="copyright">
-                    <p>eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger, Lena Weigelt 2023<br><br><a href="mailto:kontakt@eh-umfragen.de"><?php echo translate("Kontakt", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=impressum" target="_blank"><?php echo translate("Impressum", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=agb" target="_blank"><?php echo translate("AGB", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=cookies" target="_blank"><?php echo translate("Cookies", "en", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank"><?php echo translate("Datenschutz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=lizenz" target="_blank"><?php echo translate("Lizenz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank"><?php echo translate("Übertragung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank"><?php echo translate("Passwortspeicherung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank"><?php echo translate("Mailnutzung", "de", $GLOBALS["lang"]); ?></a><br><br><br>
+                    <p>eh-umfragen.de v. <?php echo $version; ?> &copy; Felix Rau, Miriam Brieger 2023<br><br><a href="mailto:kontakt@eh-umfragen.de"><?php echo translate("Kontakt", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=impressum" target="_blank"><?php echo translate("Impressum", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=agb" target="_blank"><?php echo translate("AGB", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=cookies" target="_blank"><?php echo translate("Cookies", "en", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=datenschutz" target="_blank"><?php echo translate("Datenschutz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=lizenz" target="_blank"><?php echo translate("Lizenz", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=secureinfo" target="_blank"><?php echo translate("Übertragung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=passwordinfo" target="_blank"><?php echo translate("Passwortspeicherung", "de", $GLOBALS["lang"]); ?></a> &ensp; &ensp; <a href="?content=mailinfo" target="_blank"><?php echo translate("Mailnutzung", "de", $GLOBALS["lang"]); ?></a><br><br><br>
                         <?php echo translate('Quellen:', 'de', $GLOBALS['lang']); ?>
                         <br><a href="https://html5up.net" target="_blank" rel="nofollow">Future Imperfect by HTML5 UP</a>,
                         <br><a href="https://pixabay.com/vectors/survey-icon-survey-icon-2316468/" target="_blank" rel="nofollow">Survey Icon</a>,

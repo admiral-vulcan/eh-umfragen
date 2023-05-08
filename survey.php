@@ -30,6 +30,11 @@ else {
     //if survey found: load survey
     $survey = $allSurveys->getSurvey($survey_id);
 
+    if ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_active"]) {
+        echo "<p>Diese Umfrage ist nicht freigeschaltet.</p> <br>";
+    }
+    else {
+
     //load target group
     if ($survey["target_group"] === "ehlb_students") $target_group_text = "Studierende der EH-Ludwigsburg";
     elseif ($survey["target_group"] === "ehlb_lecturers") $target_group_text = "Mitarbeitende der EH-Ludwigsburg";
@@ -60,7 +65,7 @@ else {
         echo translate(": Ergebnisse, n=" . $responses_count, "de", $GLOBALS["lang"]);
     }
     //am I draft?
-    if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (Entwurf, bitte nicht ausfüllen!)";
+    if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (" . translate("Entwurf, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
     //am I look back?
     if ($look_back) echo " (" . translate("Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
     echo "</h2>";
@@ -89,7 +94,7 @@ else {
         $look_back_text = "<p>" . translate("An dieser Stelle wird man die <b>Rohdaten für Excel herunterladen</b>, die Ergebnisse inkl. Grafiken <b>drucken</b> können und hier erscheint ein Link zur <b>ursprünglichen Umfrage</b>, damit man sie nochmals ansehen kann.", "de", $GLOBALS["lang"]) . "</p>";
     }
 
-    echo $target_group_text;
+    if ($survey["target_group"] !== "no_restriction" || $survey["is_visible"]) echo $target_group_text;
     echo $activated_at_text;
     if ($survey["inactivated_at"] !== "0000-00-00 00:00:00" || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivated_at_text;
     if ($has_results == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $has_results_text;
@@ -202,15 +207,24 @@ else {
     if (!((isset($_GET["draft"]) && $_GET["draft"] == "1") || $look_back) && $survey["is_active"] && !((isset($_GET["force_results"]) && $_GET["force_results"] == 1))) {
         echo "<br><br><input type='hidden' name='content' value='sendsurvey' />";
         echo "<input type='hidden' name='target' value='" . $survey["target_group"] . "' />";
-        echo '<div><p>' . translate('Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein.', 'de', $GLOBALS["lang"]) . ' <br>
+        if ($survey["target_group"] === "ehlb_students") {
+            echo '<div><p>' . translate('Bitte gib zum Schluss noch Deine studentische E-Mail-Adresse (@studnet.eh-ludwigsburg.de) ein. <br>Du bekommst dann einen Link zur Verifizierung zugesandt.', 'de', $GLOBALS["lang"]) . ' <br>
 &emsp;&emsp;<a><span tooltip="' . translate('Nur so können wir sicherstellen, dass nur die Zielgruppe und niemand mehrfach teilnimmt.', 'de', $GLOBALS["lang"]) . '">' . translate('Warum das?', 'de', $GLOBALS["lang"]) . '</span></a><br>
 &emsp;&emsp;<a><span tooltip="' . translate('Ja, denn wir speichern nur den Hash-Wert und nicht die Adresse selbst.', 'de', $GLOBALS["lang"]) . '">' . translate('Ist die Umfrage dann noch anonym?<', 'de', $GLOBALS["lang"]) . '/span></a><br>
 &emsp;&emsp;<a href="/?content=mailinfo" target="_blank">' . translate('Klicke hier für mehr Informationen.', 'de', $GLOBALS["lang"]) . '</a>
 <input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="email" id="email" name="email" required></p></div>';
+        }
+        //TODO other target groups
+        else {
+
+        }
         echo "<input type='hidden' name='survey_id' value='" . $survey_id . "' />";
         echo '<br><input type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
 
 
+    }
+    elseif (isset($_GET["draft"]) && $_GET["draft"] == "1") {
+        echo '<br><input type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '" disabled></form></section>';
     }
 
 
@@ -734,7 +748,7 @@ else {
         <?php
     }
 }
-
+}
 ?>
 
 
