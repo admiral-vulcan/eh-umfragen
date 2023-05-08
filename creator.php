@@ -36,12 +36,12 @@ if ($GLOBALS['lang'] !== "de") {
 <br>
 
 <?php
-
+/*
 if (isset($_GET["open"]) && $_GET["open"] !== "") {
     $openGet = decodeString($_GET["open"]);
     $openFile = explode("/", $openGet)[1];
     $openCid = explode("-", $openFile)[4];
-    /** TODO check for contributors!!! */
+    // TODO check for contributors!!!
     if (str_contains($openCid, $GLOBALS["creator_id"])) {
         $openPath = $openGet . ".csv";
         $openFile = explode("/", $openPath)[1];
@@ -51,6 +51,7 @@ if (isset($_GET["open"]) && $_GET["open"] !== "") {
         echo "<script type='application/javascript'> const openDeconstructJson = '" . json_encode($openDeconstructData, true) . "';</script>";
     }
 }
+*/
 
 include ("survey-builder.php");
 $warnUserNew = alert("Datenverlust", "Bist Du sicher, dass Du die Sprache jetzt wechseln willst? Alle nicht gespeicherten Änderungen gehen dabei verloren.", "warning", false, "userLeaves();", "userStays();");

@@ -695,7 +695,7 @@ $followUpInfo = alert("Follow-Up-Element", "
                 else document.getElementById("button_undo").setAttribute("disabled", true);
                 if (checkRedo()) document.getElementById("button_redo").removeAttribute("disabled");
                 else document.getElementById("button_redo").setAttribute("disabled", true);
-            }
+            }/*
             await applyCsv();
             async function applyCsv() {
                 if (typeof openDeconstructJson !== "undefined") {
@@ -713,14 +713,7 @@ $followUpInfo = alert("Follow-Up-Element", "
                     mySurveys.style.display = "none";
                     builder.style.display = "block";
 
-                    /** TODO these 5 have to be implemented...
-                     *
-                    const openedSid = openDeconstructArray[0][0].split("_")[0];
-                    const openedFilename = openDeconstructArray[0][0].split("_")[1];
-                    const openedCreator = openDeconstructArray[0][0].split("_")[2];
-                    const openedLang = openDeconstructArray[0][0].split("_")[3];
-                    const openedFinal = openDeconstructArray[0][0].split("_")[4] === "final";
-                    */
+
 
                     const openedTitle = openDeconstructArray[0][1];
                     const openedSubtitle = openDeconstructArray[0][2];
@@ -764,7 +757,7 @@ $followUpInfo = alert("Follow-Up-Element", "
                 //if (typeof openDeconstructJson !== "undefined")  {
                 //openDeconstructJson;
                 //}
-            }
+            }*/
 
             function setInputValueWithUndoRedo(inputElement, newValue) {
                 const oldValue = inputElement.value;
