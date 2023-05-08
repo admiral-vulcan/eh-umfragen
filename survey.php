@@ -65,9 +65,9 @@ else {
         echo translate(": Ergebnisse, n=" . $responses_count, "de", $GLOBALS["lang"]);
     }
     //am I draft?
-    if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (" . translate("Entwurf, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
+    if (isset($_GET["draft"]) && $_GET["draft"] == "1") echo " (" . translate("Entwurf, kann nicht abgeschickt werden!", "de", $GLOBALS["lang"]) . ")";
     //am I look back?
-    if ($look_back) echo " (" . translate("Rückschau einer geschlossenen Umfrage, bitte nicht ausfüllen!", "de", $GLOBALS["lang"]) . ")";
+    if ($look_back) echo " (" . translate("Rückschau einer geschlossenen Umfrage, sie kann nicht abgeschickt werden!", "de", $GLOBALS["lang"]) . ")";
     echo "</h2>";
 
     if ($description1 != "") {
