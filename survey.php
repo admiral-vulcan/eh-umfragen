@@ -31,7 +31,7 @@ else {
     $survey = $allSurveys->getSurvey($survey_id);
 
     if ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_active"]) {
-        echo "<p>Diese Umfrage ist nicht freigeschaltet.</p> <br>";
+        echo "<p>" . translate("Diese Umfrage ist nicht freigeschaltet.", "de", $GLOBALS["lang"]) . "</p> <br>";
     }
     else {
 
