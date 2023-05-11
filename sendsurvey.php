@@ -149,19 +149,25 @@
                     }
                 }
             }
-            elseif ($target === "no_restriction"){
+            elseif ($target === "no_restriction") {
                 if (has_submitted($survey_id)) {
                     echo "<h3>Sie haben bereits teilgenommen.</h3>";
                     echo "<p>Eine zweite Abgabe kann leider nicht gewertet werden. Ihre ursprüngliche Abgabe wird allerdings gewertet. Danke dafür!</p>";
                     echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
                 } else {
-                    fill_survey(1); //always open generic polite user
+                    // Erzeugt einen neuen Benutzer mit einem Dummy-Mailhash und einer Dummy-Benutzergruppe
+                    $users = new Users();
+                    $dummy_mailhash = md5(uniqid(rand(), true));
+                    $user_id = $users->addUser($target, $dummy_mailhash);
+
+                    fill_survey($user_id);
                     store_submission($survey_id);
                     echo "<h3>Vielen Dank!</h3>";
                     echo "<p>Danke für die Abgabe, " . $nice[rand(0, 3)] . " :)</p>";
                     echo "<a href='/' class='button large fit'>Zurück zur Startseite</a>";
                 }
             }
+
             else {
                 //hier nur Mitarbeitende
                 if ($target == "ehlb_lecturers") {
