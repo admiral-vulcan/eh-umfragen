@@ -131,6 +131,16 @@ input, input:-webkit-autofill, select, textarea {
 	appearance: none;
 }
 
+.poll {
+	border: 2px solid transparent;
+	transition: border-color 1s;
+}
+
+.highlight {
+	border-color: var(--generic-hover);
+	transition: border 1s;
+}
+
 /* Basic */
 
 @-ms-viewport {

@@ -106,7 +106,7 @@ else {
     $denum = 0;
 
     //print survey //TODO required
-    echo "</header><form action='' method='post'>";
+    echo "</header><form id='thisSurvey' action='' method='post'>";
 
     //check if we really want to show the survey (is draft view or active or look back or otherwise forced to show
     if ((!$has_results && ((isset($_GET["draft"]) && $_GET["draft"] == 1) || $survey_id != 0 && $survey["is_active"] && !((isset($_GET["force_results"]) && $_GET["force_results"] == 1)))) || $look_back) {
@@ -219,12 +219,12 @@ else {
 
         }
         echo "<input type='hidden' name='survey_id' value='" . $survey_id . "' />";
-        echo '<br><input type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
+        echo '<br><input id="submit-btn" type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
 
 
     }
     elseif (isset($_GET["draft"]) && $_GET["draft"] == "1") {
-        echo '<br><input type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '" disabled></form></section>';
+        echo '<br><input id="submit-btn" type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '" disabled></form></section>';
     }
 
 
@@ -755,6 +755,51 @@ else {
 
 
 <script type="application/javascript">
+    function scrollToElement(element) {
+        const headerOffset = 200;
+        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+        });
+
+        // Searches the parent <p> element
+        const parentElement = element.parentNode;
+
+        // Adds the highlight class to the parent <p> element
+        parentElement.classList.add("highlight");
+
+        // Removes the highlight class after 5 seconds
+        setTimeout(function() {
+            parentElement.classList.remove("highlight");
+        }, 5000);
+    }
+
+    document.getElementById("submit-btn").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevents the form from being submitted regardless of validation
+
+        const requiredFields = document.querySelectorAll("[required]");
+        let firstInvalidField = null;
+
+        for (const field of requiredFields) {
+            if (!field.checkValidity()) {
+                firstInvalidField = field;
+                break;
+            }
+        }
+
+        if (firstInvalidField) {
+            setTimeout(function() {
+                scrollToElement(firstInvalidField);
+            }, 100);
+        } else {
+            // Adds a function to manually submit the form when all required fields are filled in
+            document.getElementById("thisSurvey").submit();
+        }
+    });
+
 
 
 
@@ -780,13 +825,17 @@ else {
         var divIdArr = divId.split("x");
         divId = divIdArr[0];
         var divToToggle = document.getElementById("toggle" + divId);
-        console.log(divId);
-        if (divToToggle.nextElementSibling.nodeType === Node.ELEMENT_NODE) {
-            if (divToToggle.nextElementSibling.classList.contains("toggleDiv")) {
-                divToToggle.nextElementSibling.style.display = "block";
+        //console.log(divId);
+
+        if (divToToggle && divToToggle.nextElementSibling) {
+            if (divToToggle.nextElementSibling.nodeType === Node.ELEMENT_NODE) {
+                if (divToToggle.nextElementSibling.classList.contains("toggleDiv")) {
+                    divToToggle.nextElementSibling.style.display = "block";
+                }
             }
         }
     }
+
 
     function adjustHeight() {
         var leftDivs = document.querySelectorAll("[id^='left_']");
