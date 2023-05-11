@@ -43,7 +43,7 @@ else {
     else $target_group_text = "Andere Gruppe: " . $survey["target_group"]; // TODO handle elsewhere...
 
     //check if it has results
-    $has_results = $survey["has_results"];
+    $has_results = $survey["has_results"] == "1";
     $look_back = false;
     if (isset($_GET["force_results"]) && $_GET["force_results"] == 1) $has_results = true;
     if (isset($_GET["look_back"]) && $_GET["look_back"] == 1) {
@@ -109,7 +109,7 @@ else {
     echo "</header><form action='' method='post'>";
 
     //check if we really want to show the survey (is draft view or active or look back or otherwise forced to show
-    if (((isset($_GET["draft"]) && $_GET["draft"] == 1) || $survey_id != 0 && $survey["is_active"] && !((isset($_GET["force_results"]) && $_GET["force_results"] == 1))) || $look_back) {
+    if ((!$has_results && ((isset($_GET["draft"]) && $_GET["draft"] == 1) || $survey_id != 0 && $survey["is_active"] && !((isset($_GET["force_results"]) && $_GET["force_results"] == 1)))) || $look_back) {
 
         //loop through all questions and answers
         $lastFollowUpNum = 0;
@@ -200,7 +200,7 @@ else {
 
     }
     //check if survey is set inactive and has no results yet
-    elseif ($survey["is_inactive"] && !$survey["has_results"]) {
+    elseif ($survey["is_inactive"] && !$has_results) {
         echo "<br><br><br><p><b>" . translate("Danke für Dein Interesse!</b><br>Diese Umfrage ist geschlossen und war " /** TODO wie lange war sie offen? */  . " offen.<br>Schau bald wieder vorbei, wenn unsere Ergebnisse veröffentlicht sind.", "de", $GLOBALS["lang"]) . "</p><br><br><br>";
     }
 
@@ -238,7 +238,7 @@ else {
      *
      * */
 
-    if ($survey["has_results"] || ($_GET["force_results"] && intval($_GET["force_results"]) == 1)) {
+    if ($has_results || ($_GET["force_results"] && intval($_GET["force_results"]) == 1)) {
         $results = $allResults->getResultsBySurveyId($survey_id);
         $responses = $allResponses->getResponsesBy($survey_id);
         $thisName = $survey["title"];
