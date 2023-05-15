@@ -1,6 +1,7 @@
 <?php
 
 use EHUmfragen\DatabaseModels\Results;
+use EHUmfragen\DatabaseModels\Creators;
 use EHUmfragen\DatabaseModels\Surveys;
 use EHUmfragen\DatabaseModels\Responses;
 use EHUmfragen\DatabaseModels\Questions;
@@ -12,7 +13,8 @@ $allSurveys = new Surveys();
 $allResponses = new Responses();
 $allQuestions = new Questions();
 $allQuestionChoices = new QuestionChoices();
-$allResults = new  Results();
+$allResults = new Results();
+$allCreators = new Creators();
 
 $survey_id = $allSurveys->getSurveysIdsBy(htmlspecialchars($_GET["survey"]), "title")[0];
 
@@ -29,6 +31,8 @@ if ($survey_id === null) {
 else {
     //if survey found: load survey
     $survey = $allSurveys->getSurvey($survey_id);
+    $creator_id = $allSurveys->getCreatorId($survey_id);
+    $creator_name = $allCreators->getCreatorName($creator_id);
 
     if ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_active"]) {
         echo "<p>" . translate("Diese Umfrage ist nicht freigeschaltet.", "de", $GLOBALS["lang"]) . "</p> <br>";
@@ -82,18 +86,21 @@ else {
 
     $target_group_text = "<p>" . translate("Zielgruppe: " . $target_group_text, "de", $GLOBALS["lang"]) . "</p>";
     if (!isset($_GET["draft"]) || $_GET["draft"] !== "1") {
+        $creator_name_text = "<p>" . translate("Erstellt von ", "de", $GLOBALS["lang"]) . $creator_name . "</p>";
         $activated_at_text = "<p>" . translate("Geöffnet seit " . $survey["activated_at"], "de", $GLOBALS["lang"]) . "";
         $inactivated_at_text = "<p>" . translate("Geschlossen seit " . $survey["inactivated_at"], "de", $GLOBALS["lang"]) . "</p>";
         $has_results_text = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&look_back=1'>" . translate("Umfrage anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='downloadCsv.php?survey_id=" . $survey_id . "&mode=results'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='downloadCsv.php?survey_id=" . $survey_id . "&mode=meta'>" . translate("Metadaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
         $look_back_text = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
     }
     else {
+        $creator_name_text = ""; //TODO
         $activated_at_text = "<p>" . translate("In der Umfrage wird hier stehen, seit wann sie <b>geöffnet</b> worden sein wird.", "de", $GLOBALS["lang"]) . "</p>";
         $inactivated_at_text = "<p>" . translate("Sobald die Umfrage <b>geschlossen</b> sein wird, steht hier seit wann.", "de", $GLOBALS["lang"]) . "</p>";
         $has_results_text = "<p>" . translate("Sobald die Umfrage <b>ausgewertet</b> sein wird, findet man unten alle Statistiken. ", "de", $GLOBALS["lang"]) . "</p>";
         $look_back_text = "<p>" . translate("An dieser Stelle wird man die <b>Rohdaten für Excel herunterladen</b>, die Ergebnisse inkl. Grafiken <b>drucken</b> können und hier erscheint ein Link zur <b>ursprünglichen Umfrage</b>, damit man sie nochmals ansehen kann.", "de", $GLOBALS["lang"]) . "</p>";
     }
 
+    echo $creator_name_text;
     if ($survey["target_group"] !== "no_restriction" || $survey["is_visible"]) echo $target_group_text;
     echo $activated_at_text;
     if (($survey["is_active"] != "1" && $survey["inactivated_at"] !== "0000-00-00 00:00:00") || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivated_at_text;

@@ -155,4 +155,15 @@ class Creators extends DatabaseHandler {
         $creatorData = $this->getCreatorBy($creator_id);
         return password_verify($password, $creatorData['pwdhash']);
     }
+
+    /**
+     * Get the full name of a creator by their creator ID.
+     *
+     * @param string $creator_id The creator's ID.
+     * @return string The creator's full name.
+     */
+    public function getCreatorName(string $creator_id): string {
+        $creatorData = $this->getCreatorBy($creator_id);
+        return $creatorData ? $creatorData['firstname'] . " " . $creatorData['familyname'] : '';
+    }
 }

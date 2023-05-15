@@ -138,4 +138,17 @@ class Surveys extends DatabaseHandler {
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
+    /**
+     * Get the creator_id of a survey.
+     *
+     * @param string $survey_id The survey ID.
+     * @return string|null The creator_id if found, null otherwise.
+     */
+    public function getCreatorId(string $survey_id): ?string
+    {
+        $query = "SELECT creator_id FROM surveys WHERE id = ?";
+        $statement = $this->connection->prepare($query);
+        $statement->execute([$survey_id]);
+        return $statement->fetchColumn();
+    }
 }
