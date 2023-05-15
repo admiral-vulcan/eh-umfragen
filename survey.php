@@ -86,7 +86,7 @@ else {
 
     $target_group_text = "<p>" . translate("Zielgruppe: " . $target_group_text, "de", $GLOBALS["lang"]) . "</p>";
     if (!isset($_GET["draft"]) || $_GET["draft"] !== "1") {
-        $creator_name_text = "<p>" . translate("Erstellt von ", "de", $GLOBALS["lang"]) . $creator_name . "</p>";
+        $creator_name_text = "<p>" . translate("Erstellt von", "de", $GLOBALS["lang"]) . " " . $creator_name . "</p>";
         $activated_at_text = "<p>" . translate("Geöffnet seit " . $survey["activated_at"], "de", $GLOBALS["lang"]) . "";
         $inactivated_at_text = "<p>" . translate("Geschlossen seit " . $survey["inactivated_at"], "de", $GLOBALS["lang"]) . "</p>";
         $has_results_text = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&look_back=1'>" . translate("Umfrage anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='downloadCsv.php?survey_id=" . $survey_id . "&mode=results'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='downloadCsv.php?survey_id=" . $survey_id . "&mode=meta'>" . translate("Metadaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
