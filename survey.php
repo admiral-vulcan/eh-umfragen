@@ -96,7 +96,7 @@ else {
 
     if ($survey["target_group"] !== "no_restriction" || $survey["is_visible"]) echo $target_group_text;
     echo $activated_at_text;
-    if ($survey["inactivated_at"] !== "0000-00-00 00:00:00" || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivated_at_text;
+    if (($survey["is_active"] != "1" && $survey["inactivated_at"] !== "0000-00-00 00:00:00") || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $inactivated_at_text;
     if ($has_results == 1 || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $has_results_text;
     if ($look_back || (isset($_GET["draft"]) && $_GET["draft"] == "1")) echo $look_back_text;
     echo "<br><br>";
