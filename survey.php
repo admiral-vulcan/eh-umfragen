@@ -8,6 +8,26 @@ use EHUmfragen\DatabaseModels\Questions;
 use EHUmfragen\DatabaseModels\QuestionChoices;
 
 //require_once ("convertTimeFormatInString.php");                                                     /** ???????????????????????? */
+function formatGermanDate($myTime): false|string {
+    // Erstellt ein neues DateTime-Objekt und setzt die Zeitzone
+    $dateTime = new DateTime($myTime, new DateTimeZone('Europe/Berlin'));
+
+    // Erstellt einen neuen IntlDateFormatter
+    $formatter = new IntlDateFormatter(
+        'de_DE',
+        IntlDateFormatter::LONG,  // Datum in Langform
+        IntlDateFormatter::SHORT, // Uhrzeit in Kurzform
+        'Europe/Berlin',
+        IntlDateFormatter::GREGORIAN,
+        'd. MMMM yyyy, H:mm \'Uhr\'' // benutzerdefiniertes Format
+    );
+
+    // Formatiert das Datum und die Uhrzeit
+    $formattedDate = $formatter->format($dateTime);
+
+    return $formattedDate;
+}
+
 
 $allSurveys = new Surveys();
 $allResponses = new Responses();
@@ -34,7 +54,15 @@ else {
     $creator_id = $allSurveys->getCreatorId($survey_id);
     $creator_name = $allCreators->getCreatorName($creator_id);
 
-    if ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_active"]) {
+    //check if it has results
+    $has_results = $survey["has_results"] == "1";
+    $look_back = false;
+    if (isset($_GET["force_results"]) && $_GET["force_results"] == 1) $has_results = true;
+    if (isset($_GET["look_back"]) && $_GET["look_back"] == 1) {
+        $has_results = false;
+        $look_back = true;
+    }
+    if ((!isset($_GET["draft"]) || $_GET["draft"] != "1") && !$survey["is_active"] && !$has_results && !$look_back) {
         echo "<p>" . translate("Diese Umfrage ist nicht freigeschaltet.", "de", $GLOBALS["lang"]) . "</p> <br>";
     }
     else {
@@ -46,14 +74,6 @@ else {
     elseif ($survey["target_group"] === "no_restriction") $target_group_text = "Alle Personen";
     else $target_group_text = "Andere Gruppe: " . $survey["target_group"]; // TODO handle elsewhere...
 
-    //check if it has results
-    $has_results = $survey["has_results"] == "1";
-    $look_back = false;
-    if (isset($_GET["force_results"]) && $_GET["force_results"] == 1) $has_results = true;
-    if (isset($_GET["look_back"]) && $_GET["look_back"] == 1) {
-        $has_results = false;
-        $look_back = true;
-    }
 
     //load titles, descriptions
     $title = translate($survey["title"], "de", $GLOBALS["lang"]);
@@ -87,8 +107,8 @@ else {
     $target_group_text = "<p>" . translate("Zielgruppe: " . $target_group_text, "de", $GLOBALS["lang"]) . "</p>";
     if (!isset($_GET["draft"]) || $_GET["draft"] !== "1") {
         $creator_name_text = "<p>" . translate("Erstellt von", "de", $GLOBALS["lang"]) . " " . $creator_name . "</p>";
-        $activated_at_text = "<p>" . translate("Geöffnet seit " . $survey["activated_at"], "de", $GLOBALS["lang"]) . "";
-        $inactivated_at_text = "<p>" . translate("Geschlossen seit " . $survey["inactivated_at"], "de", $GLOBALS["lang"]) . "</p>";
+        $activated_at_text = "<p>" . translate("Geöffnet seit dem " . formatGermanDate($survey["activated_at"]), "de", $GLOBALS["lang"]) . "";
+        $inactivated_at_text = "<p>" . translate("Geschlossen seit dem " . formatGermanDate($survey["inactivated_at"]), "de", $GLOBALS["lang"]) . "</p>";
         $has_results_text = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "&look_back=1'>" . translate("Umfrage anzeigen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a onclick=\"printWithoutWeather(); window.print('%SCRIPTURL{view}%/%BASEWEB%/%BASETOPIC%?cover=print'); return false;\" style=\"cursor: pointer;\">" . translate("Diese Seite drucken", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='downloadCsv.php?survey_id=" . $survey_id . "&mode=results'>" . translate("Rohdaten herunterladen", "de", $GLOBALS["lang"]) . "</a>&emsp;||&emsp;<a href='downloadCsv.php?survey_id=" . $survey_id . "&mode=meta'>" . translate("Metadaten herunterladen", "de", $GLOBALS["lang"]) . "</a><br><br>" . translate("Infos: <br>Diese Seite ist für die Darstellung am PC / Laptop optimiert. <br>Der Druck gelingt im hellen Design am besten.", "de", $GLOBALS["lang"]) . "</div>";
         $look_back_text = "<div class='printmenot'><br><a href='/?survey=" . $titleDE . "'>".translate("Zurück zur Auswertung", "de", $GLOBALS["lang"]) . "</a><br><br>".translate("Infos: <br>Diese Seite ist eine Rückschau der ursprünglichen Umfrage. Sie kann nicht mehr abgegeben werden.", "de", $GLOBALS["lang"]) . "</div>";
     }
@@ -220,14 +240,14 @@ else {
 &emsp;&emsp;<a><span tooltip="' . translate('Ja, denn wir speichern nur den Hash-Wert und nicht die Adresse selbst.', 'de', $GLOBALS["lang"]) . '">' . translate('Ist die Umfrage dann noch anonym?<', 'de', $GLOBALS["lang"]) . '/span></a><br>
 &emsp;&emsp;<a href="/?content=mailinfo" target="_blank">' . translate('Klicke hier für mehr Informationen.', 'de', $GLOBALS["lang"]) . '</a>
 <input placeholder="' . translate('Bitte ausfüllen', 'de', $GLOBALS["lang"]) . '" type="email" id="email" name="email" required></p></div>';
+            echo "<input type='hidden' name='survey_id' value='" . $survey_id . "' />";
+            echo '<br><input id="submit-btn" type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
+
         }
         //TODO other target groups
         else {
 
         }
-        echo "<input type='hidden' name='survey_id' value='" . $survey_id . "' />";
-        echo '<br><input id="submit-btn" type="submit" value="' . translate('Abschicken', 'de', $GLOBALS["lang"]) . '"></form></section>';
-
 
     }
     elseif (isset($_GET["draft"]) && $_GET["draft"] == "1") {
@@ -357,7 +377,7 @@ else {
 
                             // Print the descriptions in the correct order
                             foreach (array_reverse($descriptions) as $description) {
-                                echo "<h2>" . $description . "</h2>";
+                                echo "<h2>" . translate($description, "de", $GLOBALS["lang"]) . "</h2>";
                             }
 
 
