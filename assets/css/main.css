@@ -4456,14 +4456,9 @@ input[type="radio"]:active + label:before,
 		display:none;
 		visibility: hidden;
 	}
-	h1, h2, h3, h4, h5, h6, hr, .page-break-optimized {
-		page-break-after: avoid;
-	}
-	h1 + *, h2 + *, h3 + *, h4 + *, h5 + *, h6 + *, hr + *, .page-break-optimized + * {
-		page-break-before: avoid;
-	}
-	.break-after {
-		page-break-after: always;
+
+	.no-break-inside {
+		page-break-inside: avoid !important;
 	}
 }
 

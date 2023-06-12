@@ -361,7 +361,7 @@ else {
                             foreach ($result_data['choices'] as $choice_id => $choice_data) {
                                 $resultsToPrint[$choice_data['text']] = $choice_data['count'];
                             }
-                            echo PHP_EOL . "<div id='left_" . $i . "'>";
+                            echo PHP_EOL . "<div class='no-break-inside' id='left_" . $i . "'>";
 
                             // Iterate over the previous questions until a non-description question is encountered
                             $prev_question_id = $question_id - 1;
@@ -390,7 +390,7 @@ else {
                                 if ($result["question_type"] == "multiple_choice") echo "<p class='printmenot'>".translate("Mehrfachauswahl", "de", $GLOBALS["lang"])."</p>";
                                 else echo "<p class='printmenot'>".translate("Einfachauswahl", "de", $GLOBALS["lang"])."</p>";
                                 ?>
-                                <form>
+                                <form class="printmenot">
                                     <input type="radio" name="diagram_scheme" id="left_circle_<?php echo $i; ?>"
                                            value="1" checked>
                                     <label class="graph_scheme printmenot" for="left_circle_<?php echo $i; ?>"
@@ -405,12 +405,12 @@ else {
                                            style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Beide Diagramme", "de", $GLOBALS["lang"]); ?></label>
                                 </form>
                                 <?php
-                                echo '<br class="printmenot"><br class="printmenot">';
+                                echo '<br><br>';
 
                                 echo '<img class="light-mode" style="margin-top: -3em" alt="' . translate('Legende:', 'de', $GLOBALS['lang']) . ' ' . getAlt($resultsToPrint) . '" src="data:image/png;base64,' . drawLegendLight($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
                                 echo '<img class="dark-mode" style="margin-top: -3em" alt="' . translate('Legende:', 'de', $GLOBALS['lang']) . ' ' . getAlt($resultsToPrint) . '" src="data:image/png;base64,' . drawLegendDark($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
 
-                                echo '<br class="printmenot"><div id="left_circle_graph_' . $i . '">';
+                                echo '<br><div id="left_circle_graph_' . $i . '">';
 
                                 echo '<img class="light-mode" alt="'.translate('ein automatisch generiertes Kreisdiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawCircleLight($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
                                 echo '<img class="dark-mode" alt="'.translate('ein automatisch generiertes Kreisdiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawCircleDark($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
@@ -501,7 +501,7 @@ else {
                             foreach ($result_data['choices'] as $choice_id => $choice_data) {
                                 $resultsToPrint[$choice_data['text']] = $choice_data['count'];
                             }
-                            echo PHP_EOL . "<div id='right_" . $i . "'>";
+                            echo PHP_EOL . "<div class='no-break-inside' id='right_" . $i . "'>";
 
                             // Iterate over the previous questions until a non-description question is encountered
                             $prev_question_id = $question_id - 1;
