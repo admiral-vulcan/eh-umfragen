@@ -306,7 +306,7 @@ else {
         else $right_counts = "" . $right_counts;
 
         ?>
-        <div id="toggle_compare">
+        <div class="printmenot" id="toggle_compare">
             <form>
                 <input type="checkbox" name="toggle_compare_visible" id="toggle_compare_visible_yes" ><!--checked, siehe css #right_form display: table-cell; -->
                 <label class="toggle_compare_visible" for="toggle_compare_visible_yes" style="padding-top: 5px;"><?php echo translate("Vergleichsansicht anzeigen", "de", $GLOBALS["lang"]); ?></label>
