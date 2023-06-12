@@ -306,6 +306,12 @@ else {
         else $right_counts = "" . $right_counts;
 
         ?>
+        <div id="toggle_compare">
+            <form>
+                <input type="checkbox" name="toggle_compare_visible" id="toggle_compare_visible_yes" ><!--checked, siehe css #right_form display: table-cell; -->
+                <label class="toggle_compare_visible" for="toggle_compare_visible_yes" style="padding-top: 5px;"><?php echo translate("Vergleichsansicht anzeigen", "de", $GLOBALS["lang"]); ?></label>
+            </form>
+        </div>
         <div style="display: table; width: 100%;">
             <div class="table-row">
                 <div class="table-cell" id="left_form">
@@ -343,7 +349,6 @@ else {
                     </div>
 
                     <?php
-                    $firstRun = true;
                     $i = 0;
                     if (intval($left_counts) !== 0 && (((!isset($_GET["leftQ"]) && !isset($_GET["leftA"]))
                             || (intval($_GET["leftQ"]) === 0 && intval($_GET["leftA"]) === 0)
@@ -380,38 +385,32 @@ else {
                                 echo "<h2>" . translate($description, "de", $GLOBALS["lang"]) . "</h2>";
                             }
 
-
-
                             echo "<hr><h2>" . translate($result["question_text"], "de", $GLOBALS["lang"]) . "</h2>";
                             if ($result["question_type"] !== "free_text") {
-                                if ($result["question_type"] == "multiple_choice") echo "<p>".translate("Mehrfachauswahl", "de", $GLOBALS["lang"])."</p>";
-                                else echo "<p>".translate("Einfachauswahl", "de", $GLOBALS["lang"])."</p>";
+                                if ($result["question_type"] == "multiple_choice") echo "<p class='printmenot'>".translate("Mehrfachauswahl", "de", $GLOBALS["lang"])."</p>";
+                                else echo "<p class='printmenot'>".translate("Einfachauswahl", "de", $GLOBALS["lang"])."</p>";
                                 ?>
                                 <form>
                                     <input type="radio" name="diagram_scheme" id="left_circle_<?php echo $i; ?>"
                                            value="1" checked>
-                                    <label class="graph_scheme" for="left_circle_<?php echo $i; ?>"
+                                    <label class="graph_scheme printmenot" for="left_circle_<?php echo $i; ?>"
                                            style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Kreisdiagramm", "de", $GLOBALS["lang"]); ?></label>
                                     <input type="radio" name="diagram_scheme" id="left_rectangle_<?php echo $i; ?>"
                                            value="1">
-                                    <label class="graph_scheme" for="left_rectangle_<?php echo $i; ?>"
+                                    <label class="graph_scheme printmenot" for="left_rectangle_<?php echo $i; ?>"
                                            style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Säulendiagramm", "de", $GLOBALS["lang"]); ?></label>
                                     <input type="radio" name="diagram_scheme" id="left_both_<?php echo $i; ?>"
                                            value="1">
-                                    <label class="graph_scheme" for="left_both_<?php echo $i; ?>"
+                                    <label class="graph_scheme printmenot" for="left_both_<?php echo $i; ?>"
                                            style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Beide Diagramme", "de", $GLOBALS["lang"]); ?></label>
                                 </form>
                                 <?php
-                                if ($firstRun) {
-                                    echo "<br><br><br>";
-                                    $firstRun = false;
-                                } //stupid workaround-bugfix-hack. o_O
-                                echo '<br><br>';
+                                echo '<br class="printmenot"><br class="printmenot">';
 
                                 echo '<img class="light-mode" style="margin-top: -3em" alt="' . translate('Legende:', 'de', $GLOBALS['lang']) . ' ' . getAlt($resultsToPrint) . '" src="data:image/png;base64,' . drawLegendLight($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
                                 echo '<img class="dark-mode" style="margin-top: -3em" alt="' . translate('Legende:', 'de', $GLOBALS['lang']) . ' ' . getAlt($resultsToPrint) . '" src="data:image/png;base64,' . drawLegendDark($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
 
-                                echo '<br><div id="left_circle_graph_' . $i . '">';
+                                echo '<br class="printmenot"><div id="left_circle_graph_' . $i . '">';
 
                                 echo '<img class="light-mode" alt="'.translate('ein automatisch generiertes Kreisdiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawCircleLight($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
                                 echo '<img class="dark-mode" alt="'.translate('ein automatisch generiertes Kreisdiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawCircleDark($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
@@ -421,7 +420,7 @@ else {
                                 echo '<img class="light-mode" alt="'.translate('ein automatisch generiertes Säulendiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawRectangleLight($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
                                 echo '<img class="dark-mode" alt="'.translate('ein automatisch generiertes Säulendiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawRectangleDark($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
 
-                                echo "</div><br>";
+                                echo '</div><br>';
                                 echo PHP_EOL . "</div><hr>";
                                 if ($result["question_type"] == "multiple_choice" || $result["question_type"] == "single_choice" || $result["question_type"] == "dropdown") $i++;
                             }
@@ -490,7 +489,6 @@ else {
                     </div>
 
                     <?php
-                    $firstRun = true;
                     $i = 0;
                     if (intval($right_counts) !== 0 && (((!isset($_GET["rightQ"]) && !isset($_GET["rightA"]))
                             || (intval($_GET["rightQ"]) === 0 && intval($_GET["rightA"]) === 0)
@@ -524,7 +522,7 @@ else {
 
                             // Print the descriptions in the correct order
                             foreach (array_reverse($descriptions) as $description) {
-                                echo "<h2>" . $description . "</h2>";
+                                echo "<h2>" . translate($description, "de", $GLOBALS["lang"]) . "</h2>";
                             }
 
 
@@ -537,22 +535,18 @@ else {
                                 <form>
                                     <input type="radio" name="diagram_scheme" id="right_circle_<?php echo $i; ?>"
                                            value="1" checked>
-                                    <label class="graph_scheme" for="right_circle_<?php echo $i; ?>"
+                                    <label class="graph_scheme printmenot" for="right_circle_<?php echo $i; ?>"
                                            style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Kreisdiagramm", "de", $GLOBALS["lang"]); ?></label>
                                     <input type="radio" name="diagram_scheme" id="right_rectangle_<?php echo $i; ?>"
                                            value="1">
-                                    <label class="graph_scheme" for="right_rectangle_<?php echo $i; ?>"
+                                    <label class="graph_scheme printmenot" for="right_rectangle_<?php echo $i; ?>"
                                            style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Säulendiagramm", "de", $GLOBALS["lang"]); ?></label>
                                     <input type="radio" name="diagram_scheme" id="right_both_<?php echo $i; ?>"
                                            value="1">
-                                    <label class="graph_scheme" for="right_both_<?php echo $i; ?>"
+                                    <label class="graph_scheme printmenot" for="right_both_<?php echo $i; ?>"
                                            style="padding-top: 0.5em; font-size: 0.8em; font-weight: 700; margin: 0 0 1em 0; color: var(--label-color);"><?php echo translate("Beide Diagramme", "de", $GLOBALS["lang"]); ?></label>
                                 </form>
                                 <?php
-                                if ($firstRun) {
-                                    echo "";
-                                    $firstRun = false;
-                                } //stupid workaround-bugfix-hack. o_O
                                 echo '<br><br>';
 
                                 echo '<img class="light-mode" style="margin-top: -3em" alt="' . translate('Legende:', 'de', $GLOBALS['lang']) . ' ' . getAlt($resultsToPrint) . '" src="data:image/png;base64,' . drawLegendLight($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';

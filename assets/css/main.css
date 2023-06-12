@@ -4429,16 +4429,20 @@ input[type="radio"]:active + label:before,
 
 
 #right_form {
-	display: table-cell;
+	/*display: table-cell;*/ /* siehe toggle_compare_visible_yes checked */
+	display: none;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 1400px) {
 
 	.table-cell {
 		display: unset;
 		width: 100%;
 	}
 	#right_form {
+		display: none;
+	}
+	#toggle_compare {
 		display: none;
 	}
 }
@@ -4448,13 +4452,22 @@ input[type="radio"]:active + label:before,
 		display:none;
 		visibility: hidden;
 	}
-	.printmenot {
+	.printmenot, hr {
 		display:none;
 		visibility: hidden;
 	}
+	h1, h2, h3, h4, h5, h6, hr, .page-break-optimized {
+		page-break-after: avoid;
+	}
+	h1 + *, h2 + *, h3 + *, h4 + *, h5 + *, h6 + *, hr + *, .page-break-optimized + * {
+		page-break-before: avoid;
+	}
+	.break-after {
+		page-break-after: always;
+	}
 }
 
-.graph_scheme {
+.graph_scheme, .toggle_compare_visible {
 	color: var(--label-color);
 	display: block;
 	font-size: 0.1em;
