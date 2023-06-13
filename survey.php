@@ -525,14 +525,12 @@ else {
                                 echo "<h2>" . translate($description, "de", $GLOBALS["lang"]) . "</h2>";
                             }
 
-
-
                             echo "<hr><h2>" . translate($result["question_text"], "de", $GLOBALS["lang"]) . "</h2>";
                             if ($result["question_type"] !== "free_text") {
-                                if ($result["question_type"] == "multiple_choice") echo "<p>".translate("Mehrfachauswahl", "de", $GLOBALS["lang"])."</p>";
-                                else echo "<p>".translate("Einfachauswahl", "de", $GLOBALS["lang"])."</p>";
+                                if ($result["question_type"] == "multiple_choice") echo "<p class='printmenot'>".translate("Mehrfachauswahl", "de", $GLOBALS["lang"])."</p>";
+                                else echo "<p class='printmenot'>".translate("Einfachauswahl", "de", $GLOBALS["lang"])."</p>";
                                 ?>
-                                <form>
+                                <form class="printmenot">
                                     <input type="radio" name="diagram_scheme" id="right_circle_<?php echo $i; ?>"
                                            value="1" checked>
                                     <label class="graph_scheme printmenot" for="right_circle_<?php echo $i; ?>"
@@ -562,7 +560,7 @@ else {
                                 echo '<img class="light-mode" alt="'.translate('ein automatisch generiertes Säulendiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawRectangleLight($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
                                 echo '<img class="dark-mode" alt="'.translate('ein automatisch generiertes Säulendiagramm', 'de', $GLOBALS['lang']).'" src="data:image/png;base64,' . drawRectangleDark($resultsToPrint) . '" onerror="this.onerror=null;this.src=\'images/error_img.png\';this.alt=\''.translate('Hier ist wohl ein Fehler passiert.', 'de', $GLOBALS['lang']).' \';" />';
 
-                                echo "</div><br>";
+                                echo '</div><br>';
                                 echo PHP_EOL . "</div><hr>";
                                 if ($result["question_type"] == "multiple_choice" || $result["question_type"] == "single_choice" || $result["question_type"] == "dropdown") $i++;
                             }
@@ -857,28 +855,6 @@ else {
         }
     }
 
-
-    function adjustHeight() {
-        var leftDivs = document.querySelectorAll("[id^='left_']");
-        var rightDivs = document.querySelectorAll("[id^='right_']");
-
-        var smallerLength = leftDivs.length;
-        if (rightDivs.length < smallerLength) smallerLength = rightDivs.length;
-
-        for (var i = 0; i < smallerLength; i++) {
-            // Reset heights to "auto" before determining the maximum height
-            leftDivs[i].style.height = "auto";
-            rightDivs[i].style.height = "auto";
-        }
-        for (var i = 0; i < smallerLength; i++) {
-            var leftDivHeight = leftDivs[i].clientHeight;
-            var rightDivHeight = rightDivs[i].clientHeight;
-
-            var maxHeight = Math.max(leftDivHeight, rightDivHeight);
-            leftDivs[i].style.height = maxHeight + "px";
-            rightDivs[i].style.height = maxHeight + "px";
-        }
-    }
 
     function adjustFreeText() {
         var leftDivs = document.querySelectorAll("[id^='free_text_left_']");
